@@ -24,11 +24,11 @@ public class sae_java_24 {
         
         Fenetre fen = new Fenetre();
         // TODO code application logic here
-        Graph graphe = new SingleGraph("Tutorial 1");
+       //Graph graphe = new SingleGraph("Tutorial 1");
         //construireGrapheAleatoire(8);
-       graphe = chargerGraphe("data/graphe3.csv");
-       graphe.display();
-       calculerItineraires(graphe, "S8", "S7");
+       //graphe = chargerGraphe("data/graphe3.csv");
+       //graphe.display();
+       //calculerItineraires(graphe, "S8", "S7");
 
     }
     
