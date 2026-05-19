@@ -15,7 +15,7 @@ import static sae_java_24.MonGraphe.chargerGraphe;
  *
  * @author nolan
  */
-public class sae_java_24 {
+public class SAE_JAVA_24 {
 
     /**
      * @param args the command line arguments
