@@ -33,11 +33,11 @@ public class MonGraphe{
         String[] TYPES = {"Maternite", "Maternite", "Maternite","Bloc operatoire","Centre nutrition"}; // maternité 3/5 et les deux autres 1/5 
         for(int i = 0; i<nbSommets ; i++){
              Node n = graphe.addNode("Lieu_" + i);
-        String type = TYPES[rng.nextInt(5)];
-        n.setAttribute("type", type);
-        n.setAttribute("ui.label", "Lieu_" + i + " (" + type + ")");
+            String type = TYPES[rng.nextInt(5)];
+            n.setAttribute("type", type);
+            n.setAttribute("ui.label", "Lieu_" + i + " (" + type + ")");
         }
-         int edgeId = 0;
+        int edgeId = 0;
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
                 if (rng.nextInt(5) == 0) {
@@ -147,8 +147,7 @@ public class MonGraphe{
     System.out.println("Durée estimée totale : " + dijkstra2.getPathLength(graphe.getNode(arrivee)) + " min");
     }
     
-    public Graph plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire){
-        Graph res = new SingleGraph("résultat");
+    public void plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire){
         if (!typeDispensaire.equals("all")){
             for (Node n : graphe){
                 if(typeDispensaire != n.getAttribute("type")){
@@ -156,8 +155,11 @@ public class MonGraphe{
                 }
             }
         }
+        Node n = graphe.getNode(0);
+        for(Edge e : n.getEachEdge()){
+            
+        }
         
-        return res;
     }
 }
 
