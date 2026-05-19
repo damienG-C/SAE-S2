@@ -92,9 +92,9 @@ public class Fenetre extends JFrame {
         butgenerer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nomfichier = tfgenerer.getText();
+                String nomfichier = "data/" + tfgenerer.getText();
                 try {
-                    MonGraphe.chargerGraphe(nomfichier);
+                    MonGraphe.chargerGraphe(nomfichier).display();
                 } catch (FileNotFoundException ex) {
                     System.getLogger(Fenetre.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                 }
