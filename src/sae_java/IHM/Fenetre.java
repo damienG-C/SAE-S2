@@ -5,6 +5,8 @@
 package sae_java.IHM;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -26,7 +28,7 @@ public class Fenetre extends JFrame {
     JTextField tfalea, tfgenerer;
     JButton butalea, butgenerer;
     public Fenetre() {
-        super("MaFenetreGoatesque");
+        super("MonAppli");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -42,20 +44,29 @@ public class Fenetre extends JFrame {
         panalea = new JPanel();
         
         
-        
+        pan.setLayout(new GridBagLayout());
+        GridBagConstraints gcpan = new GridBagConstraints();
+
         initPanAlea();
         initPanGenerer();
         initEcouteur();
 
-        pan.add(panalea);
-        pan.add(pangenerer);
+        gcpan.gridx = 0;
+        gcpan.gridy = 0;
+        pan.add(panalea, gcpan);
+        
+        gcpan.gridy = 1;
+        gcpan.anchor = GridBagConstraints.WEST;
+        pan.add(pangenerer, gcpan);
     }
     
     public void initPanAlea() {
-        butalea = new JButton("Generer Graphique");
+        butalea = new JButton("Générer Graphe");
         tfalea = new JTextField("Saisir un nombre de sommet");
-        tfalea.setPreferredSize(new Dimension(170, 25));
         
+        butalea.setPreferredSize(new Dimension(125, 25));
+        
+        tfalea.setPreferredSize(new Dimension(170, 25));
         tfalea.addFocusListener(new ResetTF());
         panalea.add(tfalea);
         panalea.add(butalea);
@@ -68,6 +79,8 @@ public class Fenetre extends JFrame {
         
         tfgenerer = new JTextField("Saisir le nom du fichier");
         butgenerer = new JButton("Charger graphe");
+        
+        butgenerer.setPreferredSize(new Dimension(125, 25));
         
         tfgenerer.setPreferredSize(new Dimension(170, 25));
         tfgenerer.addFocusListener(new ResetTF());
