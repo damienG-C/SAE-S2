@@ -63,7 +63,27 @@ public class MonGraphe{
             if (line.startsWith("//") || line.isEmpty()) 
                 continue;
 
-            String[] cols = line.split(";");
+            String[] linespace = line.split(" ");
+            String linewithoutspace = "";
+            for (String ind : linespace) {
+                linewithoutspace = linewithoutspace + ind;
+            }
+            
+            String[] linevirgule = linewithoutspace.split(",");
+            String linewithoutvirgule = "";
+            for (String ind : linevirgule) {
+                if (linewithoutvirgule == "") {
+                    linewithoutvirgule = linewithoutvirgule + ind;
+                }
+                else {
+                    linewithoutvirgule = linewithoutvirgule + ";" + ind;
+                }
+                
+            }
+            
+            System.out.println("space : " + linewithoutspace);
+            System.out.println("virgule : " + linewithoutvirgule);
+            String[] cols = linewithoutvirgule.split(";");
             String nomSommet = cols[0];
             String typeCode  = cols[1];
 
