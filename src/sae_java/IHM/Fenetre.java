@@ -95,8 +95,7 @@ public class Fenetre extends JFrame {
 
     public void initPanGraphe() {
         panGraph.setVisible(true);
-        panGraph.setPreferredSize(new Dimension(600, 500));
-        panGraph.setBackground(Color.red);
+        panGraph.setPreferredSize(new Dimension(1000, 1000));
     }
 
     public void initEcouteur() {
@@ -145,10 +144,12 @@ public class Fenetre extends JFrame {
     }
 
     public void afficherGraph(Graph g) {
+        panGraph.removeAll();
         Viewer viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
 
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
+        view.setPreferredSize(new Dimension(500, 600));
 
         panGraph.add(view);
         panGraph.revalidate(); // rafraichissement de la position des composants du panel.
