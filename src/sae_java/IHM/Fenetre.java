@@ -4,6 +4,7 @@
  */
 package sae_java.IHM;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import javax.swing.*;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.DefaultView;
 import org.graphstream.ui.view.Viewer;
@@ -28,9 +30,10 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph;
+    JPanel pan, panoutil, panGraph, panLabStat;
     JTextField tfalea;
     JButton butalea, butgenerer;
+    JLabel labNB1, labNB2, labNB3;
 
     public Fenetre() {
         super("MonAppli");
@@ -50,14 +53,14 @@ public class Fenetre extends JFrame {
         pan = new JPanel();
         panoutil = new JPanel();
         panGraph = new JPanel();
-        butgenerer = new JButton("Charger graphe");
+        panLabStat = new JPanel();
 
         pan.setBackground(Color.black);
-        
+
         pan.setLayout(new GridBagLayout());
         GridBagConstraints gcpan = new GridBagConstraints();
 
-        initPanAlea();
+        initPanOutil();
         initPanGraphe();
         initEcouteur();
 
@@ -72,39 +75,60 @@ public class Fenetre extends JFrame {
         gcpan.gridheight = 1;
     }
 
-    public void initPanAlea() {
+    public void initPanOutil() {
         butalea = new JButton("Générer Graphe");
+        butgenerer = new JButton("Charger graphe");
         tfalea = new JTextField("Saisir un nombre de sommet");
-        
 
         butalea.setPreferredSize(new Dimension(125, 25));
         butgenerer.setPreferredSize(new Dimension(125, 25));
 
         tfalea.setPreferredSize(new Dimension(170, 25));
         tfalea.addFocusListener(new ResetTF());
-        
+
         panoutil.setLayout(new GridBagLayout());
         GridBagConstraints gcpo = new GridBagConstraints();
-        
+
         gcpo.gridx = 0;
         gcpo.gridy = 0;
         panoutil.add(butalea, gcpo);
-        
+
         gcpo.gridx = 1;
         panoutil.add(tfalea, gcpo);
-        
+
         gcpo.gridx = 0;
         gcpo.gridy = 1;
         gcpo.gridwidth = 2;
         gcpo.fill = GridBagConstraints.HORIZONTAL;
         panoutil.add(butgenerer, gcpo);
 
+        initPanLabStat();
+
+        gcpo.gridx = 0;
+        gcpo.gridy++;
+        gcpo.fill = GridBagConstraints.HORIZONTAL;
+        panoutil.add(panLabStat, gcpo);
         panoutil.setVisible(true);
     }
 
     public void initPanGraphe() {
         panGraph.setVisible(true);
         panGraph.setPreferredSize(new Dimension(400, 400));
+        panGraph.setBackground(Color.decode("#1e1e1e"));
+    }
+
+    public void initPanLabStat() {
+        labNB1 = new JLabel("0");
+        labNB2 = new JLabel("0");
+        labNB3 = new JLabel("0");
+
+        panLabStat.setLayout(new BorderLayout(150, 0));
+        
+        panLabStat.add(labNB1, BorderLayout.WEST);
+        panLabStat.add(labNB2, BorderLayout.CENTER);
+        panLabStat.add(labNB3, BorderLayout.EAST);
+
+        panLabStat.setVisible(true);
     }
 
     public void initEcouteur() {
@@ -154,11 +178,33 @@ public class Fenetre extends JFrame {
 
     public void afficherGraph(Graph g) {
         panGraph.removeAll();
+        int nbOperatoire = 0, nbMaternite = 0, nbNutrition = 0;
+
+        for (Node node : g) {
+            String type = (String) node.getAttribute("type");
+
+            if (type.equals("Maternite")) {
+                node.setAttribute("ui.style", "fill-color: red;");
+                nbMaternite++;
+            } else if (type.equals("Bloc operatoire")) {
+                node.setAttribute("ui.style", "fill-color: blue;");
+                nbOperatoire++;
+            } else if (type.equals("Centre nutrition")) {
+                node.setAttribute("ui.style", "fill-color: green;");
+                nbNutrition++;
+            }
+        }
+
+        g.setAttribute("ui.stylesheet", "graph { fill-color: #1e1e1e; }"
+                + "node { size: 15px; text-color: white; }"
+                + "edge { fill-color: #ffffff; }"
+        );
+
         Viewer viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
 
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
-        view.setPreferredSize(new Dimension(300, 400));
+        view.setPreferredSize(new Dimension(400, 400));
 
         panGraph.add(view);
         panGraph.revalidate(); // rafraichissement de la position des composants du panel.
