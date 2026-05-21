@@ -50,6 +50,8 @@ public class Fenetre extends JFrame {
         panGraph = new JPanel();
         butgenerer = new JButton("Charger graphe");
 
+        pan.setBackground(Color.black);
+        
         pan.setLayout(new GridBagLayout());
         GridBagConstraints gcpan = new GridBagConstraints();
 
@@ -65,10 +67,12 @@ public class Fenetre extends JFrame {
         gcpan.gridx = 1;
         gcpan.gridheight = 2;
         pan.add(panGraph, gcpan);
+        gcpan.gridheight = 1;
 
         gcpan.gridx = 0;
         gcpan.gridy = 1;
-        gcpan.anchor = GridBagConstraints.WEST;
+        gcpan.gridwidth = 2;
+        gcpan.anchor = GridBagConstraints.NORTHWEST;
         pan.add(pangenerer, gcpan);
     }
 
@@ -95,7 +99,7 @@ public class Fenetre extends JFrame {
 
     public void initPanGraphe() {
         panGraph.setVisible(true);
-        panGraph.setPreferredSize(new Dimension(1000, 1000));
+        panGraph.setPreferredSize(new Dimension(400, 400));
     }
 
     public void initEcouteur() {
@@ -149,7 +153,7 @@ public class Fenetre extends JFrame {
         viewer.enableAutoLayout();
 
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
-        view.setPreferredSize(new Dimension(500, 600));
+        view.setPreferredSize(new Dimension(300, 400));
 
         panGraph.add(view);
         panGraph.revalidate(); // rafraichissement de la position des composants du panel.
