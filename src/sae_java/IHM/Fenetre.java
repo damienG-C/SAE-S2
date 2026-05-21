@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -27,7 +28,7 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panalea, pangenerer, panGraph;
+    JPanel pan, panoutil, pangenerer, panGraph;
     JTextField tfalea;
     JButton butalea, butgenerer;
 
@@ -45,7 +46,7 @@ public class Fenetre extends JFrame {
 
     public void initComponent() {
         pan = new JPanel();
-        panalea = new JPanel();
+        panoutil = new JPanel();
         pangenerer = new JPanel();
         panGraph = new JPanel();
         butgenerer = new JButton("Charger graphe");
@@ -60,9 +61,10 @@ public class Fenetre extends JFrame {
         initPanGraphe();
         initEcouteur();
 
+        gcpan.insets = new Insets(5, 5, 5, 5); // top, left, bottom, right
         gcpan.gridx = 0;
         gcpan.gridy = 0;
-        pan.add(panalea, gcpan);
+        pan.add(panoutil, gcpan);
 
         gcpan.gridx = 1;
         gcpan.gridheight = 2;
@@ -84,10 +86,10 @@ public class Fenetre extends JFrame {
 
         tfalea.setPreferredSize(new Dimension(170, 25));
         tfalea.addFocusListener(new ResetTF());
-        panalea.add(butalea);
-        panalea.add(tfalea);
+        panoutil.add(butalea);
+        panoutil.add(tfalea);
 
-        panalea.setVisible(true);
+        panoutil.setVisible(true);
     }
 
     public void initPanGenerer() {
