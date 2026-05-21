@@ -28,7 +28,7 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, pangenerer, panGraph;
+    JPanel pan, panoutil, panGraph;
     JTextField tfalea;
     JButton butalea, butgenerer;
 
@@ -42,12 +42,13 @@ public class Fenetre extends JFrame {
 
         this.setContentPane(pan);
         this.pack();
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
     }
 
     public void initComponent() {
         pan = new JPanel();
         panoutil = new JPanel();
-        pangenerer = new JPanel();
         panGraph = new JPanel();
         butgenerer = new JButton("Charger graphe");
 
@@ -57,7 +58,6 @@ public class Fenetre extends JFrame {
         GridBagConstraints gcpan = new GridBagConstraints();
 
         initPanAlea();
-        initPanGenerer();
         initPanGraphe();
         initEcouteur();
 
@@ -70,33 +70,36 @@ public class Fenetre extends JFrame {
         gcpan.gridheight = 2;
         pan.add(panGraph, gcpan);
         gcpan.gridheight = 1;
-
-        gcpan.gridx = 0;
-        gcpan.gridy = 1;
-        gcpan.gridwidth = 2;
-        gcpan.anchor = GridBagConstraints.NORTHWEST;
-        pan.add(pangenerer, gcpan);
     }
 
     public void initPanAlea() {
         butalea = new JButton("Générer Graphe");
         tfalea = new JTextField("Saisir un nombre de sommet");
+        
 
         butalea.setPreferredSize(new Dimension(125, 25));
+        butgenerer.setPreferredSize(new Dimension(125, 25));
 
         tfalea.setPreferredSize(new Dimension(170, 25));
         tfalea.addFocusListener(new ResetTF());
-        panoutil.add(butalea);
-        panoutil.add(tfalea);
+        
+        panoutil.setLayout(new GridBagLayout());
+        GridBagConstraints gcpo = new GridBagConstraints();
+        
+        gcpo.gridx = 0;
+        gcpo.gridy = 0;
+        panoutil.add(butalea, gcpo);
+        
+        gcpo.gridx = 1;
+        panoutil.add(tfalea, gcpo);
+        
+        gcpo.gridx = 0;
+        gcpo.gridy = 1;
+        gcpo.gridwidth = 2;
+        gcpo.fill = GridBagConstraints.HORIZONTAL;
+        panoutil.add(butgenerer, gcpo);
 
         panoutil.setVisible(true);
-    }
-
-    public void initPanGenerer() {
-        butgenerer.setPreferredSize(new Dimension(125, 25));
-
-        pangenerer.add(butgenerer);
-
     }
 
     public void initPanGraphe() {
