@@ -100,7 +100,7 @@ public class MonGraphe{
                 String dst = lignes.get(j)[0];
                 String cellule = cols[j + 2];
 
-                if (cellule.equals("0")) 
+                if (cellule.isEmpty() || cellule.equals("0")) 
                     continue;
 
                 String[] vals = cellule.split(",");
