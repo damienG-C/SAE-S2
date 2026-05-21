@@ -27,7 +27,7 @@ import org.graphstream.algorithm.Dijkstra;
  */
 public class MonGraphe{
     //Q1
-    public static void construireGrapheAleatoire(int nbSommets){
+    public static Graph construireGrapheAleatoire(int nbSommets){
         Graph graphe = new SingleGraph("Graphe de "+nbSommets+" éléments.");
         Random rng = new Random();
         String[] TYPES = {"Maternite", "Maternite", "Maternite","Bloc operatoire","Centre nutrition"}; // maternité 3/5 et les deux autres 1/5 
@@ -48,7 +48,7 @@ public class MonGraphe{
                 }
             }
         }
-        graphe.display();
+        return graphe;
 
     }
     //Q2
