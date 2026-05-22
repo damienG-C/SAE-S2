@@ -32,7 +32,7 @@ public class Fenetre extends JFrame {
 
     JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph;
     JTextField tfalea;
-    JButton butalea, butgenerer;
+    JButton butalea, butgenerer, butcroix;
     JLabel labNB1, labNB2, labNB3, labGraph;
 
     public Fenetre() {
@@ -54,7 +54,7 @@ public class Fenetre extends JFrame {
         panLabStat = new JPanel();
         panChangeGraph = new JPanel();
 
-        pan.setBackground(Color.decode("#FFFBE0"));
+        pan.setBackground(Color.decode("#1a2b3c"));
 
         pan.setLayout(new GridBagLayout());
         GridBagConstraints gcpan = new GridBagConstraints();
@@ -85,7 +85,7 @@ public class Fenetre extends JFrame {
     public void initPanOutil() {
         panoutil.setLayout(new BorderLayout());
         panoutil.setPreferredSize(new Dimension(200, 200));
-
+        panoutil.setBackground(Color.decode("#1e3a5f"));
         initPanLabStat();
 
         panoutil.add(panLabStat, BorderLayout.NORTH);
@@ -96,7 +96,7 @@ public class Fenetre extends JFrame {
         panGraph.setLayout(new BorderLayout());
         panGraph.setPreferredSize(new Dimension(400, 400));
         panGraph.setVisible(true);
-        panGraph.setBackground(Color.decode("#F0EDD8"));
+        panGraph.setBackground(Color.decode("#0d1f2d"));
     }
 
     public void initPanLabStat() {
@@ -105,60 +105,82 @@ public class Fenetre extends JFrame {
         labNB3 = new JLabel("Centres de nutrition : ");
 
         panLabStat.setLayout(new BorderLayout());
-
-        panLabStat.add(labNB1, BorderLayout.NORTH);
+        
+        labNB1.setBorder(BorderFactory.createEmptyBorder(3, 7, 3, 0));
+        labNB2.setBorder(BorderFactory.createEmptyBorder(3, 7, 3, 0));
+        labNB3.setBorder(BorderFactory.createEmptyBorder(3, 7, 3, 0));
+        
+        panLabStat.add(labNB3, BorderLayout.NORTH);
         panLabStat.add(labNB2, BorderLayout.CENTER);
-        panLabStat.add(labNB3, BorderLayout.SOUTH);
+        panLabStat.add(labNB1, BorderLayout.SOUTH);
 
         panLabStat.setVisible(true);
     }
 
     public void initPanChangeGraph() {
         labGraph = new JLabel("Nom du graphe");
+        butcroix = new JButton("+");
         butalea = new JButton("Générer Graphe");
         butgenerer = new JButton("Charger graphe");
         butalea.setPreferredSize(new Dimension(125, 25));
         butgenerer.setPreferredSize(new Dimension(125, 25));
 
+        setStyleBouton(butalea);
+        setStyleBouton(butgenerer);
+        setStyleBouton(butcroix);
+
         panChangeGraph.add(labGraph);
-        panChangeGraph.add(butgenerer);
-        panChangeGraph.add(butalea);
+        panChangeGraph.add(butcroix);
 
         panChangeGraph.setVisible(true);
     }
 
     public void initEcouteur() {
-
-        butalea.addActionListener(new ActionListener() {
+        butcroix.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String[] options = {"Charger graphe", "Générer Graphe"};
+                int choix = JOptionPane.showOptionDialog(
+                        null,
+                        "Que voulez-vous faire ?",
+                        "MonAppli",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        options,
+                        options[0]
+                );
 
-                String input = JOptionPane.showInputDialog(null, "Saisir un nombre de sommets :", "Générer Graphe Aléatoire", JOptionPane.QUESTION_MESSAGE);
-                if (input != null && !input.isEmpty()) {
-                    int nb = Integer.parseInt(input);
-
-                    Graph g = MonGraphe.construireGrapheAleatoire(nb);
-                    afficherGraph(g, null);
-                }
-
-            }
-        });
-
-        butgenerer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                chooser.showOpenDialog(null);
-                String chemin = chooser.getSelectedFile().getAbsolutePath();
-                try {
-                    Graph g = MonGraphe.chargerGraphe(chemin);
-                    afficherGraph(g, chooser.getSelectedFile().getName());
-                } catch (FileNotFoundException ex) {
-                    System.getLogger(Fenetre.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                if (choix == 0) {
+                    try {
+                        ChargerGraphBoutonPressé();
+                    } catch (FileNotFoundException ex) {
+                        System.getLogger(Fenetre.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                    }
+                } else if (choix == 1) {
+                    GénérerGraphBoutonPressé();
                 }
             }
         });
 
+    }
+
+    public void GénérerGraphBoutonPressé() {
+        String input = JOptionPane.showInputDialog(null, "Saisir un nombre de sommets :", "Générer Graphe Aléatoire", JOptionPane.QUESTION_MESSAGE);
+        if (input != null && !input.isEmpty()) {
+            int nb = Integer.parseInt(input);
+
+            Graph g = MonGraphe.construireGrapheAleatoire(nb);
+            afficherGraph(g, null);
+        }
+    }
+
+    public void ChargerGraphBoutonPressé() throws FileNotFoundException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        String chemin = chooser.getSelectedFile().getAbsolutePath();
+        Graph g = MonGraphe.chargerGraphe(chemin);
+        afficherGraph(g, chooser.getSelectedFile().getName());
     }
 
     class ResetTF implements FocusListener {
@@ -222,6 +244,12 @@ public class Fenetre extends JFrame {
         panGraph.revalidate(); // rafraichissement de la position des composants du panel.
         panGraph.repaint(); // réactualisation du panGraph.
 
+    }
+
+    public void setStyleBouton(JButton but) {
+        but.setBackground(Color.decode("#2e86c1"));
+        but.setForeground(Color.white);
+        but.setFocusPainted(false);
     }
 
 }
