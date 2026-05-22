@@ -54,7 +54,7 @@ public class Fenetre extends JFrame {
         panLabStat = new JPanel();
         panChangeGraph = new JPanel();
 
-        pan.setBackground(Color.black);
+        pan.setBackground(Color.decode("#FFFBE0"));
 
         pan.setLayout(new GridBagLayout());
         GridBagConstraints gcpan = new GridBagConstraints();
@@ -95,7 +95,7 @@ public class Fenetre extends JFrame {
     public void initPanGraphe() {
         panGraph.setPreferredSize(new Dimension(400, 400));
         panGraph.setVisible(true);
-        panGraph.setBackground(Color.decode("#1e1e1e"));
+        panGraph.setBackground(Color.decode("#ffffff"));
     }
 
     public void initPanLabStat() {
@@ -196,9 +196,9 @@ public class Fenetre extends JFrame {
             }
         }
 
-        g.setAttribute("ui.stylesheet", "graph { fill-color: #1e1e1e; }"
-                + "node { size: 15px; text-color: white; }"
-                + "edge { fill-color: #ffffff; }"
+        g.setAttribute("ui.stylesheet", "graph { fill-color: #F0EDD8; }"
+                + "node { size: 15px;}"
+                + "edge { fill-color: #000000; }"
         );
 
         Viewer viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
