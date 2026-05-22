@@ -83,18 +83,12 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanOutil() {
-        panoutil.setLayout(new GridBagLayout());
-        GridBagConstraints gcpo = new GridBagConstraints();
-
+        panoutil.setLayout(new BorderLayout());
         panoutil.setPreferredSize(new Dimension(200, 200));
 
         initPanLabStat();
 
-        gcpo.gridx = 0;
-        gcpo.gridy = 0;
-        gcpo.fill = GridBagConstraints.HORIZONTAL;
-        gcpo.anchor = GridBagConstraints.NORTHWEST;
-        panoutil.add(panLabStat, gcpo);
+        panoutil.add(panLabStat, BorderLayout.NORTH);
         panoutil.setVisible(true);
     }
 
