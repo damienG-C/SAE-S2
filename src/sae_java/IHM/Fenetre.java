@@ -66,11 +66,15 @@ public class Fenetre extends JFrame {
 
         gcpan.gridx = 1;
         gcpan.gridy = 1;
+        gcpan.insets = new Insets(10, 5, 10, 5);
+        gcpan.fill = GridBagConstraints.HORIZONTAL;
+        gcpan.fill = GridBagConstraints.VERTICAL;
         pan.add(panGraph, gcpan);
 
         gcpan.gridy = 0;
         gcpan.anchor = GridBagConstraints.WEST;
         pan.add(panChangeGraph, gcpan);
+        gcpan.anchor = GridBagConstraints.CENTER;
 
         gcpan.gridx = 0;
         gcpan.gridy = 0;
@@ -79,26 +83,24 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanOutil() {
-
-        tfalea = new JTextField("Saisir un nombre de sommet");
-
-        tfalea.setPreferredSize(new Dimension(170, 25));
-        tfalea.addFocusListener(new ResetTF());
-
         panoutil.setLayout(new GridBagLayout());
         GridBagConstraints gcpo = new GridBagConstraints();
+
+        panoutil.setPreferredSize(new Dimension(200, 200));
 
         initPanLabStat();
 
         gcpo.gridx = 0;
         gcpo.gridy = 0;
+        gcpo.fill = GridBagConstraints.HORIZONTAL;
+        gcpo.anchor = GridBagConstraints.NORTHWEST;
         panoutil.add(panLabStat, gcpo);
         panoutil.setVisible(true);
     }
 
     public void initPanGraphe() {
-        panGraph.setVisible(true);
         panGraph.setPreferredSize(new Dimension(400, 400));
+        panGraph.setVisible(true);
         panGraph.setBackground(Color.decode("#1e1e1e"));
     }
 
