@@ -38,8 +38,6 @@ public class Fenetre extends JFrame {
     public Fenetre() {
         super("MonAppli");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
 
         initComponent();
 
@@ -73,7 +71,7 @@ public class Fenetre extends JFrame {
         gcpan.gridy = 0;
         gcpan.anchor = GridBagConstraints.WEST;
         pan.add(panChangeGraph, gcpan);
-        
+
         gcpan.gridx = 0;
         gcpan.gridy = 0;
         gcpan.gridheight = 2;
@@ -81,7 +79,7 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanOutil() {
-        
+
         tfalea = new JTextField("Saisir un nombre de sommet");
 
         tfalea.setPreferredSize(new Dimension(170, 25));
@@ -105,9 +103,11 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanLabStat() {
-        labNB1 = new JLabel("0");
-        labNB2 = new JLabel("0");
-        labNB3 = new JLabel("0");
+        labNB1 = new JLabel("Maternités : ");
+        labNB2 = new JLabel("Blocs opératoire : ");
+        labNB3 = new JLabel("Centres de nutrition : ");
+
+        panLabStat.setLayout(new BorderLayout());
 
         panLabStat.add(labNB1, BorderLayout.NORTH);
         panLabStat.add(labNB2, BorderLayout.CENTER);
@@ -122,8 +122,7 @@ public class Fenetre extends JFrame {
         butgenerer = new JButton("Charger graphe");
         butalea.setPreferredSize(new Dimension(125, 25));
         butgenerer.setPreferredSize(new Dimension(125, 25));
-        
-        
+
         panChangeGraph.add(labGraph);
         panChangeGraph.add(butgenerer);
         panChangeGraph.add(butalea);
@@ -132,7 +131,7 @@ public class Fenetre extends JFrame {
     }
 
     public void initEcouteur() {
-        
+
         butalea.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,19 +211,19 @@ public class Fenetre extends JFrame {
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
         view.setPreferredSize(new Dimension(400, 400));
 
-        panGraph.add(view);
-        panGraph.revalidate(); // rafraichissement de la position des composants du panel.
-        panGraph.repaint(); // réactualisation du panGraph.
-
         if (name != null) {
             labGraph.setText(name);
         } else {
             labGraph.setText("Graphe Aléa");
         }
 
-        labNB1.setText("" + nbMaternite);
-        labNB2.setText("" + nbNutrition);
-        labNB3.setText("" + nbOperatoire);
+        labNB1.setText("Maternités : " + nbMaternite);
+        labNB2.setText("Blocs opératoire : " + nbNutrition);
+        labNB3.setText("Centres de nutrition : " + nbOperatoire);
+
+        panGraph.add(view);
+        panGraph.revalidate(); // rafraichissement de la position des composants du panel.
+        panGraph.repaint(); // réactualisation du panGraph.
 
     }
 
