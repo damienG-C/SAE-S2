@@ -166,16 +166,32 @@ public class MonGraphe {
     }
 
     public void plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
+        ArrayList<Edge> res1 = new ArrayList<Edge>();
+        ArrayList<Edge> res2 = new ArrayList<Edge>();
         if (!typeDispensaire.equals("all")) {
             for (Node n : graphe) {
                 if (typeDispensaire != n.getAttribute("type")) {
                     graphe.removeNode(n);
                 }
+                n.setAttribute("checked", false);
             }
         }
-        Node n = graphe.getNode(0);
-        for (Edge e : n.getEachEdge()) {
+        boolean cond;
+        Node etudie;
+        int min;
+        for (Node n : graphe) {
+            if (!(boolean)n.getAttribute("checked")){
+                cond = false;
+                etudie = n;
+                while(cond){
+                    for (Edge e : etudie) {
+                        if (!(boolean)e.getNode0().getAttribute("checked") && !(boolean)e.getNode1().getAttribute("checked")){
 
+                        }
+                    }
+                    n.setAttribute("checked", true);
+                }
+            }
         }
 
     }
