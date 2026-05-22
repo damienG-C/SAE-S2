@@ -66,7 +66,7 @@ public class Fenetre extends JFrame {
 
         gcpan.gridx = 1;
         gcpan.gridy = 1;
-        gcpan.insets = new Insets(10, 5, 10, 5);
+        gcpan.insets = new Insets(10, 5, 3, 5);
         gcpan.fill = GridBagConstraints.HORIZONTAL;
         gcpan.fill = GridBagConstraints.VERTICAL;
         pan.add(panGraph, gcpan);
