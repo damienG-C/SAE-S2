@@ -93,9 +93,10 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanGraphe() {
+        panGraph.setLayout(new BorderLayout());
         panGraph.setPreferredSize(new Dimension(400, 400));
         panGraph.setVisible(true);
-        panGraph.setBackground(Color.decode("#ffffff"));
+        panGraph.setBackground(Color.decode("#F0EDD8"));
     }
 
     public void initPanLabStat() {
