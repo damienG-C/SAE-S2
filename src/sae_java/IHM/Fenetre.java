@@ -89,6 +89,7 @@ public class Fenetre extends JFrame {
         panoutil.setLayout(new GridBagLayout());
         GridBagConstraints gcpo = new GridBagConstraints();
 
+        gcpo.fill = GridBagConstraints.HORIZONTAL;
         gcpo.gridx = 0;
         gcpo.gridy = 0;
         panoutil.add(butalea, gcpo);
@@ -99,7 +100,6 @@ public class Fenetre extends JFrame {
         gcpo.gridx = 0;
         gcpo.gridy = 1;
         gcpo.gridwidth = 2;
-        gcpo.fill = GridBagConstraints.HORIZONTAL;
         panoutil.add(butgenerer, gcpo);
 
         initPanLabStat();
@@ -121,8 +121,6 @@ public class Fenetre extends JFrame {
         labNB1 = new JLabel("0");
         labNB2 = new JLabel("0");
         labNB3 = new JLabel("0");
-
-        panLabStat.setLayout(new BorderLayout(150, 0));
         
         panLabStat.add(labNB1, BorderLayout.WEST);
         panLabStat.add(labNB2, BorderLayout.CENTER);
@@ -209,6 +207,11 @@ public class Fenetre extends JFrame {
         panGraph.add(view);
         panGraph.revalidate(); // rafraichissement de la position des composants du panel.
         panGraph.repaint(); // réactualisation du panGraph.
+        
+        labNB1.setText("" + nbMaternite);
+        labNB2.setText("" + nbNutrition);
+        labNB3.setText("" + nbOperatoire);
+        
     }
 
 }
