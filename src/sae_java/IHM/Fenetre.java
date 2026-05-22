@@ -30,10 +30,10 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph, panLabStat;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph;
     JTextField tfalea;
     JButton butalea, butgenerer;
-    JLabel labNB1, labNB2, labNB3;
+    JLabel labNB1, labNB2, labNB3, labGraph;
 
     public Fenetre() {
         super("MonAppli");
@@ -54,6 +54,7 @@ public class Fenetre extends JFrame {
         panoutil = new JPanel();
         panGraph = new JPanel();
         panLabStat = new JPanel();
+        panChangeGraph = new JPanel();
 
         pan.setBackground(Color.black);
 
@@ -62,26 +63,26 @@ public class Fenetre extends JFrame {
 
         initPanOutil();
         initPanGraphe();
+        initPanChangeGraph();
         initEcouteur();
 
-        gcpan.insets = new Insets(5, 5, 5, 5); // top, left, bottom, right
+        gcpan.gridx = 1;
+        gcpan.gridy = 1;
+        pan.add(panGraph, gcpan);
+
+        gcpan.gridy = 0;
+        gcpan.anchor = GridBagConstraints.WEST;
+        pan.add(panChangeGraph, gcpan);
+        
         gcpan.gridx = 0;
         gcpan.gridy = 0;
-        pan.add(panoutil, gcpan);
-
-        gcpan.gridx = 1;
         gcpan.gridheight = 2;
-        pan.add(panGraph, gcpan);
-        gcpan.gridheight = 1;
+        pan.add(panoutil, gcpan);
     }
 
     public void initPanOutil() {
-        butalea = new JButton("Générer Graphe");
-        butgenerer = new JButton("Charger graphe");
+        
         tfalea = new JTextField("Saisir un nombre de sommet");
-
-        butalea.setPreferredSize(new Dimension(125, 25));
-        butgenerer.setPreferredSize(new Dimension(125, 25));
 
         tfalea.setPreferredSize(new Dimension(170, 25));
         tfalea.addFocusListener(new ResetTF());
@@ -89,24 +90,10 @@ public class Fenetre extends JFrame {
         panoutil.setLayout(new GridBagLayout());
         GridBagConstraints gcpo = new GridBagConstraints();
 
-        gcpo.fill = GridBagConstraints.HORIZONTAL;
-        gcpo.gridx = 0;
-        gcpo.gridy = 0;
-        panoutil.add(butalea, gcpo);
-
-        gcpo.gridx = 1;
-        panoutil.add(tfalea, gcpo);
-
-        gcpo.gridx = 0;
-        gcpo.gridy = 1;
-        gcpo.gridwidth = 2;
-        panoutil.add(butgenerer, gcpo);
-
         initPanLabStat();
 
         gcpo.gridx = 0;
-        gcpo.gridy++;
-        gcpo.fill = GridBagConstraints.HORIZONTAL;
+        gcpo.gridy = 0;
         panoutil.add(panLabStat, gcpo);
         panoutil.setVisible(true);
     }
@@ -121,22 +108,43 @@ public class Fenetre extends JFrame {
         labNB1 = new JLabel("0");
         labNB2 = new JLabel("0");
         labNB3 = new JLabel("0");
-        
-        panLabStat.add(labNB1, BorderLayout.WEST);
+
+        panLabStat.add(labNB1, BorderLayout.NORTH);
         panLabStat.add(labNB2, BorderLayout.CENTER);
-        panLabStat.add(labNB3, BorderLayout.EAST);
+        panLabStat.add(labNB3, BorderLayout.SOUTH);
 
         panLabStat.setVisible(true);
     }
 
+    public void initPanChangeGraph() {
+        labGraph = new JLabel("Nom du graphe");
+        butalea = new JButton("Générer Graphe");
+        butgenerer = new JButton("Charger graphe");
+        butalea.setPreferredSize(new Dimension(125, 25));
+        butgenerer.setPreferredSize(new Dimension(125, 25));
+        
+        
+        panChangeGraph.add(labGraph);
+        panChangeGraph.add(butgenerer);
+        panChangeGraph.add(butalea);
+
+        panChangeGraph.setVisible(true);
+    }
+
     public void initEcouteur() {
+        
         butalea.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int nb = Integer.parseInt(tfalea.getText());
 
-                Graph g = MonGraphe.construireGrapheAleatoire(nb);
-                afficherGraph(g);
+                String input = JOptionPane.showInputDialog(null, "Saisir un nombre de sommets :", "Générer Graphe Aléatoire", JOptionPane.QUESTION_MESSAGE);
+                if (input != null && !input.isEmpty()) {
+                    int nb = Integer.parseInt(input);
+
+                    Graph g = MonGraphe.construireGrapheAleatoire(nb);
+                    afficherGraph(g, null);
+                }
+
             }
         });
 
@@ -148,7 +156,7 @@ public class Fenetre extends JFrame {
                 String chemin = chooser.getSelectedFile().getAbsolutePath();
                 try {
                     Graph g = MonGraphe.chargerGraphe(chemin);
-                    afficherGraph(g);
+                    afficherGraph(g, chooser.getSelectedFile().getName());
                 } catch (FileNotFoundException ex) {
                     System.getLogger(Fenetre.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                 }
@@ -174,7 +182,7 @@ public class Fenetre extends JFrame {
         }
     }
 
-    public void afficherGraph(Graph g) {
+    public void afficherGraph(Graph g, String name) {
         panGraph.removeAll();
         int nbOperatoire = 0, nbMaternite = 0, nbNutrition = 0;
 
@@ -207,11 +215,17 @@ public class Fenetre extends JFrame {
         panGraph.add(view);
         panGraph.revalidate(); // rafraichissement de la position des composants du panel.
         panGraph.repaint(); // réactualisation du panGraph.
-        
+
+        if (name != null) {
+            labGraph.setText(name);
+        } else {
+            labGraph.setText("Graphe Aléa");
+        }
+
         labNB1.setText("" + nbMaternite);
         labNB2.setText("" + nbNutrition);
         labNB3.setText("" + nbOperatoire);
-        
+
     }
 
 }
