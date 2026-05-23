@@ -90,7 +90,6 @@ public class MonGraphe {
             Node n = g.addNode(nomSommet);
             n.setAttribute("type", type);
             n.setAttribute("ui.label", nomSommet + " (" + type + ")");
-            
 
             lignes.add(cols);
         }
@@ -180,12 +179,12 @@ public class MonGraphe {
         Node etudie;
         int min;
         for (Node n : graphe) {
-            if (!(boolean)n.getAttribute("checked")){
+            if (!(boolean) n.getAttribute("checked")) {
                 cond = false;
                 etudie = n;
-                while(cond){
+                while (cond) {
                     for (Edge e : etudie) {
-                        if (!(boolean)e.getNode0().getAttribute("checked") && !(boolean)e.getNode1().getAttribute("checked")){
+                        if (!(boolean) e.getNode0().getAttribute("checked") && !(boolean) e.getNode1().getAttribute("checked")) {
 
                         }
                     }
