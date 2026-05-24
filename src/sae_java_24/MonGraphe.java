@@ -177,18 +177,25 @@ public class MonGraphe {
         }
         boolean cond;
         Node etudie;
-        int min;
-        for (Node n : graphe) {
-            if (!(boolean) n.getAttribute("checked")) {
-                cond = false;
-                etudie = n;
-                while (cond) {
-                    for (Edge e : etudie) {
-                        if (!(boolean) e.getNode0().getAttribute("checked") && !(boolean) e.getNode1().getAttribute("checked")) {
-
+        int min = -1;
+        Edge plus_proche;
+        if(nbCamions == 1){
+            for (Node n : graphe) {
+                if (!(boolean) n.getAttribute("checked")) {
+                    cond = false;
+                    etudie = n;
+                    while (cond) {
+                        for (Edge e : etudie) {
+                            if (!(boolean) e.getNode0().getAttribute("checked") && !(boolean) e.getNode1().getAttribute("checked")) {
+                                if (min == -1 || (int)e.getAttribute("distance") < min){
+                                    min = e.getAttribute("distance");
+                                    plus_proche = e;
+                                }
+                            }
                         }
+                        
+                        n.setAttribute("checked", true);
                     }
-                    n.setAttribute("checked", true);
                 }
             }
         }
