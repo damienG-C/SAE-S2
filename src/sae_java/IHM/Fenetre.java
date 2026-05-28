@@ -286,8 +286,8 @@ public class Fenetre extends JFrame {
 
         // Actualisation des statistiques du graphe.
         labNB1.setText("Maternités : " + nbMaternite);
-        labNB2.setText("Blocs opératoire : " + nbNutrition);
-        labNB3.setText("Centres de nutrition : " + nbOperatoire);
+        labNB2.setText("Blocs opératoire : " + nbOperatoire);
+        labNB3.setText("Centres de nutrition : " + nbNutrition);
 
         // Ajout du viewer au panneau.
         panGraph.add(view);
