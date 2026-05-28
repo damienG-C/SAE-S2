@@ -268,6 +268,8 @@ public class Fenetre extends JFrame {
                 + "node { size: 15px; text-color: #ffffff;}"
                 + "edge { fill-color: #ffffff; }"
         );
+        // Rend les arrêtes plus nettes.
+        g.setAttribute("ui.antialias");
 
         Viewer viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();

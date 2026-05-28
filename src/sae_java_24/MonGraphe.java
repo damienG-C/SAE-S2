@@ -31,7 +31,6 @@ public class MonGraphe {
     //Q1
     public static Graph construireGrapheAleatoire(int nbSommets) {
         Graph graphe = new SingleGraph("Graphe de " + nbSommets + " éléments.");
-        graphe.setAttribute("ui.antialias");
         Random rng = new Random();
         String[] TYPES = {"Maternite", "Maternite", "Maternite", "Bloc operatoire", "Centre nutrition"}; // maternité 3/5 et les deux autres 1/5 
         for (int i = 0; i < nbSommets; i++) {
