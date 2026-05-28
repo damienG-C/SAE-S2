@@ -17,9 +17,12 @@ import org.graphstream.graph.implementations.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import org.graphstream.algorithm.APSP;
 import org.graphstream.algorithm.Dijkstra;
 
 /**
@@ -27,7 +30,7 @@ import org.graphstream.algorithm.Dijkstra;
  * @author kenzo
  */
 public class MonGraphe {
-
+    private static int edgeId = 0;
     //Q1
     public static Graph construireGrapheAleatoire(int nbSommets) {
         Graph graphe = new SingleGraph("Graphe de " + nbSommets + " éléments.");
@@ -39,7 +42,6 @@ public class MonGraphe {
             n.setAttribute("type", type);
             n.setAttribute("ui.label", "Lieu_" + i + " (" + type + ")");
         }
-        int edgeId = 0;
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
                 if (rng.nextInt(5) == 0) {
@@ -200,5 +202,28 @@ public class MonGraphe {
             }
         }
 
+    }
+    
+//    public ArrayList<>[] bellmanFord(){
+//        APSP apsp = new APSP();
+//    }
+    
+    public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node){
+        List<Node> voisins = new ArrayList<>();
+        for (Edge edge : node) {
+            voisins.add(edge.getOpposite(node));
+        }
+        for (Node node2 : voisins) {
+            for (Node node3 : voisins){
+                if(node2 != node3 && (node2.getEdgeBetween(node3) == null || 
+                        (int)node2.getEdgeBetween(node).getAttribute("duree") +  
+                        (int)node3.getEdgeBetween(node).getAttribute("duree") <
+                        (int)node3.getEdgeBetween(node2).getAttribute("duree"))){
+                    g.addEdge("e" + edgeId++, node, node3);
+                }
+            }
+            voisins.remove(node2);
+        }
+        return null;
     }
 }
