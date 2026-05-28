@@ -167,46 +167,19 @@ public class MonGraphe {
     }
 
     public void plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
+        APSP apsp = new APSP();
         ArrayList<Edge> res1 = new ArrayList<Edge>();
         ArrayList<Edge> res2 = new ArrayList<Edge>();
         if (!typeDispensaire.equals("all")) {
             for (Node n : graphe) {
                 if (typeDispensaire != n.getAttribute("type")) {
-                    graphe.removeNode(n);
-                }
-                n.setAttribute("checked", false);
-            }
-        }
-        boolean cond;
-        Node etudie;
-        int min = -1;
-        Edge plus_proche;
-        if(nbCamions == 1){
-            for (Node n : graphe) {
-                if (!(boolean) n.getAttribute("checked")) {
-                    cond = false;
-                    etudie = n;
-                    while (cond) {
-                        for (Edge e : etudie) {
-                            if (!(boolean) e.getNode0().getAttribute("checked") && !(boolean) e.getNode1().getAttribute("checked")) {
-                                if (min == -1 || (int)e.getAttribute("distance") < min){
-                                    min = e.getAttribute("distance");
-                                    plus_proche = e;
-                                }
-                            }
-                        }
-                        
-                        n.setAttribute("checked", true);
-                    }
+                    graphe = supprimerNoeudSauvegardeRoute(graphe, n);
                 }
             }
         }
+        
 
     }
-    
-//    public ArrayList<>[] bellmanFord(){
-//        APSP apsp = new APSP();
-//    }
     
     public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node){
         List<Node> voisins = new ArrayList<>();
@@ -224,6 +197,7 @@ public class MonGraphe {
             }
             voisins.remove(node2);
         }
-        return null;
+        g.removeNode(node);
+        return g;
     }
 }
