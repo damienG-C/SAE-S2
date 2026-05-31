@@ -17,8 +17,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -32,15 +36,19 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre;
     JTextField tfalea;
     JButton butcroix;
     JLabel labNB1, labNB2, labNB3, labGraph;
+    JList<String> lstFiltre;
+    JScrollPane jsp;
+    DefaultListModel<String> lstmodel;
+    Graph graphActuel;
 
     public Fenetre() {
         // Attribution d'un titre à la fenêtre.
         super("MonAppli");
-        
+
         // Ferme la fenêtre lorsqu'on clique sur la croix de la fenêtre.
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -49,10 +57,10 @@ public class Fenetre extends JFrame {
 
         // Remplacement du contentPane par pan (panneau principal).
         this.setContentPane(pan);
-        
+
         // Redimension de la fenêtre pour s'adapter à tout les composants du panneau principal.
         this.pack();
-        
+
         // Positionne la fenêtre en "null".
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -64,6 +72,7 @@ public class Fenetre extends JFrame {
         panGraph = new JPanel();
         panLabStat = new JPanel();
         panChangeGraph = new JPanel();
+        panFiltre = new JPanel();
 
         // Changement de couleur du pan (panneau principal).
         pan.setBackground(Color.decode("#1a2b3c"));
@@ -108,8 +117,11 @@ public class Fenetre extends JFrame {
         panoutil.setBackground(Color.decode("#1e3a5f"));
 
         initPanLabStat();
+        initPanFiltre();
 
         panoutil.add(panLabStat, BorderLayout.NORTH);
+
+        panoutil.add(panFiltre, BorderLayout.SOUTH);
         panoutil.setVisible(true);
     }
 
@@ -153,6 +165,30 @@ public class Fenetre extends JFrame {
         panLabStat.setVisible(true);
     }
 
+    public void initPanFiltre() {
+        lstmodel = new DefaultListModel<>();
+        lstFiltre = new JList<>(lstmodel);
+        jsp = new JScrollPane(lstFiltre);
+
+        String filtre[] = {"Bloc operatoire", "Centre nutrition", "Maternite", "Reset"};
+        for (String string : filtre) {
+            lstmodel.addElement(string);
+        }
+
+        lstFiltre.setBackground(Color.decode("#122438"));
+        lstFiltre.setForeground(Color.white);
+        lstFiltre.setVisibleRowCount(4);
+
+        panFiltre.setLayout(new BorderLayout());
+        panFiltre.add(jsp, BorderLayout.CENTER);
+
+        lstFiltre.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
+        panFiltre.setBackground(Color.decode("#1e3a5f"));
+        panFiltre.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+
+        panFiltre.setVisible(false);
+    }
+
     public void initPanChangeGraph() {
         labGraph = new JLabel("Nom du graphe");
         butcroix = new JButton("+");
@@ -180,6 +216,7 @@ public class Fenetre extends JFrame {
         panChangeGraph.setVisible(true);
     }
 
+    // ----------------------------------------------------------------------------------------------------------------------------------------------------- //
     public void initEcouteur() {
         butcroix.addActionListener(new ActionListener() {
             @Override
@@ -207,6 +244,45 @@ public class Fenetre extends JFrame {
                     // Si le choix est le deuxième bouton.
                 } else if (choix == 1) {
                     GénérerGraphBoutonPressé();
+                }
+            }
+        });
+
+        lstFiltre.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                List<String> lstTemp = lstFiltre.getSelectedValuesList();
+                boolean isReset = false;
+
+                if (lstTemp.contains("Reset")) {
+                    isReset = true;
+
+                }
+
+                for (Node node : graphActuel) {
+                    if (lstTemp.isEmpty()) {
+                        node.setAttribute("ui.style", "size:15px; text-size: 10px;");
+                    } else if (lstTemp.contains(node.getAttribute("type"))) {
+                        node.setAttribute("ui.style", "size:15px; text-size: 10px;");
+                    } else if (!lstTemp.contains(node.getAttribute("type"))) {
+                        node.setAttribute("ui.style", "size:0px; text-size: 0px;");
+
+                    }
+
+                }
+
+                for (Edge edge : graphActuel.getEachEdge()) {
+                    String type0 = edge.getNode0().getAttribute("type");
+                    String type1 = edge.getNode1().getAttribute("type");
+                    if (lstTemp.isEmpty() || (lstTemp.contains(type0) && lstTemp.contains(type1))) {
+                        edge.setAttribute("ui.style", "fill-color: white;");
+                    } else {
+                        edge.setAttribute("ui.style", "fill-color: rgba(0,0,0,0);");
+                    }
+                }
+
+                if (isReset) {
+                    lstFiltre.clearSelection();
                 }
             }
         });
@@ -293,19 +369,21 @@ public class Fenetre extends JFrame {
         panGraph.add(view);
         panGraph.revalidate(); // Rafraichissement de la position des composants du panel.
         panGraph.repaint(); // Réactualisation du panGraph.
+        this.graphActuel = g;
 
+        panFiltre.setVisible(true);
     }
 
     public void setStyleBouton(JButton but) {
         // Changement de couleur du fond du bouton passé en paramètre.
         but.setBackground(Color.decode("#2e86c1"));
-        
+
         // Changement de couleur du texte du bouton passé en paramètre.
         but.setForeground(Color.white);
-        
+
         // Enlève le margin du bouton.
         but.setMargin(new Insets(2, 0, 0, 0));
-        
+
         // Enlève le contour de focus qui apparaît autour du bouton quand on clique dessus.
         but.setFocusPainted(false);
     }
