@@ -183,20 +183,41 @@ public class MonGraphe {
         }
         //algo glouton
         if(nbCamions == 1){
+            ArrayList<Node> nonVerifie = (ArrayList<Node>) graphe.getEachNode();
             apsp.init(graphe);
             apsp.setDirected(false);
             apsp.setWeightAttributeName("duree");
             apsp.compute();
             APSPInfo info;
-            int min = 0;
+            Path min = null;
+            int indexMin;
             Path res;
+            Path temp;
             Node courant = graphe.getNode(0);
             for (int i = 0; i < graphe.getNodeCount(); i++) {
+                nonVerifie.remove(courant);
                 info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                for (Node n : nonVerifie) {
+                   temp = info.getShortestPathTo(graphe.getNode(i));
+                    if(min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")){
+                        indexMin = i;
+                        min = temp; 
+                    }
+                }
+                //res.add(min);
             }
         }
 
     }
+    
+    public int calculerTotalPath(Path chemin, String attribut){
+        int total = 0;
+        for (Edge edge : chemin.getEachEdge()) {
+            total += (int)edge.getAttribute(attribut);
+        }
+        return total;
+    }
+    
     
     public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut){
         List<Node> voisins = new ArrayList<>();
