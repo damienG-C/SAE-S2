@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.graphstream.graph.Edge;
@@ -36,9 +35,10 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin;
     JTextField tfalea;
     JButton butcroix;
+    JComboBox<Node> selecteur1, selecteur2;
     JLabel labNB1, labNB2, labNB3, labGraph;
     JList<String> lstFiltre;
     JScrollPane jsp;
@@ -113,13 +113,19 @@ public class Fenetre extends JFrame {
         panoutil.setLayout(new BorderLayout());
         panoutil.setPreferredSize(new Dimension(200, 200));
 
+        panFiltre = new JPanel();
+        panChemin = new JPanel();
+
         // Changement de couleur du fond de panoutil.
         panoutil.setBackground(Color.decode("#1e3a5f"));
 
         initPanLabStat();
         initPanFiltre();
+        initPanChemin();
 
         panoutil.add(panLabStat, BorderLayout.NORTH);
+
+        panoutil.add(panChemin, BorderLayout.CENTER);
 
         panoutil.add(panFiltre, BorderLayout.SOUTH);
         panoutil.setVisible(true);
@@ -216,6 +222,31 @@ public class Fenetre extends JFrame {
         panChangeGraph.setVisible(true);
     }
 
+    public void initPanChemin() {
+
+        selecteur1 = new JComboBox<>();
+        selecteur2 = new JComboBox<>();
+
+        panChemin.setBackground(Color.decode("#122438"));
+        panChemin.setVisible(false);
+
+        actualiseComboBox(selecteur1);
+        actualiseComboBox(selecteur2);
+
+        panChemin.add(selecteur1);
+        panChemin.add(selecteur2);
+
+    }
+
+    public void actualiseComboBox(JComboBox<Node> cb) {
+        if (graphActuel != null) {
+            for (Node node : graphActuel) {
+                cb.addItem(node);
+            }
+        }
+
+    }
+
     // ----------------------------------------------------------------------------------------------------------------------------------------------------- //
     public void initEcouteur() {
         butcroix.addActionListener(new ActionListener() {
@@ -245,6 +276,9 @@ public class Fenetre extends JFrame {
                 } else if (choix == 1) {
                     GénérerGraphBoutonPressé();
                 }
+                affichePan();
+                actualiseComboBox(selecteur1);
+                actualiseComboBox(selecteur2);
             }
         });
 
@@ -316,6 +350,11 @@ public class Fenetre extends JFrame {
         afficherGraph(g, chooser.getSelectedFile().getName());
     }
 
+    public void affichePan() {
+        panChemin.setVisible(true);
+        panFiltre.setVisible(true);
+    }
+    
     public void afficherGraph(Graph g, String name) {
         // Suppression de l'ancien graphe.
         panGraph.removeAll();
@@ -367,11 +406,9 @@ public class Fenetre extends JFrame {
 
         // Ajout du viewer au panneau.
         panGraph.add(view);
-        panGraph.revalidate(); // Rafraichissement de la position des composants du panel.
         panGraph.repaint(); // Réactualisation du panGraph.
         this.graphActuel = g;
 
-        panFiltre.setVisible(true);
     }
 
     public void setStyleBouton(JButton but) {
