@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import org.graphstream.algorithm.APSP;
+import org.graphstream.algorithm.APSP.APSPInfo;
 import org.graphstream.algorithm.Dijkstra;
 
 /**
@@ -41,14 +42,16 @@ public class MonGraphe {
             String type = TYPES[rng.nextInt(5)];
             n.setAttribute("type", type);
             n.setAttribute("ui.label", "Lieu_" + i + " (" + type + ")");
-        }
-        for (int i = 0; i < nbSommets; i++) {
-            for (int j = i + 1; j < nbSommets; j++) {
-                if (rng.nextInt(5) == 0) {
-                    Edge e = graphe.addEdge("e" + edgeId++, "Lieu_" + i, "Lieu_" + j);
-                    e.setAttribute("fiabilite", (2 + rng.nextInt(9)) / 10.0);
-                    e.setAttribute("distance", 10 + rng.nextInt(41));
-                    e.setAttribute("duree", 10 + rng.nextInt(111));
+            if (graphe.getNodeCount() != 1){
+                while (n.getInDegree() == 0) {
+                    for (Node n2 : graphe) {
+                        if (rng.nextInt(5) == 0 && n2 != n) {
+                            Edge e = graphe.addEdge("e" + edgeId++, n, n2);
+                            e.setAttribute("fiabilite", (2 + rng.nextInt(9)) / 10.0);
+                            e.setAttribute("distance", 10 + rng.nextInt(41));
+                            e.setAttribute("duree", 10 + rng.nextInt(111));
+                        }
+                    }
                 }
             }
         }
@@ -168,20 +171,34 @@ public class MonGraphe {
 
     public void plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
         APSP apsp = new APSP();
-        ArrayList<Edge> res1 = new ArrayList<Edge>();
-        ArrayList<Edge> res2 = new ArrayList<Edge>();
-        if (!typeDispensaire.equals("all")) {
+        ArrayList<Node> res1 = new ArrayList<Node>();
+        ArrayList<Node> res2 = new ArrayList<Node>();
+        //modifie le graphe(à l'interieur de la fonction seulement) afin de garder uniquement les dispensaires souhaités en fonction de leur type
+        if (!typeDispensaire.equals("tous")) {
             for (Node n : graphe) {
                 if (typeDispensaire != n.getAttribute("type")) {
-                    graphe = supprimerNoeudSauvegardeRoute(graphe, n);
+                    graphe = supprimerNoeudSauvegardeRoute(graphe, n, "duree");
                 }
             }
         }
-        
+        //algo glouton
+        if(nbCamions == 1){
+            apsp.init(graphe);
+            apsp.setDirected(false);
+            apsp.setWeightAttributeName("duree");
+            apsp.compute();
+            APSPInfo info;
+            int min = 0;
+            Path res;
+            Node courant = graphe.getNode(0);
+            for (int i = 0; i < graphe.getNodeCount(); i++) {
+                info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+            }
+        }
 
     }
     
-    public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node){
+    public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut){
         List<Node> voisins = new ArrayList<>();
         for (Edge edge : node) {
             voisins.add(edge.getOpposite(node));
@@ -189,10 +206,10 @@ public class MonGraphe {
         for (Node node2 : voisins) {
             for (Node node3 : voisins){
                 if(node2 != node3 && (node2.getEdgeBetween(node3) == null || 
-                        (int)node2.getEdgeBetween(node).getAttribute("duree") +  
-                        (int)node3.getEdgeBetween(node).getAttribute("duree") <
-                        (int)node3.getEdgeBetween(node2).getAttribute("duree"))){
-                    g.addEdge("e" + edgeId++, node, node3);
+                        (int)node2.getEdgeBetween(node).getAttribute(attribut) +  
+                        (int)node3.getEdgeBetween(node).getAttribute(attribut) <
+                        (int)node3.getEdgeBetween(node2).getAttribute(attribut))){
+                    g.addEdge("e" + edgeId++, node2, node3);
                 }
             }
             voisins.remove(node2);
