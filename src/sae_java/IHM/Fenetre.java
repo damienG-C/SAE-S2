@@ -35,9 +35,9 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu;
     JTextField tfalea;
-    JButton butcroix;
+    JButton butcroix, butCourtChemin;
     JComboBox<Node> selecteur1, selecteur2;
     JLabel labNB1, labNB2, labNB3, labGraph;
     JList<String> lstFiltre;
@@ -114,7 +114,8 @@ public class Fenetre extends JFrame {
         panoutil.setPreferredSize(new Dimension(200, 200));
 
         panFiltre = new JPanel();
-        panChemin = new JPanel();
+        panOutilMilieu = new JPanel();
+        initPanOutilMilieu();
 
         // Changement de couleur du fond de panoutil.
         panoutil.setBackground(Color.decode("#1e3a5f"));
@@ -125,7 +126,7 @@ public class Fenetre extends JFrame {
 
         panoutil.add(panLabStat, BorderLayout.NORTH);
 
-        panoutil.add(panChemin, BorderLayout.CENTER);
+        panoutil.add(panOutilMilieu, BorderLayout.CENTER);
 
         panoutil.add(panFiltre, BorderLayout.SOUTH);
         panoutil.setVisible(true);
@@ -169,6 +170,14 @@ public class Fenetre extends JFrame {
         panLabStat.add(labNB1, BorderLayout.SOUTH);
 
         panLabStat.setVisible(true);
+    }
+
+    public void initPanOutilMilieu() {
+        panOutilMilieu.setBackground(Color.decode("#1e3a5f"));
+
+        panChemin = new JPanel();
+
+        panOutilMilieu.add(panChemin);
     }
 
     public void initPanFiltre() {
@@ -223,18 +232,33 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanChemin() {
-
         selecteur1 = new JComboBox<>();
         selecteur2 = new JComboBox<>();
+        butCourtChemin = new JButton("Calculer l'itinéraire");
+        butCourtChemin.setPreferredSize(new Dimension(175, 30));
 
+        panChemin.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panChemin.setBackground(Color.decode("#122438"));
         panChemin.setVisible(false);
+        panChemin.setLayout(new GridBagLayout());
+        GridBagConstraints gcChemin = new GridBagConstraints();
 
         actualiseComboBox(selecteur1);
         actualiseComboBox(selecteur2);
+        setStyleBouton(butCourtChemin);
 
-        panChemin.add(selecteur1);
-        panChemin.add(selecteur2);
+        gcChemin.gridx = 0;
+        gcChemin.gridy = 0;
+        panChemin.add(selecteur1, gcChemin);
+
+        gcChemin.gridx = 1;
+        panChemin.add(selecteur2, gcChemin);
+
+        gcChemin.gridx = 0;
+        gcChemin.gridy = 1;
+        gcChemin.gridwidth = 2;
+        panChemin.add(butCourtChemin, gcChemin);
+        gcChemin.gridwidth = 1;
 
     }
 
@@ -321,6 +345,13 @@ public class Fenetre extends JFrame {
             }
         });
 
+        butCourtChemin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                MonGraphe.calculerItineraires(graphActuel, (String) selecteur1.getSelectedItem(), (String) selecteur2.getSelectedItem());
+            }
+        });
     }
 
     public void GénérerGraphBoutonPressé() {
@@ -354,7 +385,7 @@ public class Fenetre extends JFrame {
         panChemin.setVisible(true);
         panFiltre.setVisible(true);
     }
-    
+
     public void afficherGraph(Graph g, String name) {
         // Suppression de l'ancien graphe.
         panGraph.removeAll();
