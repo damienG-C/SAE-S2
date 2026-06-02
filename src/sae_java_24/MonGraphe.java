@@ -41,7 +41,13 @@ public class MonGraphe {
             Node n = graphe.addNode("Lieu_" + i);
             String type = TYPES[rng.nextInt(5)];
             n.setAttribute("type", type);
-            n.setAttribute("ui.label", "Lieu_" + i + " (" + type.substring(0, 1) + ")");
+            if ("Maternite".equals(type))
+                n.setAttribute("ui.label", "Lieu_" + i + " (" + type.substring(0, 1) + ")");
+            else if ("Bloc operatoire".equals(type))
+                n.setAttribute("ui.label", "Lieu_" + i + " (" + "O" + ")");
+            else
+                n.setAttribute("ui.label", "Lieu_" + i + " (" + "N" + ")");
+
             if (graphe.getNodeCount() != 1){
                 while (n.getInDegree() == 0) {
                     for (Node n2 : graphe) {
@@ -94,8 +100,12 @@ public class MonGraphe {
 
             Node n = g.addNode(nomSommet);
             n.setAttribute("type", type);
-            n.setAttribute("ui.label", nomSommet + " (" + type.substring(0, 1) + ")");
-
+            if ("Maternite".equals(type))
+                n.setAttribute("ui.label", nomSommet+ " (" + "M" + ")");
+            else if ("Bloc operatoire".equals(type))
+                n.setAttribute("ui.label", nomSommet+ " (" + "O" + ")");
+            else
+                n.setAttribute("ui.label", nomSommet+ " (" + "N" + ")");
             lignes.add(cols);
         }
         sc.close();
