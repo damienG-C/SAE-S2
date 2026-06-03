@@ -111,7 +111,7 @@ public class Fenetre extends JFrame {
 
     public void initPanOutil() {
         panoutil.setLayout(new BorderLayout());
-        panoutil.setPreferredSize(new Dimension(200, 200));
+        panoutil.setPreferredSize(new Dimension(200, 500)); // Ne pas retirer sinon ça fait un bug
 
         panFiltre = new JPanel();
         panOutilMilieu = new JPanel();
@@ -173,11 +173,15 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanOutilMilieu() {
+        panOutilMilieu.setLayout(new GridBagLayout());
         panOutilMilieu.setBackground(Color.decode("#1e3a5f"));
-
         panChemin = new JPanel();
-
-        panOutilMilieu.add(panChemin);
+        GridBagConstraints gcpanoutilMid = new GridBagConstraints();
+        
+        gcpanoutilMid.gridx = 0;
+        gcpanoutilMid.gridy = 0;
+        gcpanoutilMid.fill = GridBagConstraints.HORIZONTAL;
+        panOutilMilieu.add(panChemin, gcpanoutilMid);
     }
 
     public void initPanFiltre() {
