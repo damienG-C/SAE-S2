@@ -174,10 +174,10 @@ public class MonGraphe {
         dijkstra2.compute();
         i++;
 
-        System.out.println("Chemin le plus sûr et rapide : " + i);
+        //System.out.println("Chemin le plus sûr et rapide : " + i);
         String retour = "" + dijkstra2.getPath(graphe.getNode(arrivee));
         
-        System.out.println("Durée estimée totale : " + dijkstra2.getPathLength(graphe.getNode(arrivee)) + " min");
+        // System.out.println("Durée estimée totale : " + dijkstra2.getPathLength(graphe.getNode(arrivee)) + " min");
         return retour;
     }
 
