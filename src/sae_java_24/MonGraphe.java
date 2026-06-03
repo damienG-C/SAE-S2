@@ -142,7 +142,7 @@ public class MonGraphe {
 
     }
 
-    public static void calculerItineraires(Graph graphe, String depart, String arrivee) {
+    public static String calculerItineraires(Graph graphe, String depart, String arrivee) {
         int i = 0;
         // Chemin 1 durée minimale 
         Dijkstra dijkstra1 = new Dijkstra(Dijkstra.Element.EDGE, null, "duree");
@@ -175,8 +175,10 @@ public class MonGraphe {
         i++;
 
         System.out.println("Chemin le plus sûr et rapide : " + i);
-        System.out.println(dijkstra2.getPath(graphe.getNode(arrivee)));
+        String retour = "" + dijkstra2.getPath(graphe.getNode(arrivee));
+        
         System.out.println("Durée estimée totale : " + dijkstra2.getPathLength(graphe.getNode(arrivee)) + " min");
+        return retour;
     }
 
     public void plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {

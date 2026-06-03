@@ -177,7 +177,7 @@ public class Fenetre extends JFrame {
         panOutilMilieu.setBackground(Color.decode("#1e3a5f"));
         panChemin = new JPanel();
         GridBagConstraints gcpanoutilMid = new GridBagConstraints();
-        
+
         gcpanoutilMid.gridx = 0;
         gcpanoutilMid.gridy = 0;
         gcpanoutilMid.fill = GridBagConstraints.HORIZONTAL;
@@ -352,8 +352,17 @@ public class Fenetre extends JFrame {
         butCourtChemin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String chemin = MonGraphe.calculerItineraires(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
+                String cheminSplit[] = chemin.split(",");
+                chemin = "";
+                for (String string : cheminSplit) {
+                    chemin = chemin + string;
+                }
+                chemin = chemin.replace("[", "");
+                chemin = chemin.replace("]", "");
                 
-                MonGraphe.calculerItineraires(graphActuel, (String) selecteur1.getSelectedItem(), (String) selecteur2.getSelectedItem());
+                colorerChemin(chemin);
             }
         });
     }
@@ -460,4 +469,18 @@ public class Fenetre extends JFrame {
         but.setFocusPainted(false);
     }
 
+    public void colorerChemin(String chemin) {
+        for (Edge edge : graphActuel.getEachEdge()) {
+            edge.setAttribute("ui.style", "fill-color: white;");
+        }
+        String cheminSplit[] = chemin.split(" ");
+        for (int i = 0; i < cheminSplit.length - 1; i++) {
+            for (Edge edge : graphActuel.getEachEdge()) {
+                if ((("" + edge.getNode0()).equals(cheminSplit[i]) && ("" + edge.getNode1()).equals(cheminSplit[i + 1])) || (("" + edge.getNode1()).equals(cheminSplit[i]) && ("" + edge.getNode0()).equals(cheminSplit[i + 1])) ) {
+                    edge.setAttribute("ui.style", "fill-color: red;");
+                }
+            }
+        }
+
+    }
 }
