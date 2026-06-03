@@ -470,12 +470,17 @@ public class Fenetre extends JFrame {
     }
 
     public void colorerChemin(String chemin) {
+        // Reset la couleur de toute les arrêtes du graphe.
         for (Edge edge : graphActuel.getEachEdge()) {
             edge.setAttribute("ui.style", "fill-color: white;");
         }
+        // Séparation des nodes dans le chemin.
         String cheminSplit[] = chemin.split(" ");
+        // Parcours du tableau de la chaine de caractère splité.
         for (int i = 0; i < cheminSplit.length - 1; i++) {
+            // Parcours de toute les arrêtes du graphe actuel.
             for (Edge edge : graphActuel.getEachEdge()) {
+                // Si la node 0 correspond à la chaine de caractère sélectionné dans le tableau, alors on colorie l'arrête en rouge. (Sens inversé aussi implémenté)
                 if ((("" + edge.getNode0()).equals(cheminSplit[i]) && ("" + edge.getNode1()).equals(cheminSplit[i + 1])) || (("" + edge.getNode1()).equals(cheminSplit[i]) && ("" + edge.getNode0()).equals(cheminSplit[i + 1])) ) {
                     edge.setAttribute("ui.style", "fill-color: red;");
                 }
@@ -483,4 +488,5 @@ public class Fenetre extends JFrame {
         }
 
     }
+    
 }
