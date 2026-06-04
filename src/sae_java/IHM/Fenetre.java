@@ -267,6 +267,7 @@ public class Fenetre extends JFrame {
     }
 
     public void actualiseComboBox(JComboBox<Node> cb) {
+        cb.removeAllItems();
         if (graphActuel != null) {
             for (Node node : graphActuel) {
                 cb.addItem(node);
