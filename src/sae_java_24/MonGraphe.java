@@ -181,7 +181,7 @@ public class MonGraphe {
         return retour;
     }
 
-    public void plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
+    public Path plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
         APSP apsp = new APSP();
         ArrayList<Node> res1 = new ArrayList<Node>();
         ArrayList<Node> res2 = new ArrayList<Node>();
@@ -203,7 +203,7 @@ public class MonGraphe {
             APSPInfo info;
             Path min = null;
             int indexMin;
-            Path res;
+            Path res = null;
             Path temp;
             Node courant = graphe.getNode(0);
             for (int i = 0; i < graphe.getNodeCount(); i++) {
@@ -216,10 +216,13 @@ public class MonGraphe {
                         min = temp; 
                     }
                 }
-                //res.add(min);
+                for (Edge edge : min.getEdgePath()) {
+                    res.add(edge);
+                }
             }
         }
-
+        Path res = null;
+        return res;
     }
     
     public int calculerTotalPath(Path chemin, String attribut){
@@ -249,5 +252,11 @@ public class MonGraphe {
         }
         g.removeNode(node);
         return g;
+    }
+    
+    public void afficherChemin(Graph g, Path p){
+        for (Edge e : p.getEdgePath()) {
+            //e.setAttribute("color", os);
+        }
     }
 }
