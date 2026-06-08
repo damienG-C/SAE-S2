@@ -31,7 +31,9 @@ import org.graphstream.algorithm.Dijkstra;
  * @author kenzo
  */
 public class MonGraphe {
+
     private static int edgeId = 0;
+
     //Q1
     public static Graph construireGrapheAleatoire(int nbSommets) {
         Graph graphe = new SingleGraph("Graphe de " + nbSommets + " éléments.");
@@ -41,14 +43,15 @@ public class MonGraphe {
             Node n = graphe.addNode("Lieu_" + i);
             String type = TYPES[rng.nextInt(5)];
             n.setAttribute("type", type);
-            if ("Maternite".equals(type))
+            if ("Maternite".equals(type)) {
                 n.setAttribute("ui.label", "Lieu_" + i + " (" + type.substring(0, 1) + ")");
-            else if ("Bloc operatoire".equals(type))
+            } else if ("Bloc operatoire".equals(type)) {
                 n.setAttribute("ui.label", "Lieu_" + i + " (" + "O" + ")");
-            else
+            } else {
                 n.setAttribute("ui.label", "Lieu_" + i + " (" + "N" + ")");
+            }
 
-            if (graphe.getNodeCount() != 1){
+            if (graphe.getNodeCount() != 1) {
                 while (n.getInDegree() == 0) {
                     for (Node n2 : graphe) {
                         if (rng.nextInt(5) == 0 && n2 != n) {
@@ -100,12 +103,13 @@ public class MonGraphe {
 
             Node n = g.addNode(nomSommet);
             n.setAttribute("type", type);
-            if ("Maternite".equals(type))
-                n.setAttribute("ui.label", nomSommet+ " (" + "M" + ")");
-            else if ("Bloc operatoire".equals(type))
-                n.setAttribute("ui.label", nomSommet+ " (" + "O" + ")");
-            else
-                n.setAttribute("ui.label", nomSommet+ " (" + "N" + ")");
+            if ("Maternite".equals(type)) {
+                n.setAttribute("ui.label", nomSommet + " (" + "M" + ")");
+            } else if ("Bloc operatoire".equals(type)) {
+                n.setAttribute("ui.label", nomSommet + " (" + "O" + ")");
+            } else {
+                n.setAttribute("ui.label", nomSommet + " (" + "N" + ")");
+            }
             lignes.add(cols);
         }
         sc.close();
@@ -176,15 +180,17 @@ public class MonGraphe {
 
         //System.out.println("Chemin le plus sûr et rapide : " + i);
         Path retour = dijkstra2.getPath(graphe.getNode(arrivee));
-        
+
         // System.out.println("Durée estimée totale : " + dijkstra2.getPathLength(graphe.getNode(arrivee)) + " min");
         return retour;
     }
 
     public Path plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
         APSP apsp = new APSP();
-        ArrayList<Node> res1 = new ArrayList<Node>();
-        ArrayList<Node> res2 = new ArrayList<Node>();
+        apsp.init(graphe);
+        apsp.setDirected(false);
+        apsp.setWeightAttributeName("duree");
+        apsp.compute();
         //modifie le graphe(à l'interieur de la fonction seulement) afin de garder uniquement les dispensaires souhaités en fonction de leur type
         if (!typeDispensaire.equals("tous")) {
             for (Node n : graphe) {
@@ -193,61 +199,53 @@ public class MonGraphe {
                 }
             }
         }
-        //algo glouton
-        if(nbCamions == 1){
-            ArrayList<Node> nonVerifie = (ArrayList<Node>) graphe.getEachNode();
-            apsp.init(graphe);
-            apsp.setDirected(false);
-            apsp.setWeightAttributeName("duree");
-            apsp.compute();
-            APSPInfo info;
-            Path min = null;
-            int indexMin;
-            Path res = null;
-            Path temp;
-            Node courant = graphe.getNode(0);
-            for (int i = 0; i < graphe.getNodeCount(); i++) {
-                nonVerifie.remove(courant);
-                info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
-                for (Node n : nonVerifie) {
-                   temp = info.getShortestPathTo(graphe.getNode(i));
-                    if(min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")){
-                        indexMin = i;
-                        min = temp; 
-                    }
-                }
-                for (Edge edge : min.getEdgePath()) {
-                    res.add(edge);
-                }
-            }
-        }
-        else{
-            
-        }
-        Path res = null;
+        Path res = algoGlouton(graphe, apsp);
         return res;
     }
-    
-    public int calculerTotalPath(Path chemin, String attribut){
+
+    public Path algoGlouton(Graph graphe, APSP apsp){
+        ArrayList<Node> nonVerifie = (ArrayList<Node>) graphe.getEachNode();
+        APSPInfo info;
+        Path min = null;
+        Path res = null;
+        Path temp;
+        Node courant;
+        for (int i = 0; i < graphe.getNodeCount(); i++) {
+            courant = graphe.getNode(i);
+            nonVerifie.remove(courant);
+            info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+            for (Node n : nonVerifie) {
+                temp = info.getShortestPathTo(n.toString());
+                if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
+                    min = temp;
+                }
+            }
+            for (Edge edge : min.getEdgePath()) {
+                res.add(edge);
+            }
+        }
+        return res;
+    }
+
+    public int calculerTotalPath(Path chemin, String attribut) {
         int total = 0;
         for (Edge edge : chemin.getEachEdge()) {
-            total += (int)edge.getAttribute(attribut);
+            total += (int) edge.getAttribute(attribut);
         }
         return total;
     }
-    
-    
-    public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut){
+
+    public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut) {
         List<Node> voisins = new ArrayList<>();
         for (Edge edge : node) {
             voisins.add(edge.getOpposite(node));
         }
         for (Node node2 : voisins) {
-            for (Node node3 : voisins){
-                if(node2 != node3 && (node2.getEdgeBetween(node3) == null || 
-                        (int)node2.getEdgeBetween(node).getAttribute(attribut) +  
-                        (int)node3.getEdgeBetween(node).getAttribute(attribut) <
-                        (int)node3.getEdgeBetween(node2).getAttribute(attribut))){
+            for (Node node3 : voisins) {
+                if (node2 != node3 && (node2.getEdgeBetween(node3) == null
+                        || (int) node2.getEdgeBetween(node).getAttribute(attribut)
+                        + (int) node3.getEdgeBetween(node).getAttribute(attribut)
+                        < (int) node3.getEdgeBetween(node2).getAttribute(attribut))) {
                     g.addEdge("e" + edgeId++, node2, node3);
                 }
             }
@@ -256,10 +254,5 @@ public class MonGraphe {
         g.removeNode(node);
         return g;
     }
-    
-    public void afficherChemin(Graph g, Path p){
-        for (Edge e : p.getEdgePath()) {
-            //e.setAttribute("color", os);
-        }
-    }
+
 }
