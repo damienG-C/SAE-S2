@@ -39,7 +39,7 @@ public class Fenetre extends JFrame {
     JTextField tfalea;
     JButton butcroix, butCourtChemin;
     JComboBox<Node> selecteur1, selecteur2;
-    JLabel labNB1, labNB2, labNB3, labGraph;
+    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2;
     JList<String> lstFiltre;
     JScrollPane jsp;
     DefaultListModel<String> lstmodel;
@@ -173,15 +173,12 @@ public class Fenetre extends JFrame {
     }
 
     public void initPanOutilMilieu() {
-        panOutilMilieu.setLayout(new GridBagLayout());
+        panOutilMilieu.setLayout(new BorderLayout());
         panOutilMilieu.setBackground(Color.decode("#1e3a5f"));
+        panOutilMilieu.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         panChemin = new JPanel();
-        GridBagConstraints gcpanoutilMid = new GridBagConstraints();
 
-        gcpanoutilMid.gridx = 0;
-        gcpanoutilMid.gridy = 0;
-        gcpanoutilMid.fill = GridBagConstraints.HORIZONTAL;
-        panOutilMilieu.add(panChemin, gcpanoutilMid);
+        panOutilMilieu.add(panChemin, BorderLayout.NORTH);
     }
 
     public void initPanFiltre() {
@@ -238,8 +235,15 @@ public class Fenetre extends JFrame {
     public void initPanChemin() {
         selecteur1 = new JComboBox<>();
         selecteur2 = new JComboBox<>();
+        labSommet1 = new JLabel("Départ");
+        labSommet2 = new JLabel("Arrivée");
         butCourtChemin = new JButton("Calculer l'itinéraire");
-        butCourtChemin.setPreferredSize(new Dimension(175, 30));
+        butCourtChemin.setPreferredSize(new Dimension(175, 25));
+
+        labSommet1.setForeground(Color.white);
+        labSommet1.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
+        labSommet2.setForeground(Color.white);
+        labSommet2.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
 
         panChemin.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panChemin.setBackground(Color.decode("#122438"));
@@ -251,15 +255,23 @@ public class Fenetre extends JFrame {
         actualiseComboBox(selecteur2);
         setStyleBouton(butCourtChemin);
 
+        gcChemin.fill = GridBagConstraints.HORIZONTAL;
         gcChemin.gridx = 0;
         gcChemin.gridy = 0;
+        panChemin.add(labSommet1, gcChemin);
+
+        gcChemin.gridx = 1;
         panChemin.add(selecteur1, gcChemin);
+
+        gcChemin.gridx = 0;
+        gcChemin.gridy = 1;
+        panChemin.add(labSommet2, gcChemin);
 
         gcChemin.gridx = 1;
         panChemin.add(selecteur2, gcChemin);
 
         gcChemin.gridx = 0;
-        gcChemin.gridy = 1;
+        gcChemin.gridy = 2;
         gcChemin.gridwidth = 2;
         panChemin.add(butCourtChemin, gcChemin);
         gcChemin.gridwidth = 1;
@@ -362,7 +374,7 @@ public class Fenetre extends JFrame {
                 }
                 chemin = chemin.replace("[", "");
                 chemin = chemin.replace("]", "");
-                
+
                 colorerChemin(chemin);
             }
         });
@@ -482,12 +494,12 @@ public class Fenetre extends JFrame {
             // Parcours de toute les arrêtes du graphe actuel.
             for (Edge edge : graphActuel.getEachEdge()) {
                 // Si la node 0 correspond à la chaine de caractère sélectionné dans le tableau, alors on colorie l'arrête en rouge. (Sens inversé aussi implémenté)
-                if ((("" + edge.getNode0()).equals(cheminSplit[i]) && ("" + edge.getNode1()).equals(cheminSplit[i + 1])) || (("" + edge.getNode1()).equals(cheminSplit[i]) && ("" + edge.getNode0()).equals(cheminSplit[i + 1])) ) {
+                if ((("" + edge.getNode0()).equals(cheminSplit[i]) && ("" + edge.getNode1()).equals(cheminSplit[i + 1])) || (("" + edge.getNode1()).equals(cheminSplit[i]) && ("" + edge.getNode0()).equals(cheminSplit[i + 1]))) {
                     edge.setAttribute("ui.style", "fill-color: red;");
                 }
             }
         }
 
     }
-    
+
 }
