@@ -36,7 +36,7 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panTournee;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panOutilMilieu2, panTournee;
     JTextField tfalea;
     JButton butcroix, butCourtChemin, butCourtTournee;
     JComboBox<Node> selecteur1, selecteur2;
@@ -88,7 +88,6 @@ public class Fenetre extends JFrame {
         initPanOutil();
         initPanGraphe();
         initPanChangeGraph();
-        initPanTournee();
         initEcouteur();
 
         // Espacement réalisé sur tout les composants : Top / Left / Bottom / Right.
@@ -112,39 +111,65 @@ public class Fenetre extends JFrame {
         gcpan.gridy = 0;
         gcpan.gridheight = 2;
         pan.add(panoutil, gcpan);
-        
-        gcpan.gridx = 4;
-        gcpan.gridy = 4;
-        gcpan.gridheight = 1;
-        pan.add(panTournee, gcpan);
     }
-    
-    public void initPanTournee(){
-        labTour1 = new JLabel("Maternités : ");
-        labTour2 = new JLabel("Blocs opératoire : ");
-        labTour3 = new JLabel("Centres de nutrition : ");
+
+    public void initPanTournee() {
+        panTournee.setVisible(false);
+        
+        labTour1 = new JLabel("Type dispensaire");
+        labTour2 = new JLabel("Nombre de camions");
+        labTour3 = new JLabel("Type d'algorithme");
         butCourtTournee = new JButton("Calculer l'itinéraire");
         selecteurType = new JComboBox<>();
         selecteurNb = new JComboBox<>();
         selecteurAlgo = new JComboBox<>();
-        
+
         selecteurType.addItem("tous");
         selecteurType.addItem("Maternite");
         selecteurType.addItem("Bloc operatoire");
         selecteurType.addItem("Centre nutrition");
-        
+
         selecteurNb.addItem(1);
         selecteurNb.addItem(2);
-        
+
         selecteurAlgo.addItem("glouton");
-        
-        panTournee.add(labTour1);
-        panTournee.add(labTour2);
-        panTournee.add(labTour3);
-        panTournee.add(selecteurType);
-        panTournee.add(selecteurNb);
-        panTournee.add(selecteurAlgo);
-        panTournee.add(butCourtTournee);
+
+        labTour1.setForeground(Color.white);
+        labTour2.setForeground(Color.white);
+        labTour3.setForeground(Color.white);
+        panTournee.setBackground(Color.decode("#122438"));
+        panTournee.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
+        setStyleBouton(butCourtTournee);
+
+        panTournee.setLayout(new GridBagLayout());
+        GridBagConstraints gcpanTournee = new GridBagConstraints();
+
+        gcpanTournee.fill = GridBagConstraints.HORIZONTAL;
+        gcpanTournee.insets = new Insets(2, 0, 2, 0);
+        gcpanTournee.gridx = 0;
+        gcpanTournee.gridy = 0;
+        panTournee.add(labTour1, gcpanTournee);
+
+        gcpanTournee.gridy = 1;
+        panTournee.add(selecteurType, gcpanTournee);
+
+        gcpanTournee.gridy = 2;
+        panTournee.add(labTour2, gcpanTournee);
+
+        gcpanTournee.gridy = 3;
+        panTournee.add(selecteurNb, gcpanTournee);
+
+        gcpanTournee.gridy = 4;
+        panTournee.add(labTour3, gcpanTournee);
+
+        gcpanTournee.gridy = 5;
+        panTournee.add(selecteurAlgo, gcpanTournee);
+
+        gcpanTournee.gridx = 0;
+        gcpanTournee.gridy = 6;
+        gcpanTournee.gridwidth = 3;
+        panTournee.add(butCourtTournee, gcpanTournee);
+        gcpanTournee.gridwidth = 1;
     }
 
     public void initPanOutil() {
@@ -153,7 +178,9 @@ public class Fenetre extends JFrame {
 
         panFiltre = new JPanel();
         panOutilMilieu = new JPanel();
+        panOutilMilieu2 = new JPanel();
         initPanOutilMilieu();
+        initPanOutilMilieu2();
 
         // Changement de couleur du fond de panoutil.
         panoutil.setBackground(Color.decode("#1e3a5f"));
@@ -161,6 +188,7 @@ public class Fenetre extends JFrame {
         initPanLabStat();
         initPanFiltre();
         initPanChemin();
+        initPanTournee();
 
         panoutil.add(panLabStat, BorderLayout.NORTH);
 
@@ -217,8 +245,18 @@ public class Fenetre extends JFrame {
         panChemin = new JPanel();
 
         panOutilMilieu.add(panChemin, BorderLayout.NORTH);
+        panOutilMilieu.add(panOutilMilieu2, BorderLayout.CENTER);
     }
 
+    public void initPanOutilMilieu2() {
+        panOutilMilieu2.setVisible(true);
+        panOutilMilieu2.setLayout(new BorderLayout());
+        panOutilMilieu2.setBackground(Color.decode("#1e3a5f"));
+        panOutilMilieu2.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        
+        panOutilMilieu2.add(panTournee, BorderLayout.NORTH);
+    }
+    
     public void initPanFiltre() {
         lstmodel = new DefaultListModel<>();
         lstFiltre = new JList<>(lstmodel);
@@ -405,7 +443,7 @@ public class Fenetre extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 Path chemin = MonGraphe.calculerItineraires(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
-                
+
                 colorerChemin(chemin);
             }
         });
@@ -447,6 +485,7 @@ public class Fenetre extends JFrame {
     public void affichePan() {
         panChemin.setVisible(true);
         panFiltre.setVisible(true);
+        panTournee.setVisible(true);
     }
 
     public void afficherGraph(Graph g, String fileName) {
