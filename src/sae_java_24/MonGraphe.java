@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -213,26 +214,37 @@ public class MonGraphe {
         Path min = null;
         Path res = null;
         Path temp;
-        Node courant;
+        Node nodeMin = null;
+        Node courant = graphe2.getNode(0);
         for (int i = 0; i < graphe2.getNodeCount(); i++) {
-            courant = graphe2.getNode(i);
             nonVerifie.remove(courant);
             info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+            System.out.println(courant);
             for (Node n : nonVerifie) {
                 temp = info.getShortestPathTo(n.toString());
                 if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
+                    nodeMin = n;
                     min = temp;
                 }
             }
-            System.out .println(min);
-            if(res == null){
-                res = min;
-            }
-            else{
-                for (Edge edge : min.getEdgePath()) {
-                    res.add(edge);
+            System.out.println("nonverif" + nonVerifie);
+            System.out.println("min" + min);
+            System.out.println("Nodemin" + nodeMin);
+            courant = nodeMin;
+            if (min != null){
+                if(res == null){
+                    System.out.println("test");
+                    res = min;
+                }
+                else{
+                    for (Edge edge : min.getEdgePath()) {
+                        res.add(edge);
+                        System.out.println("test2");
+                    }
                 }
             }
+            min = null;
+            System.out.println("res " + res);
         }
         return res;
     }
@@ -256,7 +268,9 @@ public class MonGraphe {
                         || (int) node2.getEdgeBetween(node).getAttribute(attribut)
                         + (int) node3.getEdgeBetween(node).getAttribute(attribut)
                         < (int) node3.getEdgeBetween(node2).getAttribute(attribut))) {
-                    g.addEdge("e" + edgeId++, node2, node3);
+                    g.addEdge("e" + edgeId, node2, node3);
+                    g.getEdge("e" + edgeId++).setAttribute("duree", (int) node2.getEdgeBetween(node).getAttribute(attribut)
+                        + (int) node3.getEdgeBetween(node).getAttribute(attribut));
                 }
             }
             voisins.remove(node2);
