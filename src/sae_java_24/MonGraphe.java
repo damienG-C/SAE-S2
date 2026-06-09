@@ -203,8 +203,11 @@ public class MonGraphe {
         return res;
     }
 
-    public Path algoGlouton(Graph graphe, APSP apsp){
-        ArrayList<Node> nonVerifie = (ArrayList<Node>) graphe.getEachNode();
+    public static Path algoGlouton(Graph graphe, APSP apsp){
+        ArrayList<Node> nonVerifie = new ArrayList<Node>();
+        for (Node node : graphe.getEachNode()) {
+            nonVerifie.add(node);
+        }
         APSPInfo info;
         Path min = null;
         Path res = null;
@@ -220,14 +223,20 @@ public class MonGraphe {
                     min = temp;
                 }
             }
-            for (Edge edge : min.getEdgePath()) {
-                res.add(edge);
+            System.out .println(min);
+            if(res == null){
+                res = min;
+            }
+            else{
+                for (Edge edge : min.getEdgePath()) {
+                    res.add(edge);
+                }
             }
         }
         return res;
     }
 
-    public int calculerTotalPath(Path chemin, String attribut) {
+    public static int calculerTotalPath(Path chemin, String attribut) {
         int total = 0;
         for (Edge edge : chemin.getEachEdge()) {
             total += (int) edge.getAttribute(attribut);
@@ -235,7 +244,7 @@ public class MonGraphe {
         return total;
     }
 
-    public Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut) {
+    public static Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut) {
         List<Node> voisins = new ArrayList<>();
         for (Edge edge : node) {
             voisins.add(edge.getOpposite(node));

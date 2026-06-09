@@ -40,7 +40,8 @@ public class Fenetre extends JFrame {
     JTextField tfalea;
     JButton butcroix, butCourtChemin, butCourtTournee;
     JComboBox<Node> selecteur1, selecteur2;
-    JComboBox<String> selecteurAlgo, selecteurNb, selecteurType;
+    JComboBox<String> selecteurAlgo, selecteurType;
+    JComboBox<Integer> selecteurNb;
     JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3;
     JList<String> lstFiltre;
     JScrollPane jsp;
@@ -87,8 +88,8 @@ public class Fenetre extends JFrame {
         initPanOutil();
         initPanGraphe();
         initPanChangeGraph();
-        initEcouteur();
         initPanTournee();
+        initEcouteur();
 
         // Espacement réalisé sur tout les composants : Top / Left / Bottom / Right.
         gcpan.insets = new Insets(10, 5, 3, 5);
@@ -132,8 +133,8 @@ public class Fenetre extends JFrame {
         selecteurType.addItem("Bloc operatoire");
         selecteurType.addItem("Centre nutrition");
         
-        selecteurNb.addItem("1");
-        selecteurNb.addItem("2");
+        selecteurNb.addItem(1);
+        selecteurNb.addItem(2);
         
         selecteurAlgo.addItem("glouton");
         
