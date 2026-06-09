@@ -185,7 +185,7 @@ public class MonGraphe {
         return retour;
     }
 
-    public Path plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
+    public static Path plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
         APSP apsp = new APSP();
         apsp.init(graphe);
         apsp.setDirected(false);

@@ -36,11 +36,12 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panTournee;
     JTextField tfalea;
-    JButton butcroix, butCourtChemin;
+    JButton butcroix, butCourtChemin, butCourtTournee;
     JComboBox<Node> selecteur1, selecteur2;
-    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2;
+    JComboBox<String> selecteurAlgo, selecteurNb, selecteurType;
+    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3;
     JList<String> lstFiltre;
     JScrollPane jsp;
     DefaultListModel<String> lstmodel;
@@ -74,6 +75,7 @@ public class Fenetre extends JFrame {
         panLabStat = new JPanel();
         panChangeGraph = new JPanel();
         panFiltre = new JPanel();
+        panTournee = new JPanel();
 
         // Changement de couleur du pan (panneau principal).
         pan.setBackground(Color.decode("#1a2b3c"));
@@ -86,6 +88,7 @@ public class Fenetre extends JFrame {
         initPanGraphe();
         initPanChangeGraph();
         initEcouteur();
+        initPanTournee();
 
         // Espacement réalisé sur tout les composants : Top / Left / Bottom / Right.
         gcpan.insets = new Insets(10, 5, 3, 5);
@@ -108,6 +111,39 @@ public class Fenetre extends JFrame {
         gcpan.gridy = 0;
         gcpan.gridheight = 2;
         pan.add(panoutil, gcpan);
+        
+        gcpan.gridx = 4;
+        gcpan.gridy = 4;
+        gcpan.gridheight = 1;
+        pan.add(panTournee, gcpan);
+    }
+    
+    public void initPanTournee(){
+        labTour1 = new JLabel("Maternités : ");
+        labTour2 = new JLabel("Blocs opératoire : ");
+        labTour3 = new JLabel("Centres de nutrition : ");
+        butCourtTournee = new JButton("Calculer l'itinéraire");
+        selecteurType = new JComboBox<>();
+        selecteurNb = new JComboBox<>();
+        selecteurAlgo = new JComboBox<>();
+        
+        selecteurType.addItem("tous");
+        selecteurType.addItem("Maternite");
+        selecteurType.addItem("Bloc operatoire");
+        selecteurType.addItem("Centre nutrition");
+        
+        selecteurNb.addItem("1");
+        selecteurNb.addItem("2");
+        
+        selecteurAlgo.addItem("glouton");
+        
+        panTournee.add(labTour1);
+        panTournee.add(labTour2);
+        panTournee.add(labTour3);
+        panTournee.add(selecteurType);
+        panTournee.add(selecteurNb);
+        panTournee.add(selecteurAlgo);
+        panTournee.add(butCourtTournee);
     }
 
     public void initPanOutil() {
@@ -370,6 +406,12 @@ public class Fenetre extends JFrame {
                 Path chemin = MonGraphe.calculerItineraires(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
                 
                 colorerChemin(chemin);
+            }
+        });
+        butCourtTournee.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                colorerChemin(MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem()));
             }
         });
     }
