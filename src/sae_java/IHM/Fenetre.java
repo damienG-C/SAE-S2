@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -15,6 +16,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -26,15 +31,18 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.swingViewer.DefaultView;
 import org.graphstream.ui.view.Viewer;
+import sae_java.IHM.FenetreDetails;
 import sae_java_24.MonGraphe;
+
 
 /**
  *
  * @author p2501262
  */
-public class Fenetre extends JFrame {
+public class Fenetre extends JFrame implements MouseListener{
 
     JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panTournee;
     JTextField tfalea;
@@ -47,6 +55,7 @@ public class Fenetre extends JFrame {
     JScrollPane jsp;
     DefaultListModel<String> lstmodel;
     Graph graphActuel;
+    DefaultView view;
 
     public Fenetre() {
         // Attribution d'un titre à la fenêtre.
@@ -483,8 +492,9 @@ public class Fenetre extends JFrame {
         Viewer viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
 
-        DefaultView view = (DefaultView) viewer.addDefaultView(false);
+        this.view = (DefaultView) viewer.addDefaultView(false);
         view.setPreferredSize(new Dimension(400, 400));
+        view.addMouseListener(this); 
 
         // Changement du nom du Graphe.
         if (fileName != null) {
@@ -528,6 +538,55 @@ public class Fenetre extends JFrame {
             edge.setAttribute("ui.style", "fill-color: red;");
         }
 
+    }
+    
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    // 1. On vérifie d'abord que la vue et le graphe existent
+        if (view == null || graphActuel == null) {
+            return;
+    }
+
+    // 2. Récupération de la configuration graphique pour gérer les écrans 
+    GraphicsConfiguration gc = view.getGraphicsConfiguration();
+    AffineTransform tx = gc.getDefaultTransform();
+
+    //on prend ordonnée et abscisse
+    float abscisse = (float) (e.getX() * tx.getScaleX());
+    float ordonnee = (float) (e.getY() * tx.getScaleY());
+
+    // 3. Recherche de l'élément sous le clic
+    GraphicElement element = view.findNodeOrSpriteAt(e.getX(), e.getY());
+
+    if (element != null) {
+        Node n = graphActuel.getNode(element.getId()); 
+        
+        if (n != null) {
+            // ENVOI DU NŒUD : On passe le nœud 'n' à la fenêtre de détails
+            // On peut aussi lui passer les coordonnées pour la positionner (e.getXOnScreen(), e.getYOnScreen())
+            FenetreDetails fenetre = new FenetreDetails(abscisse, ordonnee);
+        }
+    }
+    }
+    
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
