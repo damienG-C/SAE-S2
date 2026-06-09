@@ -433,7 +433,7 @@ public class Fenetre extends JFrame {
     }
 
     public void ChargerGraphBoutonPressé() throws FileNotFoundException {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser("./data");
         chooser.showOpenDialog(null);
 
         // Récupération du chemin absolut.
