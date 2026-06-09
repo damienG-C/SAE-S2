@@ -36,13 +36,13 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame {
 
-    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panOutilMilieu2, panTournee;
-    JTextField tfalea;
-    JButton butcroix, butCourtChemin, butCourtTournee;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panOutilMilieu2, panTournee, panFiabilite;
+    JTextField tfalea, tfFiabilite;
+    JButton butcroix, butCourtChemin, butCourtTournee, butFiabilite;
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
     JComboBox<Integer> selecteurNb;
-    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3;
+    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite;
     JList<String> lstFiltre;
     JScrollPane jsp;
     DefaultListModel<String> lstmodel;
@@ -77,6 +77,7 @@ public class Fenetre extends JFrame {
         panChangeGraph = new JPanel();
         panFiltre = new JPanel();
         panTournee = new JPanel();
+        panFiabilite = new JPanel();
 
         // Changement de couleur du pan (panneau principal).
         pan.setBackground(Color.decode("#1a2b3c"));
@@ -113,6 +114,22 @@ public class Fenetre extends JFrame {
         pan.add(panoutil, gcpan);
     }
 
+    public void initPanFiabilite () {
+        labFiabilite = new JLabel("Seuil");
+        tfFiabilite = new JTextField("Risque sur 10");
+        panFiabilite.setVisible(true);
+        panFiabilite.setLayout(new GridBagLayout());
+        GridBagConstraints gcpanFiabilite = new GridBagConstraints();
+        
+        gcpanFiabilite.gridx = 0;
+        gcpanFiabilite.gridy = 0;
+        panFiabilite.add(labFiabilite, gcpanFiabilite);
+        
+        gcpanFiabilite.gridy = 1;
+        panFiabilite.add(tfFiabilite, gcpanFiabilite);
+        
+    }
+    
     public void initPanTournee() {
         panTournee.setVisible(false);
         
@@ -255,6 +272,7 @@ public class Fenetre extends JFrame {
         panOutilMilieu2.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         
         panOutilMilieu2.add(panTournee, BorderLayout.NORTH);
+        panOutilMilieu2.add(panFiabilite, BorderLayout.SOUTH);
     }
     
     public void initPanFiltre() {
