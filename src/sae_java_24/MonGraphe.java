@@ -227,24 +227,18 @@ public class MonGraphe {
                     min = temp;
                 }
             }
-            System.out.println("nonverif" + nonVerifie);
-            System.out.println("min" + min);
-            System.out.println("Nodemin" + nodeMin);
             courant = nodeMin;
             if (min != null){
                 if(res == null){
-                    System.out.println("test");
                     res = min;
                 }
                 else{
                     for (Edge edge : min.getEdgePath()) {
                         res.add(edge);
-                        System.out.println("test2");
                     }
                 }
             }
             min = null;
-            System.out.println("res " + res);
         }
         return res;
     }
