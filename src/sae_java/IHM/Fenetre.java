@@ -448,7 +448,7 @@ public class Fenetre extends JFrame {
         panFiltre.setVisible(true);
     }
 
-    public void afficherGraph(Graph g, String name) {
+    public void afficherGraph(Graph g, String fileName) {
         // Suppression de l'ancien graphe.
         panGraph.removeAll();
 
@@ -486,8 +486,8 @@ public class Fenetre extends JFrame {
         view.setPreferredSize(new Dimension(400, 400));
 
         // Changement du nom du Graphe.
-        if (name != null) {
-            labGraph.setText(name);
+        if (fileName != null) {
+            labGraph.setText(fileName);
         } else {
             labGraph.setText("Graphe Aléa");
         }
