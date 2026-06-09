@@ -205,7 +205,8 @@ public class MonGraphe {
 
     public static Path algoGlouton(Graph graphe, APSP apsp){
         ArrayList<Node> nonVerifie = new ArrayList<Node>();
-        for (Node node : graphe.getEachNode()) {
+        Graph graphe2 = graphe;
+        for (Node node : graphe2.getEachNode()) {
             nonVerifie.add(node);
         }
         APSPInfo info;
@@ -213,8 +214,8 @@ public class MonGraphe {
         Path res = null;
         Path temp;
         Node courant;
-        for (int i = 0; i < graphe.getNodeCount(); i++) {
-            courant = graphe.getNode(i);
+        for (int i = 0; i < graphe2.getNodeCount(); i++) {
+            courant = graphe2.getNode(i);
             nonVerifie.remove(courant);
             info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
             for (Node n : nonVerifie) {
