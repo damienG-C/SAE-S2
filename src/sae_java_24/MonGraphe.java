@@ -219,7 +219,6 @@ public class MonGraphe {
         for (int i = 0; i < graphe2.getNodeCount(); i++) {
             nonVerifie.remove(courant);
             info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
-            System.out.println(courant);
             for (Node n : nonVerifie) {
                 temp = info.getShortestPathTo(n.toString());
                 if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
@@ -253,6 +252,7 @@ public class MonGraphe {
 
     public static Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut) {
         List<Node> voisins = new ArrayList<>();
+        Path temp = new Path();
         for (Edge edge : node) {
             voisins.add(edge.getOpposite(node));
         }
@@ -265,6 +265,9 @@ public class MonGraphe {
                     g.addEdge("e" + edgeId, node2, node3);
                     g.getEdge("e" + edgeId++).setAttribute("duree", (int) node2.getEdgeBetween(node).getAttribute(attribut)
                         + (int) node3.getEdgeBetween(node).getAttribute(attribut));
+                    temp.add(node.getEdgeBetween(node2));
+                    temp.add(node.getEdgeBetween(node3));
+                    g.getEdge("e" + edgeId++).setAttribute("route", temp);
                 }
             }
             voisins.remove(node2);
