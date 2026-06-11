@@ -37,12 +37,11 @@ import org.graphstream.ui.view.Viewer;
 import sae_java.IHM.FenetreDetails;
 import sae_java_24.MonGraphe;
 
-
 /**
  *
  * @author p2501262
  */
-public class Fenetre extends JFrame implements MouseListener{
+public class Fenetre extends JFrame implements MouseListener {
 
     JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panOutilMilieu2, panTournee, panFiabilite;
     JTextField tfalea, tfFiabilite;
@@ -52,7 +51,7 @@ public class Fenetre extends JFrame implements MouseListener{
     JComboBox<Integer> selecteurNb;
     JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite;
     JList<String> lstFiltre;
-    JScrollPane jsp;
+    JScrollPane jsp, ScrollPaneOutil;
     DefaultListModel<String> lstmodel;
     Graph graphActuel;
     DefaultView view;
@@ -81,6 +80,7 @@ public class Fenetre extends JFrame implements MouseListener{
     public void initComponent() {
         pan = new JPanel();
         panoutil = new JPanel();
+        ScrollPaneOutil = new JScrollPane(panoutil);
         panGraph = new JPanel();
         panLabStat = new JPanel();
         panChangeGraph = new JPanel();
@@ -120,28 +120,28 @@ public class Fenetre extends JFrame implements MouseListener{
         gcpan.gridx = 0;
         gcpan.gridy = 0;
         gcpan.gridheight = 2;
-        pan.add(panoutil, gcpan);
+        pan.add(ScrollPaneOutil, gcpan);
     }
 
-    public void initPanFiabilite () {
+    public void initPanFiabilite() {
         labFiabilite = new JLabel("Seuil");
         tfFiabilite = new JTextField("Risque sur 10");
         panFiabilite.setVisible(true);
         panFiabilite.setLayout(new GridBagLayout());
         GridBagConstraints gcpanFiabilite = new GridBagConstraints();
-        
+
         gcpanFiabilite.gridx = 0;
         gcpanFiabilite.gridy = 0;
         panFiabilite.add(labFiabilite, gcpanFiabilite);
-        
+
         gcpanFiabilite.gridy = 1;
         panFiabilite.add(tfFiabilite, gcpanFiabilite);
-        
+
     }
-    
+
     public void initPanTournee() {
         panTournee.setVisible(false);
-        
+
         labTour1 = new JLabel("Type dispensaire");
         labTour2 = new JLabel("Nombre de camions");
         labTour3 = new JLabel("Type d'algorithme");
@@ -199,6 +199,7 @@ public class Fenetre extends JFrame implements MouseListener{
     }
 
     public void initPanOutil() {
+        ScrollPaneOutil.setPreferredSize(new Dimension(220, 300));
         panoutil.setLayout(new BorderLayout());
         panoutil.setPreferredSize(new Dimension(200, 500)); // Ne pas retirer sinon ça fait un bug
 
@@ -279,11 +280,11 @@ public class Fenetre extends JFrame implements MouseListener{
         panOutilMilieu2.setLayout(new BorderLayout());
         panOutilMilieu2.setBackground(Color.decode("#1e3a5f"));
         panOutilMilieu2.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        
+
         panOutilMilieu2.add(panTournee, BorderLayout.NORTH);
         panOutilMilieu2.add(panFiabilite, BorderLayout.SOUTH);
     }
-    
+
     public void initPanFiltre() {
         lstmodel = new DefaultListModel<>();
         lstFiltre = new JList<>(lstmodel);
@@ -551,7 +552,7 @@ public class Fenetre extends JFrame implements MouseListener{
 
         this.view = (DefaultView) viewer.addDefaultView(false);
         view.setPreferredSize(new Dimension(400, 400));
-        view.addMouseListener(this); 
+        view.addMouseListener(this);
 
         // Changement du nom du Graphe.
         if (fileName != null) {
@@ -596,36 +597,36 @@ public class Fenetre extends JFrame implements MouseListener{
         }
 
     }
-    
+
     @Override
     public void mouseClicked(MouseEvent e) {
-    // 1. On vérifie d'abord que la vue et le graphe existent
+        // 1. On vérifie d'abord que la vue et le graphe existent
         if (view == null || graphActuel == null) {
             return;
-    }
+        }
 
-    // 2. Récupération de la configuration graphique pour gérer les écrans 
-    GraphicsConfiguration gc = view.getGraphicsConfiguration();
-    AffineTransform tx = gc.getDefaultTransform();
+        // 2. Récupération de la configuration graphique pour gérer les écrans 
+        GraphicsConfiguration gc = view.getGraphicsConfiguration();
+        AffineTransform tx = gc.getDefaultTransform();
 
-    //on prend ordonnée et abscisse
-    float abscisse = (float) (e.getX() * tx.getScaleX());
-    float ordonnee = (float) (e.getY() * tx.getScaleY());
+        //on prend ordonnée et abscisse
+        float abscisse = (float) (e.getX() * tx.getScaleX());
+        float ordonnee = (float) (e.getY() * tx.getScaleY());
 
-    // 3. Recherche de l'élément sous le clic
-    GraphicElement element = view.findNodeOrSpriteAt(e.getX(), e.getY());
+        // 3. Recherche de l'élément sous le clic
+        GraphicElement element = view.findNodeOrSpriteAt(e.getX(), e.getY());
 
-    if (element != null) {
-        Node n = graphActuel.getNode(element.getId()); 
-        
-        if (n != null) {
-            // ENVOI DU NŒUD : On passe le nœud 'n' à la fenêtre de détails
-            // On peut aussi lui passer les coordonnées pour la positionner (e.getXOnScreen(), e.getYOnScreen())
-            FenetreDetails fenetre = new FenetreDetails(abscisse, ordonnee);
+        if (element != null) {
+            Node n = graphActuel.getNode(element.getId());
+
+            if (n != null) {
+                // ENVOI DU NŒUD : On passe le nœud 'n' à la fenêtre de détails
+                // On peut aussi lui passer les coordonnées pour la positionner (e.getXOnScreen(), e.getYOnScreen())
+                FenetreDetails fenetre = new FenetreDetails(abscisse, ordonnee);
+            }
         }
     }
-    }
-    
+
     @Override
     public void mousePressed(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
