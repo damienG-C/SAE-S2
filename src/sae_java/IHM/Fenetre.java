@@ -40,10 +40,10 @@ public class Fenetre extends JFrame implements MouseListener {
 
     JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panTournee, panFiabilite;
     JTextField tfFiabilite;
-    JButton butcroix, butCourtChemin, butCourtTournee;
+    JButton butcroix, butCourtChemin, butCourtTournee, butFiabilité;
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
-    JComboBox<Integer> selecteurNb;
+    JComboBox<Integer> selecteurNb, ecartInfFiabilité, ecartSupFiabilité;
     JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite;
     JList<String> lstFiltre;
     JScrollPane jsp, ScrollPaneOutil;
@@ -121,24 +121,46 @@ public class Fenetre extends JFrame implements MouseListener {
     public void initPanFiabilite() {
         panFiabilite = new JPanel();
         labFiabilite = new JLabel("Seuil");
-        tfFiabilite = new JTextField("Risque sur 10");
+        ecartInfFiabilité = new JComboBox<>();
+        ecartSupFiabilité = new JComboBox<>();
+        butFiabilité = new JButton("Montrer fiabilité");
 
         panFiabilite.setVisible(true);
         panFiabilite.setBackground(Color.decode("#122438"));
         panFiabilite.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panFiabilite.setLayout(new GridBagLayout());
 
+        setStyleBouton(butFiabilité);
+        
         labFiabilite.setForeground(Color.white);
+
+        for (int i = 0; i <= 10; i++) {
+            ecartInfFiabilité.addItem(i);
+            ecartSupFiabilité.addItem(i);
+        }
 
         GridBagConstraints gcpanFiabilite = new GridBagConstraints();
 
+        gcpanFiabilite.fill = GridBagConstraints.HORIZONTAL;
+        gcpanFiabilite.weightx = 1.0;
         gcpanFiabilite.gridx = 0;
         gcpanFiabilite.gridy = 0;
+        gcpanFiabilite.gridwidth = 2;
         panFiabilite.add(labFiabilite, gcpanFiabilite);
+        gcpanFiabilite.gridwidth = 1;
 
+        gcpanFiabilite.insets = new Insets(5, 2, 5, 2);
         gcpanFiabilite.gridy = 1;
-        panFiabilite.add(tfFiabilite, gcpanFiabilite);
+        panFiabilite.add(ecartInfFiabilité, gcpanFiabilite);
 
+        gcpanFiabilite.gridx = 1;
+        panFiabilite.add(ecartSupFiabilité, gcpanFiabilite);
+        
+        gcpanFiabilite.gridx = 0;
+        gcpanFiabilite.gridy = 2;
+        gcpanFiabilite.gridwidth = 2;
+        panFiabilite.add(butFiabilité, gcpanFiabilite);
+        gcpanFiabilite.gridwidth = 1;
     }
 
     public void initPanTournee() {
