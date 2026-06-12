@@ -124,10 +124,17 @@ public class Fenetre extends JFrame implements MouseListener {
     }
 
     public void initPanFiabilite() {
+        panFiabilite = new JPanel();
         labFiabilite = new JLabel("Seuil");
         tfFiabilite = new JTextField("Risque sur 10");
+        
         panFiabilite.setVisible(true);
+        panFiabilite.setBackground(Color.decode("#122438"));
+        panFiabilite.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panFiabilite.setLayout(new GridBagLayout());
+        
+        labFiabilite.setForeground(Color.white);
+        
         GridBagConstraints gcpanFiabilite = new GridBagConstraints();
 
         gcpanFiabilite.gridx = 0;
@@ -140,7 +147,8 @@ public class Fenetre extends JFrame implements MouseListener {
     }
 
     public void initPanTournee() {
-        panTournee.setVisible(false);
+        panTournee = new JPanel();
+        panTournee.setVisible(true);
 
         labTour1 = new JLabel("Type dispensaire");
         labTour2 = new JLabel("Nombre de camions");
@@ -171,7 +179,8 @@ public class Fenetre extends JFrame implements MouseListener {
         GridBagConstraints gcpanTournee = new GridBagConstraints();
 
         gcpanTournee.fill = GridBagConstraints.HORIZONTAL;
-        gcpanTournee.insets = new Insets(2, 0, 2, 0);
+        gcpanTournee.weightx = 1.0;
+        gcpanTournee.insets = new Insets(2, 6, 2, 6);
         gcpanTournee.gridx = 0;
         gcpanTournee.gridy = 0;
         panTournee.add(labTour1, gcpanTournee);
@@ -189,39 +198,46 @@ public class Fenetre extends JFrame implements MouseListener {
         panTournee.add(labTour3, gcpanTournee);
 
         gcpanTournee.gridy = 5;
+        gcpanTournee.insets = new Insets(2, 6, 0, 6);
         panTournee.add(selecteurAlgo, gcpanTournee);
 
         gcpanTournee.gridx = 0;
         gcpanTournee.gridy = 6;
         gcpanTournee.gridwidth = 3;
+        gcpanTournee.insets = new Insets(0, 6, 0, 6);
         panTournee.add(butCourtTournee, gcpanTournee);
         gcpanTournee.gridwidth = 1;
     }
 
     public void initPanOutil() {
         ScrollPaneOutil.setPreferredSize(new Dimension(220, 300));
-        panoutil.setLayout(new BorderLayout());
+        panoutil.setLayout(new GridBagLayout());
         panoutil.setPreferredSize(new Dimension(200, 500)); // Ne pas retirer sinon ça fait un bug
-
-        panFiltre = new JPanel();
-        panOutilMilieu = new JPanel();
-        panOutilMilieu2 = new JPanel();
-        initPanOutilMilieu();
-        initPanOutilMilieu2();
 
         // Changement de couleur du fond de panoutil.
         panoutil.setBackground(Color.decode("#1e3a5f"));
 
         initPanLabStat();
-        initPanFiltre();
         initPanChemin();
         initPanTournee();
+        initPanFiabilite();
+        initPanFiltre();
 
-        panoutil.add(panLabStat, BorderLayout.NORTH);
-
-        panoutil.add(panOutilMilieu, BorderLayout.CENTER);
-
-        panoutil.add(panFiltre, BorderLayout.SOUTH);
+        GridBagConstraints gcpanOutil = new GridBagConstraints();
+        gcpanOutil.fill = GridBagConstraints.BOTH;
+        gcpanOutil.weightx = 1.0;
+        gcpanOutil.weighty = 1.0;
+        gcpanOutil.gridx = 0;
+        gcpanOutil.gridy = 0;
+        panoutil.add(panLabStat, gcpanOutil);
+        gcpanOutil.gridy++;
+        panoutil.add(panChemin, gcpanOutil);
+        gcpanOutil.gridy++;
+        panoutil.add(panTournee, gcpanOutil);
+        gcpanOutil.gridy++;
+        panoutil.add(panFiabilite, gcpanOutil);
+        gcpanOutil.gridy++;
+        panoutil.add(panFiltre, gcpanOutil);
         panoutil.setVisible(true);
     }
 
@@ -238,6 +254,7 @@ public class Fenetre extends JFrame implements MouseListener {
     }
 
     public void initPanLabStat() {
+        panLabStat = new JPanel();
         labNB1 = new JLabel("Maternités : ");
         labNB2 = new JLabel("Blocs opératoire : ");
         labNB3 = new JLabel("Centres de nutrition : ");
@@ -265,27 +282,8 @@ public class Fenetre extends JFrame implements MouseListener {
         panLabStat.setVisible(true);
     }
 
-    public void initPanOutilMilieu() {
-        panOutilMilieu.setLayout(new BorderLayout());
-        panOutilMilieu.setBackground(Color.decode("#1e3a5f"));
-        panOutilMilieu.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        panChemin = new JPanel();
-
-        panOutilMilieu.add(panChemin, BorderLayout.NORTH);
-        panOutilMilieu.add(panOutilMilieu2, BorderLayout.CENTER);
-    }
-
-    public void initPanOutilMilieu2() {
-        panOutilMilieu2.setVisible(true);
-        panOutilMilieu2.setLayout(new BorderLayout());
-        panOutilMilieu2.setBackground(Color.decode("#1e3a5f"));
-        panOutilMilieu2.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-
-        panOutilMilieu2.add(panTournee, BorderLayout.NORTH);
-        panOutilMilieu2.add(panFiabilite, BorderLayout.SOUTH);
-    }
-
     public void initPanFiltre() {
+        panFiltre = new JPanel();
         lstmodel = new DefaultListModel<>();
         lstFiltre = new JList<>(lstmodel);
         jsp = new JScrollPane(lstFiltre);
@@ -304,9 +302,8 @@ public class Fenetre extends JFrame implements MouseListener {
 
         lstFiltre.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panFiltre.setBackground(Color.decode("#1e3a5f"));
-        panFiltre.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 
-        panFiltre.setVisible(false);
+        panFiltre.setVisible(true);
     }
 
     public void initPanChangeGraph() {
@@ -337,6 +334,9 @@ public class Fenetre extends JFrame implements MouseListener {
     }
 
     public void initPanChemin() {
+        panChemin = new JPanel();
+        
+        
         selecteur1 = new JComboBox<>();
         selecteur2 = new JComboBox<>();
         labSommet1 = new JLabel("Départ");
@@ -351,8 +351,8 @@ public class Fenetre extends JFrame implements MouseListener {
 
         panChemin.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panChemin.setBackground(Color.decode("#122438"));
-        panChemin.setVisible(false);
         panChemin.setLayout(new GridBagLayout());
+        panChemin.setVisible(true);
         GridBagConstraints gcChemin = new GridBagConstraints();
 
         actualiseComboBox(selecteur1);
@@ -379,16 +379,6 @@ public class Fenetre extends JFrame implements MouseListener {
         gcChemin.gridwidth = 2;
         panChemin.add(butCourtChemin, gcChemin);
         gcChemin.gridwidth = 1;
-
-    }
-
-    public void actualiseComboBox(JComboBox<Node> cb) {
-        cb.removeAllItems();
-        if (graphActuel != null) {
-            for (Node node : graphActuel) {
-                cb.addItem(node);
-            }
-        }
 
     }
 
@@ -421,7 +411,6 @@ public class Fenetre extends JFrame implements MouseListener {
                 } else if (choix == 1) {
                     GénérerGraphBoutonPressé();
                 }
-                affichePan();
                 actualiseComboBox(selecteur1);
                 actualiseComboBox(selecteur2);
             }
@@ -508,12 +497,6 @@ public class Fenetre extends JFrame implements MouseListener {
 
         // Affichage du graphe avec le nom du graphe.
         afficherGraph(g, chooser.getSelectedFile().getName());
-    }
-
-    public void affichePan() {
-        panChemin.setVisible(true);
-        panFiltre.setVisible(true);
-        panTournee.setVisible(true);
     }
 
     public void afficherGraph(Graph g, String fileName) {
@@ -625,6 +608,16 @@ public class Fenetre extends JFrame implements MouseListener {
                 FenetreDetails fenetre = new FenetreDetails(abscisse, ordonnee);
             }
         }
+    }
+
+    public void actualiseComboBox(JComboBox<Node> cb) {
+        cb.removeAllItems();
+        if (graphActuel != null) {
+            for (Node node : graphActuel) {
+                cb.addItem(node);
+            }
+        }
+
     }
 
     @Override
