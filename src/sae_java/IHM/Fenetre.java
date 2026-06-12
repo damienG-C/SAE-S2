@@ -39,8 +39,8 @@ import sae_java_24.MonGraphe;
 public class Fenetre extends JFrame implements MouseListener {
 
     JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panTournee, panFiabilite;
-    JTextField tfalea, tfFiabilite;
-    JButton butcroix, butCourtChemin, butCourtTournee, butFiabilite;
+    JTextField tfFiabilite;
+    JButton butcroix, butCourtChemin, butCourtTournee;
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
     JComboBox<Integer> selecteurNb;
@@ -122,14 +122,14 @@ public class Fenetre extends JFrame implements MouseListener {
         panFiabilite = new JPanel();
         labFiabilite = new JLabel("Seuil");
         tfFiabilite = new JTextField("Risque sur 10");
-        
+
         panFiabilite.setVisible(true);
         panFiabilite.setBackground(Color.decode("#122438"));
         panFiabilite.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panFiabilite.setLayout(new GridBagLayout());
-        
+
         labFiabilite.setForeground(Color.white);
-        
+
         GridBagConstraints gcpanFiabilite = new GridBagConstraints();
 
         gcpanFiabilite.gridx = 0;
@@ -330,8 +330,7 @@ public class Fenetre extends JFrame implements MouseListener {
 
     public void initPanChemin() {
         panChemin = new JPanel();
-        
-        
+
         selecteur1 = new JComboBox<>();
         selecteur2 = new JComboBox<>();
         labSommet1 = new JLabel("Départ");
@@ -565,6 +564,16 @@ public class Fenetre extends JFrame implements MouseListener {
         but.setFocusPainted(false);
     }
 
+    public void actualiseComboBox(JComboBox<Node> cb) {
+        cb.removeAllItems();
+        if (graphActuel != null) {
+            for (Node node : graphActuel) {
+                cb.addItem(node);
+            }
+        }
+
+    }
+
     public void colorerChemin(Path chemin) {
         // Reset la couleur de toute les arrêtes du graphe.
         for (Edge edge : graphActuel.getEachEdge()) {
@@ -603,16 +612,6 @@ public class Fenetre extends JFrame implements MouseListener {
                 FenetreDetails fenetre = new FenetreDetails(abscisse, ordonnee);
             }
         }
-    }
-
-    public void actualiseComboBox(JComboBox<Node> cb) {
-        cb.removeAllItems();
-        if (graphActuel != null) {
-            for (Node node : graphActuel) {
-                cb.addItem(node);
-            }
-        }
-
     }
 
     @Override
