@@ -43,7 +43,7 @@ import sae_java_24.MonGraphe;
  */
 public class Fenetre extends JFrame implements MouseListener {
 
-    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panOutilMilieu, panOutilMilieu2, panTournee, panFiabilite;
+    JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panTournee, panFiabilite;
     JTextField tfalea, tfFiabilite;
     JButton butcroix, butCourtChemin, butCourtTournee, butFiabilite;
     JComboBox<Node> selecteur1, selecteur2;
