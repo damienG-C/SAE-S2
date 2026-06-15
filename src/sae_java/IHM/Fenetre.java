@@ -39,7 +39,6 @@ import sae_java_24.MonGraphe;
 public class Fenetre extends JFrame implements MouseListener {
 
     JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panTournee, panFiabilite;
-    JTextField tfFiabilite;
     JButton butcroix, butCourtChemin, butCourtTournee, butFiabilité;
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
@@ -131,7 +130,7 @@ public class Fenetre extends JFrame implements MouseListener {
         panFiabilite.setLayout(new GridBagLayout());
 
         setStyleBouton(butFiabilité);
-        
+
         labFiabilite.setForeground(Color.white);
 
         for (int i = 0; i <= 10; i++) {
@@ -155,7 +154,7 @@ public class Fenetre extends JFrame implements MouseListener {
 
         gcpanFiabilite.gridx = 1;
         panFiabilite.add(ecartSupFiabilité, gcpanFiabilite);
-        
+
         gcpanFiabilite.gridx = 0;
         gcpanFiabilite.gridy = 2;
         gcpanFiabilite.gridwidth = 2;
@@ -486,16 +485,28 @@ public class Fenetre extends JFrame implements MouseListener {
                 colorerChemin(MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem()));
             }
         });
-        
+
         butFiabilité.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (Edge edge : graphActuel.getEachEdge()) {
-                    double fiabilité = edge.getAttribute("fiabilite");
-                    if (fiabilité < 0.5) {
-                        
+                if (!((int) ecartInfFiabilité.getSelectedItem() <= (int) ecartSupFiabilité.getSelectedItem())) {
+                    ecartInfFiabilité.setBackground(Color.red);
+                    ecartSupFiabilité.setBackground(Color.red);
+                } else {
+                    ecartInfFiabilité.setBackground(Color.white);
+                    ecartSupFiabilité.setBackground(Color.white);
+                    resetColorArete();
+                    for (Edge edge : graphActuel.getEachEdge()) {
+                        double fiabilité = edge.getAttribute("fiabilite");
+                        double ecartSup = Double.parseDouble("" + ecartSupFiabilité.getSelectedItem()) / 10;
+                        double ecartInf = Double.parseDouble("" + ecartInfFiabilité.getSelectedItem()) / 10;
+
+                        if (fiabilité >= ecartInf && fiabilité <= ecartSup) {
+                            colorArete(edge);
+                        }
                     }
                 }
+
             }
         });
     }
@@ -610,13 +621,20 @@ public class Fenetre extends JFrame implements MouseListener {
 
     public void colorerChemin(Path chemin) {
         // Reset la couleur de toute les arrêtes du graphe.
+        resetColorArete();
+        for (Edge edge : chemin.getEachEdge()) {
+            colorArete(edge);
+        }
+    }
+
+    public void resetColorArete() {
         for (Edge edge : graphActuel.getEachEdge()) {
             edge.setAttribute("ui.style", "fill-color: white;");
         }
-        for (Edge edge : chemin.getEachEdge()) {
-            edge.setAttribute("ui.style", "fill-color: red;");
-        }
+    }
 
+    public void colorArete(Edge edge) {
+        edge.setAttribute("ui.style", "fill-color: red;");
     }
 
     @Override
