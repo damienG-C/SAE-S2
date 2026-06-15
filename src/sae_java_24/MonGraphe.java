@@ -213,6 +213,7 @@ public class MonGraphe {
         APSPInfo info;
         Path min = null;
         Path res = null;
+        Path res2 = null;
         Path temp;
         Node nodeMin = null;
         Node courant = graphe2.getNode(0);
@@ -228,12 +229,19 @@ public class MonGraphe {
             }
             courant = nodeMin;
             if (min != null){
-                if(res == null){
-                    res = min;
-                }
-                else{
-                    for (Edge edge : min.getEdgePath()) {
-                        res.add(edge);
+                for (Edge edge : min.getEdgePath()) {
+                    if (edge.getAttribute("route") != null){
+                        if (res == null){
+                            res = edge.getAttribute("route");
+                        }
+                        else{
+                            for (Edge edge2 : ((Path)edge.getAttribute("route")).getEdgePath()) {
+                                res.add(edge2);
+                            }
+                        }
+                    }
+                    else{
+                        res2.add(edge);
                     }
                 }
             }
