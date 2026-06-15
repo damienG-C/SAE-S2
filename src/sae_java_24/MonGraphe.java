@@ -213,10 +213,11 @@ public class MonGraphe {
         APSPInfo info;
         Path min = null;
         Path res = new Path();
+        res.setRoot(graphe2.getNode(0));
         Path temp;
         Node nodeMin = null;
         Node courant = graphe2.getNode(0);
-        for (int i = 0; i < graphe2.getNodeCount(); i++) {
+        while (!nonVerifie.isEmpty()) {
             nonVerifie.remove(courant);
             info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
             for (Node n : nonVerifie) {
@@ -240,6 +241,7 @@ public class MonGraphe {
                 }
             }
             min = null;
+            nodeMin = null;
         }
         return res;
     }
@@ -265,11 +267,13 @@ public class MonGraphe {
                         + (int) node3.getEdgeBetween(node).getAttribute(attribut)
                         < (int) node3.getEdgeBetween(node2).getAttribute(attribut))) {
                     g.addEdge("e" + edgeId, node2, node3);
-                    g.getEdge("e" + edgeId++).setAttribute("duree", (int) node2.getEdgeBetween(node).getAttribute(attribut)
+                    g.getEdge("e" + edgeId).setAttribute("duree", (int) node2.getEdgeBetween(node).getAttribute(attribut)
                         + (int) node3.getEdgeBetween(node).getAttribute(attribut));
+                    temp.setRoot(node2);
                     temp.add(node.getEdgeBetween(node2));
                     temp.add(node.getEdgeBetween(node3));
                     g.getEdge("e" + edgeId++).setAttribute("route", temp);
+                    temp = new Path();
                 }
             }
             voisins.remove(node2);
