@@ -486,6 +486,18 @@ public class Fenetre extends JFrame implements MouseListener {
                 colorerChemin(MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem()));
             }
         });
+        
+        butFiabilité.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Edge edge : graphActuel.getEachEdge()) {
+                    double fiabilité = edge.getAttribute("fiabilite");
+                    if (fiabilité < 0.5) {
+                        
+                    }
+                }
+            }
+        });
     }
 
     public void GénérerGraphBoutonPressé() {
