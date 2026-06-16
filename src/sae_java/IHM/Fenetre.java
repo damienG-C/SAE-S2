@@ -43,7 +43,7 @@ public class Fenetre extends JFrame implements MouseListener {
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
     JComboBox<Integer> selecteurNb, ecartInfFiabilité, ecartSupFiabilité;
-    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite;
+    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite, labPath;
     JList<String> lstFiltre;
     JScrollPane jsp, ScrollPaneOutil;
     DefaultListModel<String> lstmodel;
@@ -166,6 +166,7 @@ public class Fenetre extends JFrame implements MouseListener {
         panTournee = new JPanel();
         panTournee.setVisible(true);
 
+        labPath = new JLabel("Chemin : ");
         labTour1 = new JLabel("Type dispensaire");
         labTour2 = new JLabel("Nombre de camions");
         labTour3 = new JLabel("Type d'algorithme");
@@ -184,6 +185,7 @@ public class Fenetre extends JFrame implements MouseListener {
 
         selecteurAlgo.addItem("glouton");
 
+        labPath.setForeground(Color.white);
         labTour1.setForeground(Color.white);
         labTour2.setForeground(Color.white);
         labTour3.setForeground(Color.white);
@@ -223,6 +225,10 @@ public class Fenetre extends JFrame implements MouseListener {
         gcpanTournee.insets = new Insets(0, 6, 0, 6);
         panTournee.add(butCourtTournee, gcpanTournee);
         gcpanTournee.gridwidth = 1;
+        
+        gcpanTournee.gridy++;
+        gcpanTournee.insets = new Insets(3, 6, 3, 6);
+        panTournee.add(labPath, gcpanTournee);
     }
 
     public void initPanOutil() {
@@ -482,7 +488,10 @@ public class Fenetre extends JFrame implements MouseListener {
         butCourtTournee.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                colorerChemin(MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem()));
+                Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem());
+                labPath.setText("Chemin : " + chemin);
+                colorerChemin(chemin);
+                
             }
         });
 
