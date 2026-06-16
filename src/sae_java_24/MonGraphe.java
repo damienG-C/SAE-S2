@@ -303,7 +303,7 @@ public class MonGraphe {
         return g;
     }
     
-    /*public static Path algoParfait2Camions(Graph graphe, APSP apsp, Node origine, int camionDeplace, Node courant1, Node courant2){
+    public static Path algoParfait(Graph graphe, APSP apsp, Node origine, Node courant){
         Graph graphe2 = new SingleGraph("graphe de calcul");
         for (Node node : graphe) {
             Node tmp = graphe2.addNode(node.getId());
@@ -338,42 +338,123 @@ public class MonGraphe {
         return res;
     }
     
-    ArrayList<Node> nonVerifie = new ArrayList<Node>();
+    public static ArrayList<Path> algoGlouton2Camions(Graph graphe, APSP apsp){
+        ArrayList<Node> nonVerifie = new ArrayList<Node>();
         for (Node node : graphe.getEachNode()) {
             nonVerifie.add(node);
         }
         APSPInfo info;
         Path min = null;
-        Path res = new Path();
-        res.setRoot(graphe.getNode(0));
+        boolean cond;
+        Path res1 = new Path();
+        res1.setRoot(graphe.getNode(0));
+        Path res2 = new Path();
+        res2.setRoot(graphe.getNode(0));
         Path temp;
-        Node nodeMin = null;
-        Node courant = graphe.getNode(0);
+        Node nodeMin1 = null;
+        Node nodeMin2 = null;
+        Node courant1 = graphe.getNode(0);
+        Node courant2 = graphe.getNode(0);
         while (!nonVerifie.isEmpty()) {
-            nonVerifie.remove(courant);
-            info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+            if(nodeMin1 == null){
+                nonVerifie.remove(courant1);
+            }
+            else{
+                nonVerifie.remove(courant2);
+            }
+            info = courant1.getAttribute(APSPInfo.ATTRIBUTE_NAME);
             for (Node n : nonVerifie) {
                 temp = info.getShortestPathTo(n.toString());
                 if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
-                    nodeMin = n;
+                    nodeMin1 = n;
                     min = temp;
                 }
             }
-            courant = nodeMin;
+            min = null;
+            info = courant2.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+            for (Node n : nonVerifie) {
+                temp = info.getShortestPathTo(n.toString());
+                if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
+                    nodeMin2 = n;
+                    min = temp;
+                }
+            }
+            cond = calculerTotalPath(res1, "duree") + (int) courant1.getEdgeBetween(nodeMin1).getAttribute("duree") < calculerTotalPath(res2, "duree") + (int) courant2.getEdgeBetween(nodeMin2).getAttribute("duree");
+            if (cond){
+                courant1 = nodeMin1;
+                nodeMin1 = null;
+            }
+            else{
+                courant2 = nodeMin2;
+                nodeMin2 = null;
+            }
             if (min != null){
-                for (Edge edge : min.getEdgePath()) {
-                    if (edge.getAttribute("route") != null){
-                            for (Edge edge2 : ((Path)edge.getAttribute("route")).getEdgePath()) {
-                                res.add(edge2);
+                if (cond){
+                    for (Edge edge : min.getEdgePath()) {
+                        if (edge.getAttribute("route") != null){
+                                for (Edge edge2 : ((Path)edge.getAttribute("route")).getEdgePath()) {
+                                    res1.add(edge2);
+                            }
+                        }
+                        else{
+                            res1.add(edge);
                         }
                     }
-                    else{
-                        res.add(edge);
+                }
+                else{
+                    for (Edge edge : min.getEdgePath()) {
+                        if (edge.getAttribute("route") != null){
+                                for (Edge edge2 : ((Path)edge.getAttribute("route")).getEdgePath()) {
+                                    res2.add(edge2);
+                            }
+                        }
+                        else{
+                            res2.add(edge);
+                        }
                     }
                 }
             }
             min = null;
-            nodeMin = null;
+        }
+        ArrayList<Path> res = new ArrayList<>();
+        res.add(res1);
+        res.add(res2);
+        return res;
+    }
+    
+    /*public static ArrayList<Path> algoParfait2Camion(Graph graphe, APSP apsp, Node origine, int camion, Node[] courant){
+        Graph graphe2 = new SingleGraph("graphe de calcul");
+        for (Node node : graphe) {
+            Node tmp = graphe2.addNode(node.getId());
+            tmp.addAttribute("type", (String) node.getAttribute("type"));
+        }
+        for (Edge edge : graphe.getEachEdge()) {
+            Edge tmp = graphe2.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
+            tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
+        }
+        if (origine != null && !origine.getId().equals(courant[0].getId()) && !origine.getId().equals(courant[1].getId())){
+            graphe2 = supprimerNoeudSauvegardeRoute(graphe2, graphe2.getNode(origine.getId()), "duree");
+        }
+        ArrayList<Path> res = new ArrayList<>();
+        res.add(new Path());
+        res.add(new Path());
+        res.get(0).setRoot(courant);
+        
+        if(graphe2.getNodeCount() == 2){
+            res.add(courant.getEdge(0).getOpposite(courant));
+        }
+        else{
+            Path min = null;
+            Path concurent;
+            for (Edge edge : courant.getEachEdge()) {
+                concurent = algoParfait(graphe2, apsp, courant, edge.getOpposite(courant));
+                if (min == null || calculerTotalPath(min, "duree") > calculerTotalPath(concurent, "duree")){
+                    min = concurent;
+                }
+            }
+            for (Edge e : min.getEdgePath()) {
+                res.add(graphe.getEdge(e.getId()));
+            }
         }
         return res;
     }*/
