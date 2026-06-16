@@ -186,7 +186,7 @@ public class MonGraphe {
         return retour;
     }
 
-    public static ArrayList<Path> plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
+    public static ArrayList<Path> plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire, String algo) {
         Graph graphe2 = new SingleGraph("graphe de calcul");
         for (Node node : graphe) {
             Node tmp = graphe2.addNode(node.getId());
@@ -209,12 +209,18 @@ public class MonGraphe {
         apsp.setDirected(false);
         apsp.setWeightAttributeName("duree");
         apsp.compute();
-        Path resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
+        Path resMauvaisGraphe1;
+        if(algo.equals("glouton")){
+            resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
+        }
+        else{
+            resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
+        }
         ArrayList<Path> res = new ArrayList<>();
         res.add(new Path());
-        res.get(0).setRoot(resMauvaisGraphe1.getRoot());
+        res.get(0).setRoot(graphe.getNode(resMauvaisGraphe1.getRoot().getId()));
         for (Edge e : resMauvaisGraphe1.getEdgePath()) {
-            res.get(0).add(e);
+            res.get(0).add(graphe.getEdge(e.getId()));
         }
         
         return res;
@@ -297,24 +303,36 @@ public class MonGraphe {
         return g;
     }
     
-    public Path algopParfait(Graph graphe, APSP apsp, Node origine, Node courant){
+    public static Path algoParfait(Graph graphe, APSP apsp, Node origine, Node courant){
         Graph graphe2 = new SingleGraph("graphe de calcul");
         for (Node node : graphe) {
-            graphe2.addNode(node.getId());
+            Node tmp = graphe2.addNode(node.getId());
+            tmp.addAttribute("type", (String) node.getAttribute("type"));
         }
         for (Edge edge : graphe.getEachEdge()) {
-            graphe2.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
+            Edge tmp = graphe2.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
+            tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
         }
         if (origine != null){
-            graphe = supprimerNoeudSauvegardeRoute(graphe, origine, "duree");
+            graphe2 = supprimerNoeudSauvegardeRoute(graphe2, graphe2.getNode(origine.getId()), "duree");
         }
         Path res = new Path();
         res.setRoot(courant);
-        if(graphe.getNodeCount() == 2){
+        if(graphe2.getNodeCount() == 2){
             res.add(courant.getEdge(0).getOpposite(courant));
         }
         else{
-            //for
+            Path min = null;
+            Path concurent;
+            for (Edge edge : courant.getEachEdge()) {
+                concurent = algoParfait(graphe2, apsp, courant, edge.getOpposite(courant));
+                if (min == null || calculerTotalPath(min, "duree") > calculerTotalPath(concurent, "duree")){
+                    min = concurent;
+                }
+            }
+            for (Edge e : min.getEdgePath()) {
+                res.add(graphe.getEdge(e.getId()));
+            }
         }
         return res;
     }

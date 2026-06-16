@@ -188,6 +188,7 @@ public class Fenetre extends JFrame implements MouseListener {
         selecteurNb.addItem(2);
 
         selecteurAlgo.addItem("glouton");
+        selecteurAlgo.addItem("parfait");
 
         labTour1.setForeground(Color.white);
         labTour2.setForeground(Color.white);
@@ -491,7 +492,7 @@ public class Fenetre extends JFrame implements MouseListener {
         butCourtTournee.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem()).get(0);
+                Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), (String) selecteurAlgo.getSelectedItem()).get(0);
                 String cheminString = "" + chemin;
                 
                 String replaceChemin = cheminString.replace("[", " ");
