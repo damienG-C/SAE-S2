@@ -303,7 +303,7 @@ public class MonGraphe {
         return g;
     }
     
-    public static Path algoParfait(Graph graphe, APSP apsp, Node origine, Node courant){
+    /*public static Path algoParfait2Camions(Graph graphe, APSP apsp, Node origine, int camionDeplace, Node courant1, Node courant2){
         Graph graphe2 = new SingleGraph("graphe de calcul");
         for (Node node : graphe) {
             Node tmp = graphe2.addNode(node.getId());
@@ -318,6 +318,7 @@ public class MonGraphe {
         }
         Path res = new Path();
         res.setRoot(courant);
+        
         if(graphe2.getNodeCount() == 2){
             res.add(courant.getEdge(0).getOpposite(courant));
         }
@@ -336,4 +337,44 @@ public class MonGraphe {
         }
         return res;
     }
+    
+    ArrayList<Node> nonVerifie = new ArrayList<Node>();
+        for (Node node : graphe.getEachNode()) {
+            nonVerifie.add(node);
+        }
+        APSPInfo info;
+        Path min = null;
+        Path res = new Path();
+        res.setRoot(graphe.getNode(0));
+        Path temp;
+        Node nodeMin = null;
+        Node courant = graphe.getNode(0);
+        while (!nonVerifie.isEmpty()) {
+            nonVerifie.remove(courant);
+            info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+            for (Node n : nonVerifie) {
+                temp = info.getShortestPathTo(n.toString());
+                if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
+                    nodeMin = n;
+                    min = temp;
+                }
+            }
+            courant = nodeMin;
+            if (min != null){
+                for (Edge edge : min.getEdgePath()) {
+                    if (edge.getAttribute("route") != null){
+                            for (Edge edge2 : ((Path)edge.getAttribute("route")).getEdgePath()) {
+                                res.add(edge2);
+                        }
+                    }
+                    else{
+                        res.add(edge);
+                    }
+                }
+            }
+            min = null;
+            nodeMin = null;
+        }
+        return res;
+    }*/
 }
