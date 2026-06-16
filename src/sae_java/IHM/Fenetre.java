@@ -43,7 +43,7 @@ public class Fenetre extends JFrame implements MouseListener {
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
     JComboBox<Integer> selecteurNb, ecartInfFiabilité, ecartSupFiabilité;
-    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite;
+    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite, labTourneeChemin;
     JList<String> lstFiltre, lstNodePathTournee, lstTourneeChemin;
     JScrollPane jsp, ScrollPaneOutil, ScrollListTournee;
     DefaultListModel<String> lstmodel, lstTourneeModel;
@@ -169,7 +169,9 @@ public class Fenetre extends JFrame implements MouseListener {
         lstTourneeModel = new DefaultListModel<>();
         lstTourneeChemin = new JList<>(lstTourneeModel);
         ScrollListTournee = new JScrollPane(lstTourneeChemin);
+        lstTourneeChemin.setVisibleRowCount(1);
         
+        labTourneeChemin= new JLabel("Chemin");
         labTour1 = new JLabel("Type dispensaire");
         labTour2 = new JLabel("Nombre de camions");
         labTour3 = new JLabel("Type d'algorithme");
@@ -189,6 +191,7 @@ public class Fenetre extends JFrame implements MouseListener {
 
         selecteurAlgo.addItem("glouton");
 
+        labTourneeChemin.setForeground(Color.white);
         labTour1.setForeground(Color.white);
         labTour2.setForeground(Color.white);
         labTour3.setForeground(Color.white);
@@ -231,13 +234,17 @@ public class Fenetre extends JFrame implements MouseListener {
 
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(3, 6, 3, 6);
+        panTournee.add(labTourneeChemin, gcpanTournee);
+        
+        gcpanTournee.gridy++;
+        gcpanTournee.insets = new Insets(0, 6, 0, 6);
         panTournee.add(ScrollListTournee, gcpanTournee);
     }
 
     public void initPanOutil() {
         ScrollPaneOutil.setPreferredSize(new Dimension(220, 300));
         panoutil.setLayout(new GridBagLayout());
-        panoutil.setPreferredSize(new Dimension(200, 500)); // Ne pas retirer sinon ça fait un bug
+        panoutil.setPreferredSize(new Dimension(200, 550)); // Ne pas retirer sinon ça fait un bug
 
         // Changement de couleur du fond de panoutil.
         panoutil.setBackground(Color.decode("#1e3a5f"));
@@ -311,7 +318,6 @@ public class Fenetre extends JFrame implements MouseListener {
         panFiltre = new JPanel();
         lstmodel = new DefaultListModel<>();
         lstFiltre = new JList<>(lstmodel);
-        jsp = new JScrollPane(lstFiltre);
 
         String filtre[] = {"Bloc operatoire", "Centre nutrition", "Maternite", "Reset"};
         for (String string : filtre) {
@@ -323,7 +329,7 @@ public class Fenetre extends JFrame implements MouseListener {
         lstFiltre.setVisibleRowCount(4);
 
         panFiltre.setLayout(new BorderLayout());
-        panFiltre.add(jsp, BorderLayout.CENTER);
+        panFiltre.add(lstFiltre, BorderLayout.CENTER);
 
         lstFiltre.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         panFiltre.setBackground(Color.decode("#1e3a5f"));
@@ -484,7 +490,6 @@ public class Fenetre extends JFrame implements MouseListener {
             public void actionPerformed(ActionEvent e) {
 
                 Path chemin = MonGraphe.calculerItineraires(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
-
                 colorerChemin(chemin);
             }
         });
@@ -492,11 +497,14 @@ public class Fenetre extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem());
+                colorerChemin(chemin);
                 String cheminString = "" + chemin;
                 
                 String replaceChemin = cheminString.replace("[", " ");
                 replaceChemin = replaceChemin.replace("]", "");
                 String[] lstNodeChemin = replaceChemin.split(",");
+                
+                lstTourneeModel.removeAllElements();
                 
                 int cptNode = 1;
                 for (String node : lstNodeChemin) {
@@ -504,7 +512,7 @@ public class Fenetre extends JFrame implements MouseListener {
                     cptNode++;
                 }
                 lstTourneeChemin.repaint();
-                colorerChemin(chemin);
+                
 
             }
         });
