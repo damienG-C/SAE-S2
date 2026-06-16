@@ -186,7 +186,7 @@ public class MonGraphe {
         return retour;
     }
 
-    public static Path plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
+    public static ArrayList<Path> plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire) {
         Graph graphe2 = new SingleGraph("graphe de calcul");
         for (Node node : graphe) {
             Node tmp = graphe2.addNode(node.getId());
@@ -209,7 +209,14 @@ public class MonGraphe {
         apsp.setDirected(false);
         apsp.setWeightAttributeName("duree");
         apsp.compute();
-        Path res = algoGlouton(graphe2, apsp);
+        Path resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
+        ArrayList<Path> res = new ArrayList<>();
+        res.add(new Path());
+        res.get(0).setRoot(resMauvaisGraphe1.getRoot());
+        for (Edge e : resMauvaisGraphe1.getEdgePath()) {
+            res.get(0).add(e);
+        }
+        
         return res;
     }
 

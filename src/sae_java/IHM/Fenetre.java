@@ -491,7 +491,7 @@ public class Fenetre extends JFrame implements MouseListener {
         butCourtTournee.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem());
+                Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem()).get(0);
                 String cheminString = "" + chemin;
                 
                 String replaceChemin = cheminString.replace("[", " ");
