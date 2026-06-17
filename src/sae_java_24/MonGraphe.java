@@ -422,7 +422,7 @@ public class MonGraphe {
         return res;
     }
     
-    public static ArrayList<Path> algoParfait2Camion(Graph graphe, APSP apsp, Node origine, int camion, Node[] courant){
+    /*public static ArrayList<Path> algoParfait2Camion(Graph graphe, APSP apsp, Node origine, int camion, Node[] courant){
         Graph graphe2 = new SingleGraph("graphe de calcul");
         for (Node node : graphe) {
             Node tmp = graphe2.addNode(node.getId());
@@ -438,9 +438,11 @@ public class MonGraphe {
         ArrayList<Path> res = new ArrayList<>();
         res.add(new Path());
         res.add(new Path());
-        res.get(0).setRoot(courant);
+        res.get(0).setRoot(courant[0]);
+        res.get(1).setRoot(courant[1]);
         
-        if(graphe2.getNodeCount() == 2){
+        
+        if(graphe2.getNodeCount() == 3 || (graphe2.getNodeCount() == 2 && courant[1] == courant[0])){
             res.add(courant.getEdge(0).getOpposite(courant));
         }
         else{
@@ -457,5 +459,5 @@ public class MonGraphe {
             }
         }
         return res;
-    }
+    }*/
 }
