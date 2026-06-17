@@ -114,7 +114,7 @@ public class MonGraphe {
             lignes.add(cols);
         }
         sc.close();
-        int edgeId = 0;
+        //int edgeId = 0;
         for (int i = 0; i < lignes.size(); i++) {
             String[] cols = lignes.get(i);
             String src = cols[0];
@@ -214,7 +214,7 @@ public class MonGraphe {
             resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
         }
         else{
-            resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
+            resMauvaisGraphe1 = algoParfait(graphe2, apsp, null, graphe2.getNode(0));
         }
         ArrayList<Path> res = new ArrayList<>();
         res.add(new Path());
@@ -277,16 +277,16 @@ public class MonGraphe {
 
     public static Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut) {
         List<Node> voisins = new ArrayList<>();
+        List<Node> voisins2 = new ArrayList<>();
         Path temp = new Path();
         for (Edge edge : node) {
             voisins.add(edge.getOpposite(node));
+            voisins2.add(edge.getOpposite(node));
         }
         for (Node node2 : voisins) {
-            for (Node node3 : voisins) {
-                if (node2 != node3 && (node2.getEdgeBetween(node3) == null
-                        || (int) node2.getEdgeBetween(node).getAttribute(attribut)
-                        + (int) node3.getEdgeBetween(node).getAttribute(attribut)
-                        < (int) node3.getEdgeBetween(node2).getAttribute(attribut))) {
+            voisins2.remove(node2);
+            for (Node node3 : voisins2) {
+                if (node2.getEdgeBetween(node3) == null) {
                     g.addEdge("e" + edgeId, node2, node3);
                     g.getEdge("e" + edgeId).setAttribute(attribut, (int) node2.getEdgeBetween(node).getAttribute(attribut)
                         + (int) node3.getEdgeBetween(node).getAttribute(attribut));
@@ -296,8 +296,13 @@ public class MonGraphe {
                     g.getEdge("e" + edgeId++).setAttribute("route", temp);
                     temp = new Path();
                 }
+                else if((int) node2.getEdgeBetween(node).getAttribute(attribut)
+                        + (int) node3.getEdgeBetween(node).getAttribute(attribut)
+                        < (int) node3.getEdgeBetween(node2).getAttribute(attribut)){
+                    node2.getEdgeBetween(node3).setAttribute(attribut, (int) node2.getEdgeBetween(node).getAttribute(attribut)
+                        + (int) node3.getEdgeBetween(node).getAttribute(attribut));
+                }
             }
-            voisins.remove(node2);
         }
         g.removeNode(node);
         return g;
@@ -313,6 +318,7 @@ public class MonGraphe {
             Edge tmp = graphe2.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
             tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
         }
+        courant = graphe2.getNode(courant.getId());
         if (origine != null){
             graphe2 = supprimerNoeudSauvegardeRoute(graphe2, graphe2.getNode(origine.getId()), "duree");
         }
@@ -320,7 +326,7 @@ public class MonGraphe {
         res.setRoot(courant);
         
         if(graphe2.getNodeCount() == 2){
-            res.add(courant.getEdge(0).getOpposite(courant));
+            res.add(courant.getEdgeBetween((Node) courant.getEdge(0).getOpposite(courant)));
         }
         else{
             Path min = null;
@@ -331,8 +337,16 @@ public class MonGraphe {
                     min = concurent;
                 }
             }
+            res.add(graphe.getNode(courant.getId()).getEdgeBetween((Node) graphe.getNode(min.getRoot().getId())));
             for (Edge e : min.getEdgePath()) {
-                res.add(graphe.getEdge(e.getId()));
+                if (e.getAttribute("route") != null){
+                        for (Edge edge2 : ((Path)e.getAttribute("route")).getEdgePath()) {
+                            res.add(graphe.getEdge(edge2.getId()));
+                    }
+                }
+                else{
+                    res.add(graphe.getEdge(e.getId()));
+                }
             }
         }
         return res;
@@ -432,6 +446,8 @@ public class MonGraphe {
             Edge tmp = graphe2.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
             tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
         }
+        courant1 = graphe2.getNode(courant1.getId());
+        courant2 = graphe2.getNode(courant2.getId());
         if (origine != null && !origine.getId().equals(courant[0].getId()) && !origine.getId().equals(courant[1].getId())){
             graphe2 = supprimerNoeudSauvegardeRoute(graphe2, graphe2.getNode(origine.getId()), "duree");
         }
