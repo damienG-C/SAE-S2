@@ -44,7 +44,7 @@ public class Fenetre extends JFrame implements MouseListener {
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
     JComboBox<Integer> selecteurNb, ecartInfFiabilité, ecartSupFiabilité;
-    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite, labTourneeChemin;
+    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite, labTourneeChemin, labStatSeparationFen, labDureeTournee;
     JList<String> lstFiltre, lstNodePathTournee, lstTourneeChemin;
     JScrollPane jsp, ScrollPaneOutil, ScrollListTournee;
     DefaultListModel<String> lstmodel, lstTourneeModel;
@@ -172,6 +172,8 @@ public class Fenetre extends JFrame implements MouseListener {
         ScrollListTournee = new JScrollPane(lstTourneeChemin);
         lstTourneeChemin.setVisibleRowCount(1);
 
+        labStatSeparationFen = new JLabel("Stats");
+        labDureeTournee = new JLabel("Durée de la Tournée : ");
         labTourneeChemin = new JLabel("Chemin");
         labTour1 = new JLabel("Type dispensaire");
         labTour2 = new JLabel("Nombre de camions");
@@ -193,9 +195,14 @@ public class Fenetre extends JFrame implements MouseListener {
         selecteurAlgo.addItem("parfait");
 
         labTourneeChemin.setForeground(Color.white);
+        labDureeTournee.setForeground(Color.white);
         labTour1.setForeground(Color.white);
         labTour2.setForeground(Color.white);
         labTour3.setForeground(Color.white);
+        labStatSeparationFen.setForeground(Color.white);
+        
+        labStatSeparationFen.setBorder(BorderFactory.createLineBorder(Color.white));
+        
         panTournee.setBackground(Color.decode("#122438"));
         panTournee.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         setStyleBouton(butCourtTournee);
@@ -234,18 +241,26 @@ public class Fenetre extends JFrame implements MouseListener {
         gcpanTournee.gridwidth = 1;
 
         gcpanTournee.gridy++;
+        gcpanTournee.insets = new Insets(10, 6, 0, 6);
+        panTournee.add(labStatSeparationFen, gcpanTournee);
+        
+        gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(3, 6, 3, 6);
         panTournee.add(labTourneeChemin, gcpanTournee);
 
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(0, 6, 0, 6);
         panTournee.add(ScrollListTournee, gcpanTournee);
+        
+        gcpanTournee.gridy++;
+        gcpanTournee.insets = new Insets(6, 6, 6, 6);
+        panTournee.add(labDureeTournee, gcpanTournee);
     }
 
     public void initPanOutil() {
         ScrollPaneOutil.setPreferredSize(new Dimension(220, 300));
         panoutil.setLayout(new GridBagLayout());
-        panoutil.setPreferredSize(new Dimension(200, 550)); // Ne pas retirer sinon ça fait un bug
+        panoutil.setPreferredSize(new Dimension(200, 620)); // Ne pas retirer sinon ça fait un bug
 
         // Changement de couleur du fond de panoutil.
         panoutil.setBackground(Color.decode("#1e3a5f"));
@@ -391,8 +406,10 @@ public class Fenetre extends JFrame implements MouseListener {
         setStyleBouton(butCourtChemin);
 
         gcChemin.fill = GridBagConstraints.HORIZONTAL;
+        gcChemin.weightx = 1.0;
         gcChemin.gridx = 0;
         gcChemin.gridy = 0;
+        gcChemin.insets = new Insets(0, 6, 3, 6);
         panChemin.add(labSommet1, gcChemin);
 
         gcChemin.gridx = 1;
@@ -510,7 +527,12 @@ public class Fenetre extends JFrame implements MouseListener {
                 lstTourneeModel.removeAllElements();
 
                 List<String> lstSupprOccu = new ArrayList<>();
-                int cptNode = 1;
+                int cptNode = 1, cptDureeTournee = 0;
+                
+                for (Edge edge : chemin.getEachEdge()) {
+                    cptDureeTournee = cptDureeTournee + (int) edge.getAttribute("duree");
+                }
+                
                 for (String node : lstNodeChemin) {
                     if (!lstSupprOccu.contains(node)) {
                         lstTourneeModel.addElement(cptNode + ")" + node);
@@ -520,6 +542,7 @@ public class Fenetre extends JFrame implements MouseListener {
                 }
                 lstTourneeChemin.repaint();
 
+                labDureeTournee.setText("Durée de la Tournée : " + cptDureeTournee);
             }
         });
 
