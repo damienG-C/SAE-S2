@@ -199,7 +199,7 @@ public class MonGraphe {
         //modifie le graphe(à l'interieur de la fonction seulement) afin de garder uniquement les dispensaires souhaités en fonction de leur type
         if (!typeDispensaire.equals("tous")) {
             for (Node n : graphe2) {
-                if (typeDispensaire != n.getAttribute("type")) {
+                if (!typeDispensaire.equals(n.getAttribute("type"))) {
                     graphe2 = supprimerNoeudSauvegardeRoute(graphe2, n, "duree");
                 }
             }
@@ -214,7 +214,7 @@ public class MonGraphe {
             resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
         }
         else{
-            resMauvaisGraphe1 = algoParfait(graphe2, apsp, null, graphe2.getNode(0));
+            resMauvaisGraphe1 = algoParfait(graphe2, apsp, null, graphe2.getNodeIterator().next());
         }
         ArrayList<Path> res = new ArrayList<>();
         res.add(new Path());
@@ -234,10 +234,10 @@ public class MonGraphe {
         APSPInfo info;
         Path min = null;
         Path res = new Path();
-        res.setRoot(graphe.getNode(0));
+        res.setRoot(graphe.getNodeIterator().next());
         Path temp;
         Node nodeMin = null;
-        Node courant = graphe.getNode(0);
+        Node courant = graphe.getNodeIterator().next();
         while (!nonVerifie.isEmpty()) {
             nonVerifie.remove(courant);
             info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
@@ -278,6 +278,7 @@ public class MonGraphe {
     public static Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut) {
         List<Node> voisins = new ArrayList<>();
         List<Node> voisins2 = new ArrayList<>();
+        Edge etemp;
         Path temp = new Path();
         for (Edge edge : node) {
             voisins.add(edge.getOpposite(node));
@@ -291,8 +292,24 @@ public class MonGraphe {
                     g.getEdge("e" + edgeId).setAttribute(attribut, (int) node2.getEdgeBetween(node).getAttribute(attribut)
                         + (int) node3.getEdgeBetween(node).getAttribute(attribut));
                     temp.setRoot(node2);
-                    temp.add(node.getEdgeBetween(node2));
-                    temp.add(node.getEdgeBetween(node3));
+                    etemp = node.getEdgeBetween(node2);
+                    if (etemp.getAttribute("route") == null){
+                        temp.add(etemp);
+                    }
+                    else{
+                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                            temp.add(e);
+                        }
+                    }
+                    etemp = node.getEdgeBetween(node3);
+                    if (etemp.getAttribute("route") == null){
+                        temp.add(etemp);
+                    }
+                    else{
+                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                            temp.add(e);
+                        }
+                    }
                     g.getEdge("e" + edgeId++).setAttribute("route", temp);
                     temp = new Path();
                 }
@@ -301,6 +318,27 @@ public class MonGraphe {
                         < (int) node3.getEdgeBetween(node2).getAttribute(attribut)){
                     node2.getEdgeBetween(node3).setAttribute(attribut, (int) node2.getEdgeBetween(node).getAttribute(attribut)
                         + (int) node3.getEdgeBetween(node).getAttribute(attribut));
+                    temp.setRoot(node2);
+                    etemp = node.getEdgeBetween(node2);
+                    if (etemp.getAttribute("route") == null){
+                        temp.add(etemp);
+                    }
+                    else{
+                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                            temp.add(e);
+                        }
+                    }
+                    etemp = node.getEdgeBetween(node3);
+                    if (etemp.getAttribute("route") == null){
+                        temp.add(etemp);
+                    }
+                    else{
+                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                            temp.add(e);
+                        }
+                    }
+                    node2.getEdgeBetween(node3).setAttribute("route", temp);
+                    temp = new Path();
                 }
             }
         }
@@ -361,14 +399,14 @@ public class MonGraphe {
         Path min = null;
         boolean cond;
         Path res1 = new Path();
-        res1.setRoot(graphe.getNode(0));
+        res1.setRoot(graphe.getNodeIterator().next());
         Path res2 = new Path();
-        res2.setRoot(graphe.getNode(0));
+        res2.setRoot(graphe.getNodeIterator().next());
         Path temp;
         Node nodeMin1 = null;
         Node nodeMin2 = null;
-        Node courant1 = graphe.getNode(0);
-        Node courant2 = graphe.getNode(0);
+        Node courant1 = graphe.getNodeIterator().next();
+        Node courant2 = graphe.getNodeIterator().next();
         while (!nonVerifie.isEmpty()) {
             if(nodeMin1 == null){
                 nonVerifie.remove(courant1);
