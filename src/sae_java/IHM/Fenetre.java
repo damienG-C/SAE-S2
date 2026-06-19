@@ -19,6 +19,7 @@ import java.awt.event.MouseListener;
 
 import java.awt.geom.AffineTransform;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -164,14 +165,14 @@ public class Fenetre extends JFrame implements MouseListener {
 
     public void initPanTournee() {
         panTournee = new JPanel();
-        
+
         panTournee.setVisible(true);
         lstTourneeModel = new DefaultListModel<>();
         lstTourneeChemin = new JList<>(lstTourneeModel);
         ScrollListTournee = new JScrollPane(lstTourneeChemin);
         lstTourneeChemin.setVisibleRowCount(1);
-        
-        labTourneeChemin= new JLabel("Chemin");
+
+        labTourneeChemin = new JLabel("Chemin");
         labTour1 = new JLabel("Type dispensaire");
         labTour2 = new JLabel("Nombre de camions");
         labTour3 = new JLabel("Type d'algorithme");
@@ -179,7 +180,6 @@ public class Fenetre extends JFrame implements MouseListener {
         selecteurType = new JComboBox<>();
         selecteurNb = new JComboBox<>();
         selecteurAlgo = new JComboBox<>();
-
 
         selecteurType.addItem("tous");
         selecteurType.addItem("Maternite");
@@ -236,7 +236,7 @@ public class Fenetre extends JFrame implements MouseListener {
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(3, 6, 3, 6);
         panTournee.add(labTourneeChemin, gcpanTournee);
-        
+
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(0, 6, 0, 6);
         panTournee.add(ScrollListTournee, gcpanTournee);
@@ -502,20 +502,23 @@ public class Fenetre extends JFrame implements MouseListener {
                 colorerChemin(chemin);
 
                 String cheminString = "" + chemin;
-                
+
                 String replaceChemin = cheminString.replace("[", " ");
                 replaceChemin = replaceChemin.replace("]", "");
                 String[] lstNodeChemin = replaceChemin.split(",");
-                
+
                 lstTourneeModel.removeAllElements();
-                
+
+                List<String> lstSupprOccu = new ArrayList<>();
                 int cptNode = 1;
                 for (String node : lstNodeChemin) {
-                    lstTourneeModel.addElement(cptNode + ")" + node);
-                    cptNode++;
+                    if (!lstSupprOccu.contains(node)) {
+                        lstTourneeModel.addElement(cptNode + ")" + node);
+                        cptNode++;
+                        lstSupprOccu.add(node);
+                    }
                 }
                 lstTourneeChemin.repaint();
-                
 
             }
         });
