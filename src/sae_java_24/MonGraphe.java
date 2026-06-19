@@ -279,6 +279,7 @@ public class MonGraphe {
         List<Node> voisins = new ArrayList<>();
         List<Node> voisins2 = new ArrayList<>();
         Edge etemp;
+        List<Edge> LstTemp;
         Path temp = new Path();
         for (Edge edge : node) {
             voisins.add(edge.getOpposite(node));
@@ -297,7 +298,11 @@ public class MonGraphe {
                         temp.add(etemp);
                     }
                     else{
-                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                        LstTemp = ((Path)etemp.getAttribute("route")).getEdgePath();
+                        if (temp.peekNode() != LstTemp.get(0).getNode0() && temp.peekNode() != LstTemp.get(0).getNode1()){
+                            LstTemp = LstTemp.reversed();
+                        }
+                        for (Edge e : LstTemp) {
                             temp.add(e);
                         }
                     }
@@ -306,7 +311,11 @@ public class MonGraphe {
                         temp.add(etemp);
                     }
                     else{
-                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                        LstTemp = ((Path)etemp.getAttribute("route")).getEdgePath();
+                        if (temp.peekNode() != LstTemp.get(0).getNode0() && temp.peekNode() != LstTemp.get(0).getNode1()){
+                            LstTemp = LstTemp.reversed();
+                        }
+                        for (Edge e : LstTemp) {
                             temp.add(e);
                         }
                     }
@@ -324,7 +333,11 @@ public class MonGraphe {
                         temp.add(etemp);
                     }
                     else{
-                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                        LstTemp = ((Path)etemp.getAttribute("route")).getEdgePath();
+                        if (temp.peekNode() != LstTemp.get(0).getNode0() && temp.peekNode() != LstTemp.get(0).getNode1()){
+                            LstTemp = LstTemp.reversed();
+                        }
+                        for (Edge e : LstTemp) {
                             temp.add(e);
                         }
                     }
@@ -333,7 +346,11 @@ public class MonGraphe {
                         temp.add(etemp);
                     }
                     else{
-                        for (Edge e : ((Path)etemp.getAttribute("route")).getEachEdge()) {
+                        LstTemp = ((Path)etemp.getAttribute("route")).getEdgePath();
+                        if (temp.peekNode() != LstTemp.get(0).getNode0() && temp.peekNode() != LstTemp.get(0).getNode1()){
+                            LstTemp = LstTemp.reversed();
+                        }
+                        for (Edge e : LstTemp) {
                             temp.add(e);
                         }
                     }
