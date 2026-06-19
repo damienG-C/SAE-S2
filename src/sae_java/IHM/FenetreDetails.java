@@ -8,26 +8,31 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.graphstream.graph.*;
 
 /**
  *
  * @author p2501775
  */
 public class FenetreDetails extends JFrame {
-    JLabel distanceM, distanceN, distanceO, id1, id2, id3, distanceKm1, distanceKm2, distanceKm3;
+
+    JLabel labDistanceM, labDistanceN, labDistanceO, labIdCategorie, labId1, labId2, labId3, labDistanceCategorie, labDistanceKm1, labDistanceKm2, labDistanceKm3;
     JPanel panneau;
-    
-    
-    public FenetreDetails(float x, float y){
+    Node n;
+
+    public FenetreDetails(Node n, Graph graphActuel) {
         // Attribution d'un titre à la fenêtre.
         super("Détails");
-
+        this.n = n;
 
         // Création de tout les composants de la fenêtre (Panneaux + Labels + Buttons etc).
-        init(x, y);
+        init(graphActuel);
 
         // Remplacement du contentPane par pan (panneau principal).
         this.setContentPane(panneau);
@@ -38,57 +43,151 @@ public class FenetreDetails extends JFrame {
         // Positionne la fenêtre en "null".
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-        
+
     }
-    public void init(float x, float y){
+
+    public void init(Graph graphActuel) {
         panneau = new JPanel();
         panneau.setLayout(new GridBagLayout());
-        GridBagConstraints gcpan = new GridBagConstraints();
+        panneau.setBackground(Color.decode("#122438"));
+
         initLabel();
-        gcpan.gridx = 0;
-        gcpan.gridy = 0;
-        gcpan.fill = GridBagConstraints.HORIZONTAL;
-        gcpan.fill = GridBagConstraints.VERTICAL;
-        panneau.add(distanceM, gcpan);
-        
 
-        gcpan.gridx = 1;
-        
-        panneau.add(id1, gcpan);
-        
-        gcpan.gridx = 2;
-        panneau.add(distanceKm1, gcpan);
-        
+        labDistanceKm1.setForeground(Color.white);
+        labDistanceKm2.setForeground(Color.white);
+        labDistanceKm3.setForeground(Color.white);
+        labDistanceM.setForeground(Color.white);
+        labDistanceN.setForeground(Color.white);
+        labDistanceO.setForeground(Color.white);
+        labId1.setForeground(Color.white);
+        labId2.setForeground(Color.white);
+        labId3.setForeground(Color.white);
+        labDistanceCategorie.setForeground(Color.white);
+        labIdCategorie.setForeground(Color.white);
+
+        GridBagConstraints gcpan = new GridBagConstraints();
+
+        gcpan.gridx = 0;
         gcpan.gridy = 1;
-        panneau.add(distanceKm2, gcpan);
-        
-        gcpan.gridx = 1;
-        panneau.add(id2, gcpan);
-        
-        gcpan.gridx = 0;
-        panneau.add(distanceO, gcpan);
-        
-        gcpan.gridy = 11;
-        panneau.add(distanceN, gcpan);
-        
-        gcpan.gridx = 1;
-        panneau.add(id3, gcpan);
-        
-        gcpan.gridx = 2;
-        panneau.add(distanceKm3, gcpan);
+        gcpan.fill = GridBagConstraints.HORIZONTAL;
+        gcpan.anchor = GridBagConstraints.WEST;
+        gcpan.insets = new Insets(3, 2, 3, 2);
+        panneau.add(labDistanceM, gcpan);
 
-        
+        gcpan.insets = new Insets(3, 4, 3, 6);
+
+        gcpan.gridx = 1;
+        gcpan.gridy = 0;
+        panneau.add(labIdCategorie, gcpan);
+
+        gcpan.gridx = 2;
+        panneau.add(labDistanceCategorie, gcpan);
+
+        List<JLabel> lstMaternite = creerLabelMaternite(graphActuel);
+        List<JLabel> lstNutrition = creerLabelNutrition(graphActuel);
+        List<JLabel> lstOperatoire = creerLabelOperatoire(graphActuel);
+
+        gcpan.gridx = 1;
+        gcpan.gridy = 1;
+        gcpan.insets = new Insets(0, 5, 0, 0);
+        for (JLabel jLabel : lstMaternite) {
+            panneau.add(jLabel, gcpan);
+            jLabel.setForeground(Color.white);
+            gcpan.gridy++;
+        }
+
+        gcpan.gridx = 0;
+        gcpan.gridy++;
+        gcpan.insets = new Insets(10, 0, 0, 0);
+        panneau.add(labDistanceN, gcpan);
+
+        gcpan.gridx = 1;
+        int cptTempPositionnement = 0;
+        for (JLabel jLabel : lstNutrition) {
+            if (cptTempPositionnement == 0) {
+                gcpan.insets = new Insets(10, 5, 0, 0);
+            }
+            else {
+                gcpan.insets = new Insets(0, 5, 0, 0);
+            }
+            cptTempPositionnement++;
+            panneau.add(jLabel, gcpan);
+            jLabel.setForeground(Color.white);
+            gcpan.gridy++;
+        }
+        cptTempPositionnement = 0;
+
+        gcpan.gridx = 0;
+        gcpan.gridy++;
+        gcpan.insets = new Insets(10, 0, 0, 0);
+        panneau.add(labDistanceO, gcpan);
+
+        gcpan.gridx = 1;
+        for (JLabel jLabel : lstOperatoire) {
+            if (cptTempPositionnement == 0) {
+                gcpan.insets = new Insets(10, 5, 0, 0);
+            }
+            else {
+                gcpan.insets = new Insets(0, 5, 0, 0);
+            }
+            cptTempPositionnement++;
+            panneau.add(jLabel, gcpan);
+            jLabel.setForeground(Color.white);
+            gcpan.gridy++;
+        }
     }
-    
-    private void initLabel(){
-        distanceKm1= new JLabel("Distance (km)");
-        distanceKm2= new JLabel("Distance (km)");
-        distanceKm3= new JLabel("Distance (km)");
-        distanceO = new JLabel("Distance aux blocs opératoires");
-        distanceM = new JLabel("Distance aux maternités");
-        distanceN = new JLabel("Distances aux centres de nutrition");
-        id1 = new JLabel("id ");
-        id2 = new JLabel("id ");
-        id3 = new JLabel("id ");
+
+    private void initLabel() {
+        labDistanceKm1 = new JLabel("Distance (km)");
+        labDistanceKm2 = new JLabel("Distance (km)");
+        labDistanceKm3 = new JLabel("Distance (km)");
+        labDistanceO = new JLabel("Distance aux blocs opératoires");
+        labDistanceM = new JLabel("Distance aux maternités");
+        labDistanceN = new JLabel("Distances aux centres de nutrition");
+        labId1 = new JLabel("id ");
+        labId2 = new JLabel("id ");
+        labId3 = new JLabel("id ");
+        labIdCategorie = new JLabel("Id");
+        labDistanceCategorie = new JLabel("Distances");
     }
+
+    private List<JLabel> creerLabelMaternite(Graph graph) {
+        List<JLabel> lstLab = new ArrayList();
+        for (Node node : graph) {
+            String type = (String) node.getAttribute("type");
+            if (type.equals("Maternite") && node != n) {
+                JLabel temp = new JLabel("" + node);
+                lstLab.add(temp);
+            }
+
+        }
+        return lstLab;
+    }
+
+    private List<JLabel> creerLabelNutrition(Graph graph) {
+        List<JLabel> lstLab = new ArrayList();
+        for (Node node : graph) {
+            String type = (String) node.getAttribute("type");
+            if (type.equals("Centre nutrition") && node != n) {
+                JLabel temp = new JLabel("" + node);
+                lstLab.add(temp);
+            }
+
+        }
+        return lstLab;
+    }
+
+    private List<JLabel> creerLabelOperatoire(Graph graph) {
+        List<JLabel> lstLab = new ArrayList();
+        for (Node node : graph) {
+            String type = (String) node.getAttribute("type");
+            if (type.equals("Bloc operatoire") && node != n) {
+                JLabel temp = new JLabel("" + node);
+                lstLab.add(temp);
+            }
+
+        }
+        return lstLab;
+    }
+
 }

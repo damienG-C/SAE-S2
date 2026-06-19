@@ -721,7 +721,7 @@ public class Fenetre extends JFrame implements MouseListener {
             if (n != null) {
                 // ENVOI DU NŒUD : On passe le nœud 'n' à la fenêtre de détails
                 // On peut aussi lui passer les coordonnées pour la positionner (e.getXOnScreen(), e.getYOnScreen())
-                FenetreDetails fenetre = new FenetreDetails(abscisse, ordonnee);
+                FenetreDetails fenetre = new FenetreDetails(n, graphActuel);
             }
         }
     }
