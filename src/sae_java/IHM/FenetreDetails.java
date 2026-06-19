@@ -102,7 +102,8 @@ public class FenetreDetails extends JFrame {
             int distanceNode = 0;
 
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
-            Path chemin = MonGraphe.calculerItineraires(graphActuel, "" + n, "" + nodeChercher);
+            List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
+            Path chemin = (Path) lstReturnPC.get(0);
 
             // calcule de la Distance
             for (Edge edge : chemin.getEachEdge()) {
@@ -144,7 +145,8 @@ public class FenetreDetails extends JFrame {
             int distanceNode = 0;
 
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
-            Path chemin = MonGraphe.calculerItineraires(graphActuel, "" + n, "" + nodeChercher);
+            List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
+            Path chemin = (Path) lstReturnPC.get(0);
 
             // calcule de la Distance
             for (Edge edge : chemin.getEachEdge()) {
@@ -186,7 +188,8 @@ public class FenetreDetails extends JFrame {
             int distanceNode = 0;
 
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
-            Path chemin = MonGraphe.calculerItineraires(graphActuel, "" + n, "" + nodeChercher);
+            List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
+            Path chemin = (Path) lstReturnPC.get(0);
 
             // calcule de la Distance
             for (Edge edge : chemin.getEachEdge()) {

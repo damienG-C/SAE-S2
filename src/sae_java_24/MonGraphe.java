@@ -36,60 +36,198 @@ public class MonGraphe {
     private static int edgeId = 0;
 
     //Q1
+
+    /**
+     * Construit un graphe aléatoire contenant un nombre donné de sommets. Les
+     * sommets sont reliés de manière à garantir un graphe connexe.
+     *
+     * @param nbSommets nombre de sommets à créer
+     * @return graphe généré aléatoirement
+     */
     public static Graph construireGrapheAleatoire(int nbSommets) {
         Graph graphe = new SingleGraph("Graphe de " + nbSommets + " éléments.");
         Random rng = new Random();
-        String[] TYPES = {"Maternite", "Maternite", "Maternite", "Bloc operatoire", "Centre nutrition"}; // maternité 3/5 et les deux autres 1/5 
+
+        creerSommetsEtAretesAleatoires(graphe, nbSommets, rng);
+
+        return graphe;
+    }
+
+    /**
+     * Crée les sommets et les arêtes du graphe de manière aléatoire. Chaque
+     * sommet reçoit un type et un label, et des arêtes sont ajoutées pour
+     * garantir la connexité du graphe.
+     *
+     * @param graphe le graphe à construire
+     * @param nbSommets nombre total de sommets
+     * @param rng générateur aléatoire
+     */
+    private static void creerSommetsEtAretesAleatoires(Graph graphe, int nbSommets, Random rng) {
+
+        String[] TYPES = {
+            "Maternite", "Maternite", "Maternite",
+            "Bloc operatoire", "Centre nutrition"
+        };
+
+        int edgeId = 0;
+
         for (int i = 0; i < nbSommets; i++) {
+
             Node n = graphe.addNode("Lieu_" + i);
+
             String type = TYPES[rng.nextInt(5)];
             n.setAttribute("type", type);
-            if ("Maternite".equals(type)) {
-                n.setAttribute("ui.label", "Lieu_" + i + " (" + type.substring(0, 1) + ")");
-            } else if ("Bloc operatoire".equals(type)) {
-                n.setAttribute("ui.label", "Lieu_" + i + " (" + "O" + ")");
-            } else {
-                n.setAttribute("ui.label", "Lieu_" + i + " (" + "N" + ")");
-            }
+            n.setAttribute("ui.label", creerLabelSommet(i, type));
 
             if (graphe.getNodeCount() != 1) {
                 while (n.getInDegree() == 0) {
                     for (Node n2 : graphe) {
-                        if (rng.nextInt(5) == 0 && n2 != n) {
+                        if (n2 != n && rng.nextInt(5) == 0) {
                             Edge e = graphe.addEdge("e" + edgeId++, n, n2);
-                            e.setAttribute("fiabilite", (2 + rng.nextInt(9)) / 10.0);
-                            e.setAttribute("distance", 10 + rng.nextInt(41));
-                            e.setAttribute("duree", 10 + rng.nextInt(111));
+                            ajouterAttributsArete(e, rng);
                         }
                     }
                 }
             }
         }
-
-        return graphe;
-
     }
 
-    //Q2
+    /**
+     * Génère un label pour un sommet à partir de son identifiant et de son
+     * type.
+     *
+     * @param id identifiant du sommet
+     * @param type type du sommet
+     * @return label formaté du sommet
+     */
+    private static String creerLabelSommet(int id, String type) {
+        String abreviation = obtenirAbbreviationType(type);
+        return "Lieu_" + id + " (" + abreviation + ")";
+    }
+
+    /**
+     * Génère un label pour un sommet issu d'un fichier CSV.
+     *
+     * @param nomSommet nom du sommet
+     * @param type type du sommet
+     * @return label formaté
+     */
+    private static String creerLabelSommet(String nomSommet, String type) {
+        String abreviation = obtenirAbbreviationType(type);
+        return nomSommet + " (" + abreviation + ")";
+    }
+
+    /**
+     * Retourne l'abréviation associée à un type de sommet.
+     *
+     * @param type type complet du sommet
+     * @return abréviation (M, O ou N)
+     */
+    private static String obtenirAbbreviationType(String type) {
+        if (type.equals("Maternite")) {
+            return "M";
+        } else if (type.equals("Bloc operatoire")) {
+            return "O";
+        } else {
+            return "N";
+        }
+    }
+
+    /**
+     * Ajoute des attributs aléatoires à une arête.
+     *
+     * @param e arête à modifier
+     * @param rng générateur aléatoire
+     */
+    private static void ajouterAttributsArete(Edge e, Random rng) {
+
+        double fiabilite = (2 + rng.nextInt(9)) / 10.0;
+        int distance = 10 + rng.nextInt(41);
+        int duree = 10 + rng.nextInt(111);
+
+        e.setAttribute("fiabilite", fiabilite);
+        e.setAttribute("distance", distance);
+        e.setAttribute("duree", duree);
+    }
+
+    /* =========================
+   Q2 - CSV
+   ========================= */
+    /**
+     * Charge un graphe depuis un fichier CSV.
+     *
+     * @param nom_fichier fichier source
+     * @return graphe construit
+     * @throws FileNotFoundException si fichier introuvable
+     */
     public static Graph chargerGraphe(String nom_fichier) throws FileNotFoundException {
+
         Graph g = new SingleGraph("map");
-        Scanner sc = new Scanner(new File(nom_fichier));
+
+        List<String[]> lignes = lireCSV(nom_fichier);
+        creerSommetsCSV(g, lignes);
+        creerAretesCSV(g, lignes);
+
+        return g;
+    }
+
+    /**
+     * Lit un fichier CSV et retourne les lignes valides.
+     *
+     * @param nom_fichier fichier CSV
+     * @return liste des lignes
+     * @throws FileNotFoundException si fichier absent
+     */
+    private static List<String[]> lireCSV(String nom_fichier) throws FileNotFoundException {
+
         List<String[]> lignes = new ArrayList<>();
+        Scanner sc = new Scanner(new File(nom_fichier));
 
-        // lecture csv et création des sommets
         while (sc.hasNextLine()) {
-            String line = sc.nextLine().trim(); // trim sert à enlever les espaces dans la ligne
-            if (line.startsWith("//") || line.isEmpty()) {
-                continue;
-            }
 
-            String[] linespace = line.split(" ");
-            String linewithoutspace = "";
-            for (String ind : linespace) {
-                linewithoutspace = linewithoutspace + ind;
-            }
+            String line = sc.nextLine().trim();
 
-            String[] cols = linewithoutspace.split(";");
+            boolean estCommentaire = line.startsWith("//");
+            boolean estVide = line.isEmpty();
+
+            if (!estCommentaire && !estVide) {
+                String[] cols = nettoyerEtDiviserLigne(line);
+                lignes.add(cols);
+            }
+        }
+
+        sc.close();
+        return lignes;
+    }
+
+    /**
+     * Nettoie une ligne CSV et la découpe en colonnes.
+     *
+     * @param line ligne brute
+     * @return colonnes
+     */
+    private static String[] nettoyerEtDiviserLigne(String line) {
+
+        String[] linespace = line.split(" ");
+        String linewithoutspace = "";
+
+        for (String ind : linespace) {
+            linewithoutspace = linewithoutspace + ind;
+        }
+
+        return linewithoutspace.split(";");
+    }
+
+    /**
+     * Crée les sommets à partir du CSV.
+     *
+     * @param g graphe
+     * @param lignes données CSV
+     */
+    private static void creerSommetsCSV(Graph g, List<String[]> lignes) {
+
+        for (String[] cols : lignes) {
+
             String nomSommet = cols[0];
             String typeCode = cols[1];
 
@@ -104,86 +242,124 @@ public class MonGraphe {
 
             Node n = g.addNode(nomSommet);
             n.setAttribute("type", type);
-            if ("Maternite".equals(type)) {
-                n.setAttribute("ui.label", nomSommet + " (" + "M" + ")");
-            } else if ("Bloc operatoire".equals(type)) {
-                n.setAttribute("ui.label", nomSommet + " (" + "O" + ")");
-            } else {
-                n.setAttribute("ui.label", nomSommet + " (" + "N" + ")");
-            }
-            lignes.add(cols);
+            n.setAttribute("ui.label", creerLabelSommet(nomSommet, type));
         }
-        sc.close();
-        //int edgeId = 0;
+    }
+
+    /**
+     * Crée les arêtes à partir du CSV.
+     *
+     * @param g graphe
+     * @param lignes données CSV
+     */
+    private static void creerAretesCSV(Graph g, List<String[]> lignes) {
+
+        int edgeId = 0;
+
         for (int i = 0; i < lignes.size(); i++) {
+
             String[] cols = lignes.get(i);
             String src = cols[0];
 
-            for (int j = 0; j < lignes.size(); j++) {
-                if (j == i) {
-                    continue;
-                }
+            for (int j = i + 1; j < lignes.size(); j++) {
+
                 String dst = lignes.get(j)[0];
                 String cellule = cols[j + 2];
 
-                if (cellule.isEmpty() || cellule.equals("0")) {
-                    continue;
-                }
+                boolean estVide = cellule.isEmpty();
+                boolean estZero = cellule.equals("0");
 
-                String[] vals = cellule.split(",");
-                double fiabilite = Integer.parseInt(vals[0]) / 10.0;
-                int distance = Integer.parseInt(vals[1]);
-                int duree = Integer.parseInt(vals[2]);
+                if (!estVide && !estZero) {
 
-                if (i < j) {
                     Edge e = g.addEdge("e" + edgeId++, src, dst);
-                    e.setAttribute("fiabilite", fiabilite);
-                    e.setAttribute("distance", distance);
-                    e.setAttribute("duree", duree);
+                    extraireAttributsArete(e, cellule);
                 }
             }
         }
-        return g;
-
     }
 
-    public static Path calculerItineraires(Graph graphe, String depart, String arrivee) {
-        int i = 0;
-        // Chemin 1 durée minimale 
-        Dijkstra dijkstra1 = new Dijkstra(Dijkstra.Element.EDGE, null, "duree");
-        dijkstra1.init(graphe);
-        dijkstra1.setSource(graphe.getNode(depart));
-        dijkstra1.compute();
+    /**
+     * Extrait et applique les attributs d'une arête depuis une cellule CSV.
+     *
+     * @param e arête
+     * @param cellule données "fiabilite,distance,duree"
+     */
+    private static void extraireAttributsArete(Edge e, String cellule) {
 
-        System.out.println("Chemin le plus court en durée : ");
-        System.out.println(dijkstra1.getPath(graphe.getNode(arrivee)));
-        System.out.println("Durée totale : " + dijkstra1.getPathLength(graphe.getNode(arrivee)) + " min");
+        String[] vals = cellule.split(",");
 
-        // calcul de dureeEstimee sur chaque arête 
-        for (Edge e : graphe.getEachEdge()) {
-            {
-                double fiab = (double) e.getAttribute("fiabilite");
-                int duree = (int) e.getAttribute("duree");
-                if (fiab < 0.25) {
-                    e.setAttribute("dureeEstimee", Double.MAX_VALUE); // route interdite
-                } else {
-                    e.setAttribute("dureeEstimee", duree * (20 - fiab * 10) / 10.0);
-                }
+        double fiabilite = Integer.parseInt(vals[0]) / 10.0;
+        int distance = Integer.parseInt(vals[1]);
+        int duree = Integer.parseInt(vals[2]);
+
+        e.setAttribute("fiabilite", fiabilite);
+        e.setAttribute("distance", distance);
+        e.setAttribute("duree", duree);
+    }
+
+    /**
+     * Calcule le chemin le plus court en durée minimale.
+     *
+     * @param graphe le graphe
+     * @param depart sommet de départ
+     * @param arrivee sommet d'arrivée
+     * @return List contenant [Path, Double duree]
+     */
+    public static List<Object> calculerItinerairePlusCourt(Graph graphe, String depart, String arrivee) {
+        Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "duree");
+        dijkstra.init(graphe);
+        dijkstra.setSource(graphe.getNode(depart));
+        dijkstra.compute();
+
+        Path chemin = dijkstra.getPath(graphe.getNode(arrivee));
+        double duree = dijkstra.getPathLength(graphe.getNode(arrivee));
+
+        List<Object> resultat = new ArrayList<>();
+        resultat.add(chemin);
+        resultat.add(duree);
+        System.out.println(chemin + " " + duree);
+        return resultat;
+    }
+
+    /**
+     * Calcule le chemin le plus sûr et rapide.
+     *
+     * @param graphe le graphe
+     * @param depart sommet de départ
+     * @param arrivee sommet d'arrivée
+     * @return List contenant [Path, Double duree]
+     */
+    public static List<Object> calculerItineraireSecurise(Graph graphe, String depart, String arrivee) {
+        double dureeEstimee;
+        // Préparer les attributs dureeEstimee
+        for (Edge edge : graphe.getEachEdge()) {
+
+            double fiabilite = (double) edge.getAttribute("fiabilite");
+            int duree = (int) edge.getAttribute("duree");
+
+            if (fiabilite < 0.25) {
+                dureeEstimee = Double.MAX_VALUE;
+            } else {
+                dureeEstimee = duree * (20 - fiabilite * 10) / 10.0;
+
             }
+            edge.setAttribute("dureeEstimee", dureeEstimee);
         }
 
-        //  chemin 2 plus sûr et plus rapide 
-        Dijkstra dijkstra2 = new Dijkstra(Dijkstra.Element.EDGE, null, "dureeEstimee");
-        dijkstra2.init(graphe);
-        dijkstra2.setSource(graphe.getNode(depart));
-        dijkstra2.compute();
-        i++;
+        Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "dureeEstimee");
+        dijkstra.init(graphe);
+        dijkstra.setSource(graphe.getNode(depart));
+        dijkstra.compute();
 
-        //System.out.println("Chemin le plus sûr et rapide : " + i);
-        Path retour = dijkstra2.getPath(graphe.getNode(arrivee));
+        Path chemin = dijkstra.getPath(graphe.getNode(arrivee));
+        double duree = dijkstra.getPathLength(graphe.getNode(arrivee));
 
-        // System.out.println("Durée estimée totale : " + dijkstra2.getPathLength(graphe.getNode(arrivee)) + " min");
-        return retour;
+        List<Object> resultat = new ArrayList<>();
+        resultat.add(chemin);
+        resultat.add(duree);
+
+        System.out.println(chemin + " " + duree);
+        return resultat;
     }
 
     public static ArrayList<Path> plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire, String algo) {

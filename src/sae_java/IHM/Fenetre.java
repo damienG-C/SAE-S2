@@ -506,9 +506,11 @@ public class Fenetre extends JFrame implements MouseListener {
         butCourtChemin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                Path chemin = MonGraphe.calculerItineraires(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
-                colorerChemin(chemin);
+                List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
+                List lstReturnS = MonGraphe.calculerItineraireSecurise(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
+                Path cheminPC = (Path) lstReturnPC.get(0);
+                Path cheminS = (Path) lstReturnS.get(0);
+                colorerChemin(cheminPC, cheminS);
             }
         });
         butCourtTournee.addActionListener(new ActionListener() {
@@ -562,7 +564,7 @@ public class Fenetre extends JFrame implements MouseListener {
                         double ecartInf = Double.parseDouble("" + ecartInfFiabilité.getSelectedItem()) / 10;
 
                         if (fiabilité >= ecartInf && fiabilité <= ecartSup) {
-                            colorArete(edge);
+                            colorArete(edge, "red");
                         }
                     }
                 }
@@ -683,7 +685,18 @@ public class Fenetre extends JFrame implements MouseListener {
         // Reset la couleur de toute les arrêtes du graphe.
         resetColorArete();
         for (Edge edge : chemin.getEachEdge()) {
-            colorArete(edge);
+            colorArete(edge, "red");
+        }
+    }
+    
+    public void colorerChemin(Path chemin1, Path chemin2) {
+        // Reset la couleur de toute les arrêtes du graphe.
+        resetColorArete();
+        for (Edge edge : chemin1.getEachEdge()) {
+            colorArete(edge, "red");
+        }
+        for (Edge edge : chemin2.getEachEdge()) {
+            colorArete(edge, "green");
         }
     }
 
@@ -693,8 +706,8 @@ public class Fenetre extends JFrame implements MouseListener {
         }
     }
 
-    public void colorArete(Edge edge) {
-        edge.setAttribute("ui.style", "fill-color: red;");
+    public void colorArete(Edge edge, String couleur) {
+        edge.setAttribute("ui.style", "fill-color: " + couleur + ";");
     }
 
     @Override
