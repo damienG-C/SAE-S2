@@ -450,7 +450,7 @@ public class Fenetre extends JFrame implements MouseListener {
         labStatSeparationFenCheminCourt.setBorder(BorderFactory.createLineBorder(Color.white));
         labDureeCheminCourt.setForeground(Color.white);
         labCheminCourt.setForeground(Color.white);
-        
+
         labStatSeparationFenCheminFiable.setForeground(Color.white);
         labStatSeparationFenCheminFiable.setBorder(BorderFactory.createLineBorder(Color.white));
         labDureeCheminFiable.setForeground(Color.white);
@@ -511,7 +511,7 @@ public class Fenetre extends JFrame implements MouseListener {
         gcChemin.gridy++;
         gcChemin.insets = new Insets(6, 6, 6, 6);
         panChemin.add(labDureeCheminCourt, gcChemin);
-        
+
         // Chemin le plus fiable Stat Placement
         gcChemin.gridwidth = 2;
         gcChemin.gridy++;
@@ -608,10 +608,17 @@ public class Fenetre extends JFrame implements MouseListener {
         butCourtChemin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                lstCheminModelCourt.clear();
+                lstCheminModelFiable.clear();
                 List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
                 List lstReturnS = MonGraphe.calculerItineraireSecurise(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
                 Path cheminPC = (Path) lstReturnPC.get(0);
                 Path cheminS = (Path) lstReturnS.get(0);
+                lstCheminModelCourt.addElement(cheminPC);
+                lstCheminModelFiable.addElement(cheminS);
+
+                labDureeCheminCourt.setText("Durée du chemin : " + (int) lstReturnPC.get(1));
+                labDureeCheminFiable.setText("Durée du chemin : " + (int) lstReturnS.get(1));
                 colorerChemin(cheminPC, cheminS);
             }
         });
@@ -814,12 +821,12 @@ public class Fenetre extends JFrame implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // 1. On vérifie d'abord que la vue et le graphe existent
+        // vérifie que la vue et le graphe existent
         if (view == null || graphActuel == null) {
             return;
         }
 
-        // 2. Récupération de la configuration graphique pour gérer les écrans 
+        // Recupere la configuration graphique pour gérer les écrans 
         GraphicsConfiguration gc = view.getGraphicsConfiguration();
         AffineTransform tx = gc.getDefaultTransform();
 
@@ -827,7 +834,7 @@ public class Fenetre extends JFrame implements MouseListener {
         float abscisse = (float) (e.getX() * tx.getScaleX());
         float ordonnee = (float) (e.getY() * tx.getScaleY());
 
-        // 3. Recherche de l'élément sous le clic
+        // recherche de l'élément sous le clic
         GraphicElement element = view.findNodeOrSpriteAt(e.getX(), e.getY());
 
         if (element != null) {
