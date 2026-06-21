@@ -44,10 +44,14 @@ public class Fenetre extends JFrame implements MouseListener {
     JComboBox<Node> selecteur1, selecteur2;
     JComboBox<String> selecteurAlgo, selecteurType;
     JComboBox<Integer> selecteurNb, ecartInfFiabilité, ecartSupFiabilité;
-    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite, labTourneeCheminCam1, labStatSeparationFenCam1, labDureeTourneeCam1, labStatSeparationFenCam2, labTourneeCheminCam2, labDureeTourneeCam2;
-    JList<String> lstFiltre, lstNodePathTournee, lstTourneeCheminCam1, lstTourneeCheminCam2;
-    JScrollPane jsp, ScrollPaneOutil, ScrollListTourneeCam1, ScrollListTourneeCam2;
-    DefaultListModel<String> lstmodel, lstTourneeModelCam1, lstTourneeModelCam2;
+    JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite,
+            labTourneeCheminCam1, labStatSeparationFenCam1, labDureeTourneeCam1,
+            labStatSeparationFenCam2, labTourneeCheminCam2, labDureeTourneeCam2,
+            labStatSeparationFenCheminCourt, labStatSeparationFenCheminFiable, labDureeCheminCourt, labCheminCourt,
+            labDureeCheminFiable, labCheminFiable;
+    JList<String> lstFiltre, lstNodePathTournee, lstTourneeCheminCam1, lstTourneeCheminCam2, lstCheminCourt, lstCheminFiable;
+    JScrollPane jsp, ScrollPaneOutil, ScrollListTourneeCam1, ScrollListTourneeCam2, ScrollListCheminCourt, ScrollListCheminFiable;
+    DefaultListModel<String> lstmodel, lstTourneeModelCam1, lstTourneeModelCam2, lstCheminModelCourt, lstCheminModelFiable;
     Graph graphActuel;
     DefaultView view;
 
@@ -167,7 +171,7 @@ public class Fenetre extends JFrame implements MouseListener {
         panTournee = new JPanel();
 
         panTournee.setVisible(true);
-        
+
         // camion 1
         lstTourneeModelCam1 = new DefaultListModel<>();
         lstTourneeCheminCam1 = new JList<>(lstTourneeModelCam1);
@@ -176,7 +180,7 @@ public class Fenetre extends JFrame implements MouseListener {
         labStatSeparationFenCam1 = new JLabel("Stats camion 1");
         labDureeTourneeCam1 = new JLabel("Durée de la Tournée : ");
         labTourneeCheminCam1 = new JLabel("Chemin");
-        
+
         // camion 2
         lstTourneeModelCam2 = new DefaultListModel<>();
         lstTourneeCheminCam2 = new JList<>(lstTourneeModelCam2);
@@ -185,7 +189,7 @@ public class Fenetre extends JFrame implements MouseListener {
         labStatSeparationFenCam2 = new JLabel("Stats camion 2");
         labDureeTourneeCam2 = new JLabel("Durée de la Tournée : ");
         labTourneeCheminCam2 = new JLabel("Chemin");
-        
+
         labTour1 = new JLabel("Type dispensaire");
         labTour2 = new JLabel("Nombre de camions");
         labTour3 = new JLabel("Type d'algorithme");
@@ -215,10 +219,10 @@ public class Fenetre extends JFrame implements MouseListener {
         labTour3.setForeground(Color.white);
         labStatSeparationFenCam1.setForeground(Color.white);
         labStatSeparationFenCam2.setForeground(Color.white);
-        
+
         labStatSeparationFenCam1.setBorder(BorderFactory.createLineBorder(Color.white));
         labStatSeparationFenCam2.setBorder(BorderFactory.createLineBorder(Color.white));
-        
+
         panTournee.setBackground(Color.decode("#122438"));
         panTournee.setBorder(BorderFactory.createLineBorder(Color.white, 1, true));
         setStyleBouton(butCourtTournee);
@@ -260,7 +264,7 @@ public class Fenetre extends JFrame implements MouseListener {
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(10, 6, 0, 6);
         panTournee.add(labStatSeparationFenCam1, gcpanTournee);
-        
+
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(3, 6, 3, 6);
         panTournee.add(labTourneeCheminCam1, gcpanTournee);
@@ -268,24 +272,24 @@ public class Fenetre extends JFrame implements MouseListener {
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(0, 6, 0, 6);
         panTournee.add(ScrollListTourneeCam1, gcpanTournee);
-        
+
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(6, 6, 6, 6);
         panTournee.add(labDureeTourneeCam1, gcpanTournee);
-        
-        // camion 1 Stat placement
+
+        // camion 2 Stat placement
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(10, 6, 0, 6);
         panTournee.add(labStatSeparationFenCam2, gcpanTournee);
-        
+
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(3, 6, 3, 6);
         panTournee.add(labTourneeCheminCam2, gcpanTournee);
-        
+
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(0, 6, 0, 6);
         panTournee.add(ScrollListTourneeCam2, gcpanTournee);
-        
+
         gcpanTournee.gridy++;
         gcpanTournee.insets = new Insets(6, 6, 6, 6);
         panTournee.add(labDureeTourneeCam2, gcpanTournee);
@@ -294,7 +298,7 @@ public class Fenetre extends JFrame implements MouseListener {
     public void initPanOutil() {
         ScrollPaneOutil.setPreferredSize(new Dimension(220, 300));
         panoutil.setLayout(new GridBagLayout());
-        panoutil.setPreferredSize(new Dimension(200, 700)); // Ne pas retirer sinon ça fait un bug
+        panoutil.setPreferredSize(new Dimension(200, 950)); // Ne pas retirer sinon ça fait un bug
 
         // Changement de couleur du fond de panoutil.
         panoutil.setBackground(Color.decode("#1e3a5f"));
@@ -423,7 +427,35 @@ public class Fenetre extends JFrame implements MouseListener {
         labSommet2 = new JLabel("Arrivée");
         butCourtChemin = new JButton("Calculer l'itinéraire");
         butCourtChemin.setPreferredSize(new Dimension(175, 25));
-        
+
+        // Chemin le plus court
+        labStatSeparationFenCheminCourt = new JLabel("Stats plus court chemin");
+        lstCheminModelCourt = new DefaultListModel<>();
+        lstCheminCourt = new JList<>(lstCheminModelCourt);
+        ScrollListCheminCourt = new JScrollPane(lstCheminCourt);
+        lstCheminCourt.setVisibleRowCount(1);
+        labDureeCheminCourt = new JLabel("Durée du chemin : ");
+        labCheminCourt = new JLabel("Chemin");
+
+        // Chemin le plus fiable
+        labStatSeparationFenCheminFiable = new JLabel("Stats plus fiable chemin");
+        lstCheminModelFiable = new DefaultListModel<>();
+        lstCheminFiable = new JList<>(lstCheminModelFiable);
+        ScrollListCheminFiable = new JScrollPane(lstCheminFiable);
+        lstCheminFiable.setVisibleRowCount(1);
+        labDureeCheminFiable = new JLabel("Durée du chemin : ");
+        labCheminFiable = new JLabel("Chemin");
+
+        labStatSeparationFenCheminCourt.setForeground(Color.white);
+        labStatSeparationFenCheminCourt.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDureeCheminCourt.setForeground(Color.white);
+        labCheminCourt.setForeground(Color.white);
+
+        labStatSeparationFenCheminFiable.setForeground(Color.white);
+        labStatSeparationFenCheminFiable.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDureeCheminFiable.setForeground(Color.white);
+        labCheminFiable.setForeground(Color.white);
+
         labSommet1.setForeground(Color.white);
         labSommet1.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
         labSommet2.setForeground(Color.white);
@@ -461,6 +493,42 @@ public class Fenetre extends JFrame implements MouseListener {
         gcChemin.gridwidth = 2;
         panChemin.add(butCourtChemin, gcChemin);
         gcChemin.gridwidth = 1;
+
+        // Chemin le plus court Stat Placement
+        gcChemin.gridwidth = 2;
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(10, 6, 0, 6);
+        panChemin.add(labStatSeparationFenCheminCourt, gcChemin);
+
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(3, 6, 3, 6);
+        panChemin.add(labCheminCourt, gcChemin);
+
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(0, 6, 0, 6);
+        panChemin.add(ScrollListCheminCourt, gcChemin);
+
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(6, 6, 6, 6);
+        panChemin.add(labDureeCheminCourt, gcChemin);
+
+        // Chemin le plus fiable Stat Placement
+        gcChemin.gridwidth = 2;
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(10, 6, 0, 6);
+        panChemin.add(labStatSeparationFenCheminFiable, gcChemin);
+
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(3, 6, 3, 6);
+        panChemin.add(labCheminFiable, gcChemin);
+
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(0, 6, 0, 6);
+        panChemin.add(ScrollListCheminFiable, gcChemin);
+
+        gcChemin.gridy++;
+        gcChemin.insets = new Insets(6, 6, 6, 6);
+        panChemin.add(labDureeCheminFiable, gcChemin);
 
     }
 
@@ -540,10 +608,17 @@ public class Fenetre extends JFrame implements MouseListener {
         butCourtChemin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                lstCheminModelCourt.clear();
+                lstCheminModelFiable.clear();
                 List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
                 List lstReturnS = MonGraphe.calculerItineraireSecurise(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
                 Path cheminPC = (Path) lstReturnPC.get(0);
                 Path cheminS = (Path) lstReturnS.get(0);
+                lstCheminModelCourt.addElement(cheminPC);
+                lstCheminModelFiable.addElement(cheminS);
+
+                labDureeCheminCourt.setText("Durée du chemin : " + (int) lstReturnPC.get(1));
+                labDureeCheminFiable.setText("Durée du chemin : " + (int) lstReturnS.get(1));
                 colorerChemin(cheminPC, cheminS);
             }
         });
@@ -564,11 +639,11 @@ public class Fenetre extends JFrame implements MouseListener {
 
                 List<String> lstSupprOccu = new ArrayList<>();
                 int cptNode = 1, cptDureeTournee = 0;
-                
+
                 for (Edge edge : chemin.getEachEdge()) {
                     cptDureeTournee = cptDureeTournee + (int) edge.getAttribute("duree");
                 }
-                
+
                 for (String node : lstNodeChemin) {
                     if (!lstSupprOccu.contains(node)) {
                         lstTourneeModelCam1.addElement(cptNode + ")" + node);
@@ -722,7 +797,7 @@ public class Fenetre extends JFrame implements MouseListener {
             colorArete(edge, "red");
         }
     }
-    
+
     public void colorerChemin(Path chemin1, Path chemin2) {
         // Reset la couleur de toute les arrêtes du graphe.
         resetColorArete();
@@ -746,12 +821,12 @@ public class Fenetre extends JFrame implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // 1. On vérifie d'abord que la vue et le graphe existent
+        // vérifie que la vue et le graphe existent
         if (view == null || graphActuel == null) {
             return;
         }
 
-        // 2. Récupération de la configuration graphique pour gérer les écrans 
+        // Recupere la configuration graphique pour gérer les écrans 
         GraphicsConfiguration gc = view.getGraphicsConfiguration();
         AffineTransform tx = gc.getDefaultTransform();
 
@@ -759,7 +834,7 @@ public class Fenetre extends JFrame implements MouseListener {
         float abscisse = (float) (e.getX() * tx.getScaleX());
         float ordonnee = (float) (e.getY() * tx.getScaleY());
 
-        // 3. Recherche de l'élément sous le clic
+        // recherche de l'élément sous le clic
         GraphicElement element = view.findNodeOrSpriteAt(e.getX(), e.getY());
 
         if (element != null) {
