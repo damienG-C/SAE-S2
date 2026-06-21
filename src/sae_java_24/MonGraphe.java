@@ -391,11 +391,13 @@ public class MonGraphe {
         apsp.setWeightAttributeName("duree");
         apsp.compute();
         Path resMauvaisGraphe1;
-        if(algo.equals("glouton")){
-            resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
-        }
-        else{
-            resMauvaisGraphe1 = algoParfait(graphe2, apsp);
+        if (nbCamions == 1){
+            if(algo.equals("glouton")){
+                resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
+            }
+            else{
+                resMauvaisGraphe1 = algoParfait(graphe2, apsp);
+            }
         }
         ArrayList<Path> res = new ArrayList<>();
         res.add(new Path());
