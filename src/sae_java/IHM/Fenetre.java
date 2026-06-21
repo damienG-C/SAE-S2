@@ -192,6 +192,7 @@ public class Fenetre extends JFrame implements MouseListener {
         selecteurNb.addItem(2);
 
         selecteurAlgo.addItem("glouton");
+        selecteurAlgo.addItem("Xparfait puis glouton");
         selecteurAlgo.addItem("parfait");
 
         labTourneeChemin.setForeground(Color.white);

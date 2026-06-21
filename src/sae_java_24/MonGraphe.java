@@ -390,7 +390,8 @@ public class MonGraphe {
         apsp.setDirected(false);
         apsp.setWeightAttributeName("duree");
         apsp.compute();
-        Path resMauvaisGraphe1 = null;
+        Path resMauvaisGraphe1;
+        Path resMauvaisGraphe2 = null;
         if (nbCamions == 1){
             if(algo.equals("glouton")){
                 resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
@@ -399,11 +400,32 @@ public class MonGraphe {
                 resMauvaisGraphe1 = algoParfait(graphe2, apsp);
             }
         }
+        else{
+            ArrayList<Path> temp;
+            if(algo.equals("glouton")){
+                temp = algoGlouton2Camions(graphe2, apsp);
+                resMauvaisGraphe1 = temp.get(0);
+                resMauvaisGraphe2 = temp.get(1);
+            }
+            else{
+                //temp = algoParfait2Camions(graphe2, apsp);
+                resMauvaisGraphe1 = null;
+                resMauvaisGraphe2 = null;
+            }
+            
+        }
         ArrayList<Path> res = new ArrayList<>();
+        res.add(new Path());
         res.add(new Path());
         res.get(0).setRoot(graphe.getNode(resMauvaisGraphe1.getRoot().getId()));
         for (Edge e : resMauvaisGraphe1.getEdgePath()) {
             res.get(0).add(graphe.getEdge(e.getId()));
+        }
+        if (resMauvaisGraphe2 != null){
+            res.get(1).setRoot(graphe.getNode(resMauvaisGraphe2.getRoot().getId()));
+            for (Edge e : resMauvaisGraphe2.getEdgePath()) {
+                res.get(1).add(graphe.getEdge(e.getId()));
+            }
         }
         
         return res;
@@ -456,8 +478,10 @@ public class MonGraphe {
 
     public static int calculerTotalPath(Path chemin, String attribut) {
         int total = 0;
-        for (Edge edge : chemin.getEachEdge()) {
-            total += (int) edge.getAttribute(attribut);
+        if (chemin != null){
+            for (Edge edge : chemin.getEachEdge()) {
+                total += (int) edge.getAttribute(attribut);
+            }
         }
         return total;
     }
@@ -610,6 +634,8 @@ public class MonGraphe {
         }
         APSPInfo info;
         Path min = null;
+        Path min1 = null;
+        Path min2 = null;
         boolean cond;
         Path res1 = new Path();
         res1.setRoot(graphe.getNodeIterator().next());
@@ -630,29 +656,32 @@ public class MonGraphe {
             info = courant1.getAttribute(APSPInfo.ATTRIBUTE_NAME);
             for (Node n : nonVerifie) {
                 temp = info.getShortestPathTo(n.toString());
-                if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
+                if (min1 == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min1, "duree")) {
                     nodeMin1 = n;
-                    min = temp;
+                    min1 = temp;
                 }
             }
-            min = null;
             info = courant2.getAttribute(APSPInfo.ATTRIBUTE_NAME);
             for (Node n : nonVerifie) {
                 temp = info.getShortestPathTo(n.toString());
-                if (min == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min, "duree")) {
+                if (min2 == null || calculerTotalPath(temp, "duree") < calculerTotalPath(min2, "duree")) {
                     nodeMin2 = n;
-                    min = temp;
+                    min2 = temp;
                 }
             }
-            cond = calculerTotalPath(res1, "duree") + (int) courant1.getEdgeBetween(nodeMin1).getAttribute("duree") < calculerTotalPath(res2, "duree") + (int) courant2.getEdgeBetween(nodeMin2).getAttribute("duree");
+            cond = calculerTotalPath(res1, "duree") + calculerTotalPath(min1, "duree") < calculerTotalPath(res2, "duree") + calculerTotalPath(min2, "duree");
             if (cond){
                 courant1 = nodeMin1;
                 nodeMin1 = null;
+                min = min1;
             }
             else{
                 courant2 = nodeMin2;
                 nodeMin2 = null;
+                min = min2;
             }
+            min1 = null;
+            min2 = null;
             if (min != null){
                 if (cond){
                     for (Edge edge : min.getEdgePath()) {
