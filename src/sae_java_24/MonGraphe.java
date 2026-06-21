@@ -390,7 +390,7 @@ public class MonGraphe {
         apsp.setDirected(false);
         apsp.setWeightAttributeName("duree");
         apsp.compute();
-        Path resMauvaisGraphe1;
+        Path resMauvaisGraphe1 = null;
         if (nbCamions == 1){
             if(algo.equals("glouton")){
                 resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
