@@ -34,7 +34,7 @@ import org.graphstream.algorithm.Dijkstra;
 public class MonGraphe {
 
     private static int edgeId = 0;
-    private static double meilleurCout;
+    private static int meilleurCout;
     private static ArrayList<Node> meilleurOrdre;
 
     //Q1
@@ -364,6 +364,14 @@ public class MonGraphe {
         return resultat;
     }
 
+    /**trouve un ou deux chemin passant par tout les points et ayant pour but de minimiser la duree
+     *
+     * @param graphe le graphe
+     * @param nbCamions le nombre de camion à notre disposition
+     * @param typeDispensaire le ou les types de dispensaires à visiter
+     * @param algo le type d'algorithme à éxécuter
+     * @return Path le chemin de la tournée
+     */
     public static ArrayList<Path> plusCourteTournee(Graph graphe, int nbCamions, String typeDispensaire, String algo) {
         Graph graphe2 = new SingleGraph("graphe de calcul");
         for (Node node : graphe) {
@@ -431,6 +439,12 @@ public class MonGraphe {
         return res;
     }
 
+    /**algo glouton de la tournée
+     *
+     * @param graphe le graphe
+     * @param apsp la liste de tout les plus courts chemin du graphe
+     * @return Path le chemin de la tournée
+     */
     public static Path algoGlouton(Graph graphe, APSP apsp){
         ArrayList<Node> nonVerifie = new ArrayList<Node>();
         for (Node node : graphe.getEachNode()) {
@@ -476,6 +490,12 @@ public class MonGraphe {
         return res;
     }
 
+    /** calcule la somme des valeurs d'un attribut des arrêtes d'un Path
+     *
+     * @param chemin le chemin
+     * @param attribut l'attribut
+     * @return int la somme
+     */
     public static int calculerTotalPath(Path chemin, String attribut) {
         int total = 0;
         if (chemin != null){
@@ -486,6 +506,16 @@ public class MonGraphe {
         return total;
     }
 
+    /** supprime un noeud en sauvegardant les arrêtes du noeud supprimé
+     * la fonction crée des arrêtes, ou remplace celle déjà existantes si le
+     * chemin est plus court au niveau d'un attribut, pour contourner le sommet supprimé
+     * et sauvegardant la route emprunté dans un attribut route
+     *
+     * @param g le graphe
+     * @param node le noeud à supprimer
+     * @param attribut l'attribut
+     * @return Graph le graphe sans le noeud
+     */
     public static Graph supprimerNoeudSauvegardeRoute(Graph g, Node node, String attribut) {
         List<Node> voisins = new ArrayList<>();
         List<Node> voisins2 = new ArrayList<>();
@@ -574,8 +604,14 @@ public class MonGraphe {
         return g;
     }
     
+    /** algorithme trouvant la solution optimale pour la tournée
+     *
+     * @param graphe le graphe
+     * @param apsp la liste de tout les plus courts chemin du graphe
+     * @return Path le chemin optimal de la tournée
+     */
     public static Path algoParfait(Graph graphe, APSP apsp){
-        meilleurCout = Double.MAX_VALUE;
+        meilleurCout = Integer.MAX_VALUE;
         meilleurOrdre = null;
         ArrayList<Node> res = new ArrayList<>();
         Node depart = graphe.getNodeIterator().next();
@@ -589,7 +625,13 @@ public class MonGraphe {
         parfaitRecursif(depart, res, nonVisites, 0);
         return listeEnPath(meilleurOrdre);
     }
-    
+    /** partie récursive de l'algorithme optimal
+     *
+     * @param courant le graphe
+     * @param res la liste de tout les plus courts chemin du graphe
+     * @param nonVisites les sommets pas encore visités
+     * @param cout le cout de la partie déjà visitée
+     */
     private static void parfaitRecursif(Node courant, ArrayList<Node> res, ArrayList<Node> nonVisites, int cout){
         if(cout <= meilleurCout) {
             if(nonVisites.isEmpty()) {
@@ -609,18 +651,33 @@ public class MonGraphe {
             }
         }
     }
-    
-        private static Path listeEnPath(ArrayList<Node> res){
+    /** transforme une liste de noeuds en Path
+     *
+     * @param lst une liste de noeuds
+     * @return Path le chemin correspondant à la liste de noeuds
+     */
+    private static Path listeEnPath(ArrayList<Node> lst){
         Path resultat = new Path();
-        if(res == null || res.isEmpty()) {
+        if(lst == null || lst.isEmpty()) {
             return resultat;
         }
-        resultat.setRoot(res.get(0));
-        for(int i = 0 ; i < res.size()-1 ; i++) {
-            APSPInfo info = res.get(i).getAttribute(APSPInfo.ATTRIBUTE_NAME);
-            Path morceau = info.getShortestPathTo(res.get(i+1).getId());
-            for(Edge e : morceau.getEdgePath()) {
-                resultat.add(e);
+        resultat.setRoot(lst.get(0));
+        for(int i = 0 ; i < lst.size()-1 ; i++) {
+            APSPInfo info = lst.get(i).getAttribute(APSPInfo.ATTRIBUTE_NAME);
+            Path temp = info.getShortestPathTo(lst.get(i+1).getId());
+            for(Edge e : temp.getEdgePath()) {
+                if (e.getAttribute("route") != null) {
+                    List<Edge> LstTemp = ((Path)e.getAttribute("route")).getEdgePath();
+                    if (temp.peekNode() != LstTemp.get(0).getNode0() && temp.peekNode() != LstTemp.get(0).getNode1()){
+                        LstTemp = LstTemp.reversed();
+                    }
+                    for (Edge edge : LstTemp) {
+                        temp.add(edge);
+                    }
+                }
+                else{
+                    resultat.add(e);
+                }
             }
         }
 
@@ -716,44 +773,4 @@ public class MonGraphe {
         return res;
     }
     
-    /*public static ArrayList<Path> algoParfait2Camion(Graph graphe, APSP apsp, Node origine, int camion, Node[] courant){
-        Graph graphe2 = new SingleGraph("graphe de calcul");
-        for (Node node : graphe) {
-            Node tmp = graphe2.addNode(node.getId());
-            tmp.addAttribute("type", (String) node.getAttribute("type"));
-        }
-        for (Edge edge : graphe.getEachEdge()) {
-            Edge tmp = graphe2.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
-            tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
-        }
-        courant1 = graphe2.getNode(courant1.getId());
-        courant2 = graphe2.getNode(courant2.getId());
-        if (origine != null && !origine.getId().equals(courant[0].getId()) && !origine.getId().equals(courant[1].getId())){
-            graphe2 = supprimerNoeudSauvegardeRoute(graphe2, graphe2.getNode(origine.getId()), "duree");
-        }
-        ArrayList<Path> res = new ArrayList<>();
-        res.add(new Path());
-        res.add(new Path());
-        res.get(0).setRoot(courant[0]);
-        res.get(1).setRoot(courant[1]);
-        
-        
-        if(graphe2.getNodeCount() == 3 || (graphe2.getNodeCount() == 2 && courant[1] == courant[0])){
-            res.add(courant.getEdge(0).getOpposite(courant));
-        }
-        else{
-            Path min = null;
-            Path concurent;
-            for (Edge edge : courant.getEachEdge()) {
-                concurent = algoParfait(graphe2, apsp, courant, edge.getOpposite(courant));
-                if (min == null || calculerTotalPath(min, "duree") > calculerTotalPath(concurent, "duree")){
-                    min = concurent;
-                }
-            }
-            for (Edge e : min.getEdgePath()) {
-                res.add(graphe.getEdge(e.getId()));
-            }
-        }
-        return res;
-    }*/
 }
