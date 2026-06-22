@@ -800,6 +800,11 @@ public class Fenetre extends JFrame implements MouseListener {
                     ScrollListTourneeCam2.setVisible(false);
                     labTourneeCheminCam2.setVisible(false);
                 }
+                
+                if (selecteurType.getSelectedItem().equals("Xparfait puis glouton")) {
+                    String valRetour = JOptionPane.showInputDialog(pan, "Saisir le nombre de sommet parfait", "Sélecteur de Sommet");
+                    int valEnInt = Integer.parseInt(valRetour);
+                }
 
                 // Calcul de la tournee selon le nombre de camions, le type de dispensaire et l'algorithme choisis.
                 Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), (String) selecteurAlgo.getSelectedItem()).get(0);
