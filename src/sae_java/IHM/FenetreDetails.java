@@ -16,6 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.graphstream.graph.*;
 import Algo.MonGraphe;
+import java.awt.Dimension;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 
 /**
  * FenetreDetails est une fenetre secondaire affichant les distances depuis un
@@ -40,6 +43,10 @@ public class FenetreDetails extends JFrame {
      */
     JPanel panneau;
     /**
+     * Panneau de scrolling pour le panneau principal de la fenetre.
+     */
+    JScrollPane scrollPanePanneau;
+    /**
      * Sommet de reference dont on calcule les distances vers les autres.
      */
     Node n;
@@ -63,7 +70,7 @@ public class FenetreDetails extends JFrame {
         init(graphActuel);
 
         // Remplacement du contentPane par pan (panneau principal).
-        this.setContentPane(panneau);
+        this.setContentPane(scrollPanePanneau);
 
         // Redimension de la fenêtre pour s'adapter à tout les composants du panneau principal.
         this.pack();
@@ -86,9 +93,12 @@ public class FenetreDetails extends JFrame {
      * @param graphActuel le graphe contenant tous les sommets
      */
     public void init(Graph graphActuel) {
+
         panneau = new JPanel();
+        scrollPanePanneau = new JScrollPane(panneau);
         panneau.setLayout(new GridBagLayout());
         panneau.setBackground(Color.decode("#122438"));
+        scrollPanePanneau.setPreferredSize(new Dimension(400, 500));
 
         initLabel();
 
