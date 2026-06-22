@@ -15,18 +15,45 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.graphstream.graph.*;
-import sae_java_24.MonGraphe;
+import Algo.MonGraphe;
 
 /**
+ * FenetreDetails est une fenetre secondaire affichant les distances depuis un
+ * sommet donne vers tous les autres dispensaires du graphe.
+ * <p>
+ * Elle est ouverte par {@link Fenetre} lors d'un clic sur un sommet. Pour
+ * chaque autre sommet (regroupe par categorie : maternites, centres de
+ * nutrition, blocs operatoires), elle calcule la distance via le plus court
+ * chemin ({@link MonGraphe#calculerItinerairePlusCourt}) et l'affiche dans un
+ * tableau de labels organise en GridBagLayout.
  *
  * @author p2501775
  */
 public class FenetreDetails extends JFrame {
 
+    /**
+     * Labels d'en-tete et titres de sections (distances et identifiants).
+     */
     JLabel labDistanceM, labDistanceN, labDistanceO, labIdCategorie, labId1, labId2, labId3, labDistanceCategorie, labDistanceKm1, labDistanceKm2, labDistanceKm3;
+    /**
+     * Panneau principal de la fenetre.
+     */
     JPanel panneau;
+    /**
+     * Sommet de reference dont on calcule les distances vers les autres.
+     */
     Node n;
 
+    /**
+     * Construit la fenetre de details pour un sommet donne.
+     * <p>
+     * Initialise les composants, calcule et affiche les distances vers les
+     * autres dispensaires, ajuste la taille de la fenetre a son contenu, la
+     * centre et l'affiche.
+     *
+     * @param n le sommet de reference
+     * @param graphActuel le graphe contenant tous les sommets
+     */
     public FenetreDetails(Node n, Graph graphActuel) {
         // Attribution d'un titre à la fenêtre.
         super("Détails");
@@ -47,6 +74,17 @@ public class FenetreDetails extends JFrame {
 
     }
 
+    /**
+     * Construit et remplit le panneau de details.
+     * <p>
+     * Cree les labels d'en-tete, puis pour chacune des trois categories
+     * (maternites, centres de nutrition, blocs operatoires) genere une ligne
+     * par sommet contenant son identifiant et la distance (plus court chemin)
+     * depuis le sommet de reference {@link #n}. Le tout est dispose en
+     * GridBagLayout.
+     *
+     * @param graphActuel le graphe contenant tous les sommets
+     */
     public void init(Graph graphActuel) {
         panneau = new JPanel();
         panneau.setLayout(new GridBagLayout());
@@ -84,6 +122,7 @@ public class FenetreDetails extends JFrame {
         gcpan.gridx = 2;
         panneau.add(labDistanceCategorie, gcpan);
 
+        // Recuperation des labels (id + distance) pour chaque categorie de dispensaire.
         List<JLabel> lstMaternite = creerLabelMaternite(graphActuel);
         List<JLabel> lstNutrition = creerLabelNutrition(graphActuel);
         List<JLabel> lstOperatoire = creerLabelOperatoire(graphActuel);
@@ -92,6 +131,7 @@ public class FenetreDetails extends JFrame {
         gcpan.gridy = 1;
         gcpan.insets = new Insets(0, 5, 0, 0);
 
+        // Affichage des maternites : la liste alterne label id puis label distance (pas de 2).
         for (int i = 0; i < lstMaternite.size(); i = i + 2) {
             JLabel jLabel = lstMaternite.get(i);
             JLabel jLabelsuiv = lstMaternite.get(i + 1);
@@ -101,6 +141,7 @@ public class FenetreDetails extends JFrame {
 
             int distanceNode = 0;
 
+            // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
             Path chemin = (Path) lstReturnPC.get(0);
@@ -128,14 +169,16 @@ public class FenetreDetails extends JFrame {
 
         gcpan.gridx = 1;
         int cptTempPositionnement = 0;
+        // Affichage des centres de nutrition (meme principe d'alternance id/distance).
         for (int i = 0; i < lstNutrition.size(); i = i + 2) {
+            // Marge superieure plus grande sur la premiere ligne de la categorie.
             if (cptTempPositionnement == 0) {
                 gcpan.insets = new Insets(10, 5, 0, 0);
             } else {
                 gcpan.insets = new Insets(0, 5, 0, 0);
             }
             cptTempPositionnement++;
-            
+
             JLabel jLabel = lstNutrition.get(i);
             JLabel jLabelsuiv = lstNutrition.get(i + 1);
             panneau.add(jLabel, gcpan);
@@ -144,6 +187,7 @@ public class FenetreDetails extends JFrame {
 
             int distanceNode = 0;
 
+            // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
             Path chemin = (Path) lstReturnPC.get(0);
@@ -171,14 +215,16 @@ public class FenetreDetails extends JFrame {
         panneau.add(labDistanceO, gcpan);
 
         gcpan.gridx = 1;
-                for (int i = 0; i < lstOperatoire.size(); i = i + 2) {
+        // Affichage des blocs operatoires (meme principe d'alternance id/distance).
+        for (int i = 0; i < lstOperatoire.size(); i = i + 2) {
+            // Marge superieure plus grande sur la premiere ligne de la categorie.
             if (cptTempPositionnement == 0) {
                 gcpan.insets = new Insets(10, 5, 0, 0);
             } else {
                 gcpan.insets = new Insets(0, 5, 0, 0);
             }
             cptTempPositionnement++;
-            
+
             JLabel jLabel = lstOperatoire.get(i);
             JLabel jLabelsuiv = lstOperatoire.get(i + 1);
             panneau.add(jLabel, gcpan);
@@ -187,6 +233,7 @@ public class FenetreDetails extends JFrame {
 
             int distanceNode = 0;
 
+            // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
             Path chemin = (Path) lstReturnPC.get(0);
@@ -208,6 +255,13 @@ public class FenetreDetails extends JFrame {
         }
     }
 
+    /**
+     * Initialise les labels d'en-tete et de titres de sections.
+     * <p>
+     * Note : {@code labDistanceKm1/2/3} et {@code labId1/2/3} sont crees mais
+     * ne sont jamais ajoutes au panneau (code mort, voir remarque en
+     * conversation).
+     */
     private void initLabel() {
         labDistanceKm1 = new JLabel("Distance (km)");
         labDistanceKm2 = new JLabel("Distance (km)");
@@ -222,6 +276,15 @@ public class FenetreDetails extends JFrame {
         labDistanceCategorie = new JLabel("Distances");
     }
 
+    /**
+     * Cree la liste des labels des maternites (hors sommet de reference).
+     * <p>
+     * Pour chaque maternite differente de {@link #n}, ajoute deux labels : un
+     * pour l'identifiant et un (provisoire) destine a recevoir la distance.
+     *
+     * @param graph le graphe a parcourir
+     * @return une liste de labels alternant id / distance pour chaque maternite
+     */
     private List<JLabel> creerLabelMaternite(Graph graph) {
         List<JLabel> lstLab = new ArrayList();
         for (Node node : graph) {
@@ -237,6 +300,18 @@ public class FenetreDetails extends JFrame {
         return lstLab;
     }
 
+    /**
+     * Cree la liste des labels des centres de nutrition (hors sommet de
+     * reference).
+     * <p>
+     * Pour chaque centre de nutrition different de {@link #n}, ajoute deux
+     * labels : un pour l'identifiant et un (provisoire) destine a recevoir la
+     * distance.
+     *
+     * @param graph le graphe a parcourir
+     * @return une liste de labels alternant id / distance pour chaque centre de
+     * nutrition
+     */
     private List<JLabel> creerLabelNutrition(Graph graph) {
         List<JLabel> lstLab = new ArrayList();
         for (Node node : graph) {
@@ -252,6 +327,17 @@ public class FenetreDetails extends JFrame {
         return lstLab;
     }
 
+    /**
+     * Cree la liste des labels des blocs operatoires (hors sommet de
+     * reference).
+     * <p>
+     * Pour chaque bloc operatoire different de {@link #n}, ajoute deux labels :
+     * un pour l'identifiant et un (provisoire) destine a recevoir la distance.
+     *
+     * @param graph le graphe a parcourir
+     * @return une liste de labels alternant id / distance pour chaque bloc
+     * operatoire
+     */
     private List<JLabel> creerLabelOperatoire(Graph graph) {
         List<JLabel> lstLab = new ArrayList();
         for (Node node : graph) {
