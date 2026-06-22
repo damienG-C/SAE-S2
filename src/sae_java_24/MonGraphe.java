@@ -842,4 +842,58 @@ public class MonGraphe {
             }
         }
     }
+    
+    /** algorithme trouvant la solution optimale pour la tournée
+     *
+     * @param graphe le graphe
+     * @return Path le chemin optimal de la tournée
+     */
+    public static Path algoSemiParfait(Graph graphe, int nbParfait){
+        meilleurCout = Integer.MAX_VALUE;
+        meilleurOrdreCamion1 = null;
+        ArrayList<Node> res = new ArrayList<>();
+        Node depart = graphe.getNodeIterator().next();
+        res.add(depart);
+        ArrayList<Node> nonVisites = new ArrayList<>();
+        for(Node n : graphe) {
+            if(n != depart) {
+                nonVisites.add(n);
+            }
+        }
+        semiParfaitRecursif(depart, res, nonVisites, 0, nbParfait);
+        return listeEnPath(meilleurOrdreCamion1);
+    }
+    /** partie récursive de l'algorithme optimal
+     *
+     * @param courant le noeud sur lequel le camion se trouve potentiellement
+     * @param res la liste des noeud qu'on teste
+     * @param nonVisites les sommets pas encore visités
+     * @param cout le cout de la partie déjà visitée
+     */
+    private static void semiParfaitRecursif(Node courant, ArrayList<Node> res, ArrayList<Node> nonVisites, int cout, int nbExecution){
+        if(cout <= meilleurCout) {
+            if(nonVisites.isEmpty()){
+                meilleurCout = cout;
+                meilleurOrdreCamion1 = new ArrayList<>(res);
+            }
+            else if(nbExecution == 0){
+                for (Node n : algoGlouton(courant.getGraph()).getNodePath()) {
+                    res.add(n);
+                }
+                nonVisites.clear();
+                semiParfaitRecursif(courant, res, nonVisites, cout + calculerTotalPath(algoGlouton(courant.getGraph()), "duree"), nbExecution);
+            }
+            else{
+                APSPInfo info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                for(Node suivant : new ArrayList<>(nonVisites)) {
+                    Path p = info.getShortestPathTo(suivant.getId());
+                    res.add(suivant);
+                    nonVisites.remove(suivant);
+                    semiParfaitRecursif(suivant, res, nonVisites, cout + calculerTotalPath(p, "duree"), nbExecution--);
+                    res.remove(res.size()-1);
+                    nonVisites.add(suivant);
+                }
+            }
+        }
+    }
 }
