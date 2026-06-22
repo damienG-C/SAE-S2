@@ -31,7 +31,7 @@ import org.graphstream.graph.Path;
 import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.swingViewer.DefaultView;
 import org.graphstream.ui.view.Viewer;
-import Algo.MonGraphe;
+import sae_java_24.MonGraphe;
 
 /**
  * Fenetre est la fenetre principale de l'application.
@@ -40,12 +40,11 @@ import Algo.MonGraphe;
  * (maternites, blocs operatoires, centres de nutrition) et propose des outils
  * pour :
  * <ul>
- * <li>charger un graphe depuis un fichier ou en generer un aleatoirement ;</li>
- * <li>calculer le plus court chemin et le chemin le plus fiable entre deux
- * sommets ;</li>
- * <li>calculer une tournee de livraison ;</li>
- * <li>filtrer les sommets par type ;</li>
- * <li>mettre en evidence les aretes selon leur fiabilite.</li>
+ *   <li>charger un graphe depuis un fichier ou en generer un aleatoirement ;</li>
+ *   <li>calculer le plus court chemin et le chemin le plus fiable entre deux sommets ;</li>
+ *   <li>calculer une tournee de livraison ;</li>
+ *   <li>filtrer les sommets par type ;</li>
+ *   <li>mettre en evidence les aretes selon leur fiabilite.</li>
  * </ul>
  * Le panneau principal {@code pan} utilise un GridBagLayout. La fenetre
  * implemente {@link MouseListener} pour reagir aux clics sur les sommets du
@@ -55,64 +54,37 @@ import Algo.MonGraphe;
  */
 public class Fenetre extends JFrame implements MouseListener {
 
-    /**
-     * Panneaux de l'interface : panneau principal, barre d'outils, zone graphe
-     * et sous-panneaux.
-     */
+    /** Panneaux de l'interface : panneau principal, barre d'outils, zone graphe et sous-panneaux. */
     JPanel pan, panoutil, panGraph, panLabStat, panChangeGraph, panFiltre, panChemin, panTournee, panFiabilite;
-    /**
-     * Boutons : ouverture (croix), calcul plus court chemin, calcul tournee,
-     * affichage fiabilite.
-     */
+    /** Boutons : ouverture (croix), calcul plus court chemin, calcul tournee, affichage fiabilite. */
     JButton butcroix, butCourtChemin, butCourtTournee, butFiabilité;
-    /**
-     * Selecteurs de sommets de depart et d'arrivee pour le calcul d'itineraire.
-     */
+    /** Selecteurs de sommets de depart et d'arrivee pour le calcul d'itineraire. */
     JComboBox<Node> selecteur1, selecteur2;
-    /**
-     * Selecteurs de type d'algorithme et de type de dispensaire.
-     */
+    /** Selecteurs de type d'algorithme et de type de dispensaire. */
     JComboBox<String> selecteurAlgo, selecteurType;
-    /**
-     * Selecteurs du nombre de camions et des bornes inferieure/superieure de
-     * fiabilite.
-     */
+    /** Selecteurs du nombre de camions et des bornes inferieure/superieure de fiabilite. */
     JComboBox<Integer> selecteurNb, ecartInfFiabilité, ecartSupFiabilité;
-    /**
-     * Labels d'affichage des statistiques, des sommets, des tournees et des
-     * chemins.
-     */
+    /** Labels d'affichage des statistiques, des sommets, des tournees et des chemins. */
     JLabel labNB1, labNB2, labNB3, labGraph, labSommet1, labSommet2, labTour1, labTour2, labTour3, labFiabilite,
             labTourneeCheminCam1, labStatSeparationFenCam1, labDureeTourneeCam1,
             labStatSeparationFenCam2, labTourneeCheminCam2, labDureeTourneeCam2,
             labStatSeparationFenCheminCourt, labStatSeparationFenCheminFiable, labDureeCheminCourt, labCheminCourt,
             labDureeCheminFiable, labCheminFiable;
-    /**
-     * Listes affichant le filtre et les chemins calcules (tournees et
-     * itineraires).
-     */
+    /** Listes affichant le filtre et les chemins calcules (tournees et itineraires). */
     JList<String> lstFiltre, lstNodePathTournee, lstTourneeCheminCam1, lstTourneeCheminCam2, lstCheminCourt, lstCheminFiable;
-    /**
-     * Conteneurs defilables associes aux listes et a la barre d'outils.
-     */
+    /** Conteneurs defilables associes aux listes et a la barre d'outils. */
     JScrollPane jsp, ScrollPaneOutil, ScrollListTourneeCam1, ScrollListTourneeCam2, ScrollListCheminCourt, ScrollListCheminFiable;
-    /**
-     * Modeles de donnees des differentes JList.
-     */
+    /** Modeles de donnees des differentes JList. */
     DefaultListModel<String> lstmodel, lstTourneeModelCam1, lstTourneeModelCam2, lstCheminModelCourt, lstCheminModelFiable;
-    /**
-     * Graphe actuellement affiche et manipule par l'application.
-     */
+    /** Graphe actuellement affiche et manipule par l'application. */
     Graph graphActuel;
-    /**
-     * Vue GraphStream du graphe, integree dans le panneau {@code panGraph}.
-     */
+    /** Vue GraphStream du graphe, integree dans le panneau {@code panGraph}. */
     DefaultView view;
 
     /**
      * Construit la fenetre principale : initialise tous les composants,
-     * positionne le panneau principal, ajuste la taille a son contenu, centre
-     * la fenetre et l'affiche.
+     * positionne le panneau principal, ajuste la taille a son contenu,
+     * centre la fenetre et l'affiche.
      */
     public Fenetre() {
         // Attribution d'un titre à la fenêtre.
@@ -425,8 +397,8 @@ public class Fenetre extends JFrame implements MouseListener {
      * Initialise le panneau d'affichage du graphe.
      * <p>
      * Configure un BorderLayout, une taille preferee de 400x400, une couleur de
-     * fond sombre et une bordure blanche. La vue GraphStream y sera ajoutee
-     * plus tard par {@link #afficherGraph(Graph, String)}.
+     * fond sombre et une bordure blanche. La vue GraphStream y sera ajoutee plus
+     * tard par {@link #afficherGraph(Graph, String)}.
      */
     public void initPanGraphe() {
         panGraph.setLayout(new BorderLayout());
@@ -479,10 +451,10 @@ public class Fenetre extends JFrame implements MouseListener {
     /**
      * Initialise le panneau de filtre des sommets.
      * <p>
-     * Cree une JList contenant les options "Bloc operatoire", "Centre
-     * nutrition", "Maternite" et "Reset". La selection declenche l'ecouteur
-     * defini dans {@link #initEcouteur()}, qui masque ou affiche les sommets et
-     * aretes selon leur type.
+     * Cree une JList contenant les options "Bloc operatoire", "Centre nutrition",
+     * "Maternite" et "Reset". La selection declenche l'ecouteur defini dans
+     * {@link #initEcouteur()}, qui masque ou affiche les sommets et aretes selon
+     * leur type.
      */
     public void initPanFiltre() {
         panFiltre = new JPanel();
@@ -543,9 +515,9 @@ public class Fenetre extends JFrame implements MouseListener {
     /**
      * Initialise le panneau de calcul d'itineraire entre deux sommets.
      * <p>
-     * Cree les selecteurs de depart et d'arrivee, le bouton de calcul, ainsi
-     * que deux zones de resultats : une pour le plus court chemin et une pour
-     * le chemin le plus fiable (chemin parcouru et duree). Disposition en
+     * Cree les selecteurs de depart et d'arrivee, le bouton de calcul, ainsi que
+     * deux zones de resultats : une pour le plus court chemin et une pour le
+     * chemin le plus fiable (chemin parcouru et duree). Disposition en
      * GridBagLayout.
      */
     public void initPanChemin() {
@@ -668,16 +640,16 @@ public class Fenetre extends JFrame implements MouseListener {
      * <p>
      * Associe :
      * <ul>
-     * <li>au bouton "+" : une boite de dialogue de chargement ou de generation
-     * de graphe, suivie de l'actualisation des selecteurs ;</li>
-     * <li>a la liste de filtre : le masquage/affichage des sommets et aretes
-     * selon les types selectionnes ;</li>
-     * <li>au bouton "Calculer l'itineraire" (chemin) : le calcul et l'affichage
-     * du plus court chemin et du chemin le plus fiable ;</li>
-     * <li>au bouton "Calculer l'itineraire" (tournee) : le calcul de la tournee
-     * et l'affichage du chemin et de sa duree ;</li>
-     * <li>au bouton "Montrer fiabilite" : la mise en evidence des aretes dont
-     * la fiabilite est dans l'intervalle choisi.</li>
+     *   <li>au bouton "+" : une boite de dialogue de chargement ou de generation
+     *       de graphe, suivie de l'actualisation des selecteurs ;</li>
+     *   <li>a la liste de filtre : le masquage/affichage des sommets et aretes
+     *       selon les types selectionnes ;</li>
+     *   <li>au bouton "Calculer l'itineraire" (chemin) : le calcul et l'affichage
+     *       du plus court chemin et du chemin le plus fiable ;</li>
+     *   <li>au bouton "Calculer l'itineraire" (tournee) : le calcul de la tournee
+     *       et l'affichage du chemin et de sa duree ;</li>
+     *   <li>au bouton "Montrer fiabilite" : la mise en evidence des aretes dont
+     *       la fiabilite est dans l'intervalle choisi.</li>
      * </ul>
      */
     public void initEcouteur() {
@@ -766,10 +738,10 @@ public class Fenetre extends JFrame implements MouseListener {
                 Path cheminPC = (Path) lstReturnPC.get(0);
                 Path cheminS = (Path) lstReturnS.get(0);
                 // Remplissage des listes avec les sommets de chaque chemin.
-                for (Node n : cheminPC.getEachNode()) {
+                for(Node n : cheminPC.getEachNode()){
                     lstCheminModelCourt.addElement(n.getId());
                 }
-                for (Node n : cheminS.getEachNode()) {
+                for(Node n : cheminS.getEachNode()){
                     lstCheminModelFiable.addElement(n.getId());
                 }
 
@@ -888,18 +860,17 @@ public class Fenetre extends JFrame implements MouseListener {
     }
 
     /**
-     * Affiche un graphe dans le panneau {@code panGraph} et met a jour
-     * l'interface.
+     * Affiche un graphe dans le panneau {@code panGraph} et met a jour l'interface.
      * <p>
      * Colore les sommets selon leur type (rouge = maternite, bleu = bloc
      * operatoire, vert = centre de nutrition), applique la feuille de style
-     * GraphStream, cree une vue avec auto-layout, l'enregistre comme ecouteur
-     * de souris, met a jour le titre du graphe et les compteurs de
-     * statistiques, puis memorise le graphe dans {@link #graphActuel}.
+     * GraphStream, cree une vue avec auto-layout, l'enregistre comme ecouteur de
+     * souris, met a jour le titre du graphe et les compteurs de statistiques,
+     * puis memorise le graphe dans {@link #graphActuel}.
      *
      * @param g le graphe a afficher
      * @param fileName le nom du fichier source, ou {@code null} pour un graphe
-     * genere aleatoirement
+     *        genere aleatoirement
      */
     public void afficherGraph(Graph g, String fileName) {
         // Suppression de l'ancien graphe.
@@ -1087,25 +1058,41 @@ public class Fenetre extends JFrame implements MouseListener {
         }
     }
 
-    
+    /**
+     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
+     *
+     * @param e l'evenement de souris
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-   
+    /**
+     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
+     *
+     * @param e l'evenement de souris
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    
+    /**
+     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
+     *
+     * @param e l'evenement de souris
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-  
+    /**
+     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
+     *
+     * @param e l'evenement de souris
+     */
     @Override
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
