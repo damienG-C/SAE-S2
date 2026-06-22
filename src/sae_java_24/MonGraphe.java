@@ -35,7 +35,9 @@ public class MonGraphe {
 
     private static int edgeId = 0;
     private static int meilleurCout;
-    private static ArrayList<Node> meilleurOrdre;
+    private static int meilleurCout2Camions;
+    private static ArrayList<Node> meilleurOrdreCamion1;
+    private static ArrayList<Node> meilleurOrdreCamion2;
 
     //Q1
 
@@ -402,23 +404,23 @@ public class MonGraphe {
         Path resMauvaisGraphe2 = null;
         if (nbCamions == 1){
             if(algo.equals("glouton")){
-                resMauvaisGraphe1 = algoGlouton(graphe2, apsp);
+                resMauvaisGraphe1 = algoGlouton(graphe2);
             }
             else{
-                resMauvaisGraphe1 = algoParfait(graphe2, apsp);
+                resMauvaisGraphe1 = algoParfait(graphe2);
             }
         }
         else{
             ArrayList<Path> temp;
             if(algo.equals("glouton")){
-                temp = algoGlouton2Camions(graphe2, apsp);
+                temp = algoGlouton2Camions(graphe2);
                 resMauvaisGraphe1 = temp.get(0);
                 resMauvaisGraphe2 = temp.get(1);
             }
             else{
-                //temp = algoParfait2Camions(graphe2, apsp);
-                resMauvaisGraphe1 = null;
-                resMauvaisGraphe2 = null;
+                temp = algoParfait2Camions(graphe2);
+                resMauvaisGraphe1 = temp.get(0);
+                resMauvaisGraphe2 = temp.get(1);
             }
             
         }
@@ -442,10 +444,9 @@ public class MonGraphe {
     /**algo glouton de la tournée
      *
      * @param graphe le graphe
-     * @param apsp la liste de tout les plus courts chemin du graphe
      * @return Path le chemin de la tournée
      */
-    public static Path algoGlouton(Graph graphe, APSP apsp){
+    public static Path algoGlouton(Graph graphe){
         ArrayList<Node> nonVerifie = new ArrayList<Node>();
         for (Node node : graphe.getEachNode()) {
             nonVerifie.add(node);
@@ -607,12 +608,11 @@ public class MonGraphe {
     /** algorithme trouvant la solution optimale pour la tournée
      *
      * @param graphe le graphe
-     * @param apsp la liste de tout les plus courts chemin du graphe
      * @return Path le chemin optimal de la tournée
      */
-    public static Path algoParfait(Graph graphe, APSP apsp){
+    public static Path algoParfait(Graph graphe){
         meilleurCout = Integer.MAX_VALUE;
-        meilleurOrdre = null;
+        meilleurOrdreCamion1 = null;
         ArrayList<Node> res = new ArrayList<>();
         Node depart = graphe.getNodeIterator().next();
         res.add(depart);
@@ -623,12 +623,12 @@ public class MonGraphe {
             }
         }
         parfaitRecursif(depart, res, nonVisites, 0);
-        return listeEnPath(meilleurOrdre);
+        return listeEnPath(meilleurOrdreCamion1);
     }
     /** partie récursive de l'algorithme optimal
      *
-     * @param courant le graphe
-     * @param res la liste de tout les plus courts chemin du graphe
+     * @param courant le noeud sur lequel le camion se trouve potentiellement
+     * @param res la liste des noeud qu'on teste
      * @param nonVisites les sommets pas encore visités
      * @param cout le cout de la partie déjà visitée
      */
@@ -636,7 +636,7 @@ public class MonGraphe {
         if(cout <= meilleurCout) {
             if(nonVisites.isEmpty()) {
                 meilleurCout = cout;
-                meilleurOrdre = new ArrayList<>(res);
+                meilleurOrdreCamion1 = new ArrayList<>(res);
             }
             else{
                 APSPInfo info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
@@ -684,7 +684,12 @@ public class MonGraphe {
     return resultat;
 }
     
-    public static ArrayList<Path> algoGlouton2Camions(Graph graphe, APSP apsp){
+    /**algo glouton de la tournee pour 2 camion
+     *
+     * @param graphe le graphe
+     * @return ArrayList de Path contenant les 2 résutat de chaque camion
+     */
+    public static ArrayList<Path> algoGlouton2Camions(Graph graphe){
         ArrayList<Node> nonVerifie = new ArrayList<Node>();
         for (Node node : graphe.getEachNode()) {
             nonVerifie.add(node);
@@ -773,4 +778,68 @@ public class MonGraphe {
         return res;
     }
     
+    /** algorithme trouvant la solution optimale pour la tournée pour 2 camions
+     *
+     * @param graphe le graphe
+     * @return ArrayList de Path les chemin optimals de la tournée
+     */
+    public static ArrayList<Path> algoParfait2Camions(Graph graphe) {
+        meilleurCout2Camions = Integer.MAX_VALUE;
+        meilleurOrdreCamion1 = null;
+        meilleurOrdreCamion2 = null;
+        Node depart = graphe.getNodeIterator().next();
+        ArrayList<Node> chemin1 = new ArrayList<>();
+        ArrayList<Node> chemin2 = new ArrayList<>();
+        chemin1.add(depart);
+        chemin2.add(depart);
+        ArrayList<Node> nonVisites = new ArrayList<>();
+        for (Node n : graphe) {
+            if (n != depart) {
+                nonVisites.add(n);
+            }
+        }
+        parfaitRecursif2Camions(depart, depart, chemin1, chemin2, nonVisites, 0, 0);
+        ArrayList<Path> resultat = new ArrayList<>();
+        resultat.add(listeEnPath(meilleurOrdreCamion1));
+        resultat.add(listeEnPath(meilleurOrdreCamion2));
+        return resultat;
+    }
+    /** partie récursive de l'algorithme optimal
+     *
+     * @param courant1 le noeud sur lequel le camion se trouve potentiellement
+     * @param courant2 le noeud sur lequel le camion se trouve potentiellement
+     * @param chemin1 la liste des noeud qu'on teste
+     * @param chemin1 la liste des noeud qu'on teste
+     * @param nonVisites les sommets pas encore visités
+     * @param cout1 le cout de la partie déjà visitée
+     * @param cout2 le cout de la partie déjà visitée
+     */
+    private static void parfaitRecursif2Camions(Node courant1, Node courant2, ArrayList<Node> chemin1, ArrayList<Node> chemin2, ArrayList<Node> nonVisites, int cout1, int cout2) {
+        if (Math.max(cout1, cout2) <= meilleurCout2Camions) {
+            if (nonVisites.isEmpty()) {
+                int coutFinal = Math.max(cout1, cout2);
+                if (coutFinal < meilleurCout2Camions) {
+                    meilleurCout2Camions = coutFinal;
+                    meilleurOrdreCamion1 = new ArrayList<>(chemin1);
+                    meilleurOrdreCamion2 = new ArrayList<>(chemin2);
+                }
+            }
+            else{
+                APSPInfo info1 = courant1.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                APSPInfo info2 = courant2.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                for (Node suivant : new ArrayList<>(nonVisites)) {
+                    nonVisites.remove(suivant);
+                    Path p1 = info1.getShortestPathTo(suivant.getId());
+                    chemin1.add(suivant);
+                    parfaitRecursif2Camions(suivant, courant2, chemin1, chemin2, nonVisites, cout1 + calculerTotalPath(p1, "duree"), cout2);
+                    chemin1.remove(chemin1.size() - 1);
+                    Path p2 = info2.getShortestPathTo(suivant.getId());
+                    chemin2.add(suivant);
+                    parfaitRecursif2Camions(courant1, suivant, chemin1, chemin2, nonVisites, cout1, cout2 + calculerTotalPath(p2, "duree"));
+                    chemin2.remove(chemin2.size() - 1);
+                    nonVisites.add(suivant);
+                }
+            }
+        }
+    }
 }

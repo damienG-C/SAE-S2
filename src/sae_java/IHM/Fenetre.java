@@ -614,8 +614,8 @@ public class Fenetre extends JFrame implements MouseListener {
                 List lstReturnS = MonGraphe.calculerItineraireSecurise(graphActuel, "" + selecteur1.getSelectedItem(), "" + selecteur2.getSelectedItem());
                 Path cheminPC = (Path) lstReturnPC.get(0);
                 Path cheminS = (Path) lstReturnS.get(0);
-                lstCheminModelCourt.addElement(cheminPC);
-                lstCheminModelFiable.addElement(cheminS);
+                //lstCheminModelCourt.addElement(cheminPC);
+                //lstCheminModelFiable.addElement(cheminS);
 
                 labDureeCheminCourt.setText("Durée du chemin : " + (int) lstReturnPC.get(1));
                 labDureeCheminFiable.setText("Durée du chemin : " + (int) lstReturnS.get(1));
@@ -626,10 +626,42 @@ public class Fenetre extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), (String) selecteurAlgo.getSelectedItem()).get(0);
-                colorerChemin(chemin);
+                ArrayList<Path> chemins = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), (String) selecteurAlgo.getSelectedItem());
+                Path chemin1 = chemins.get(0);
+                Path chemin2 = chemins.get(1);
+                if (chemin2 == null){
+                    colorerChemin(chemin1);
+                }
+                else{
+                    colorerChemin(chemin1, chemin2);
+                    String cheminString2 = "" + chemin2;
 
-                String cheminString = "" + chemin;
+                    String replaceChemin2 = cheminString2.replace("[", " ");
+                    replaceChemin2 = replaceChemin2.replace("]", "");
+                    String[] lstNodeChemin2 = replaceChemin2.split(",");
+
+                    lstTourneeModelCam2.removeAllElements();
+
+                    List<String> lstSupprOccu2 = new ArrayList<>();
+                    int cptNode2 = 1, cptDureeTournee2 = 0;
+
+                    for (Edge edge : chemin2.getEachEdge()) {
+                        cptDureeTournee2 = cptDureeTournee2 + (int) edge.getAttribute("duree");
+                    }
+
+                    for (String node : lstNodeChemin2) {
+                        if (!lstSupprOccu2.contains(node)) {
+                            lstTourneeModelCam2.addElement(cptNode2 + ")" + node);
+                            cptNode2++;
+                            lstSupprOccu2.add(node);
+                        }
+                    }
+                    lstTourneeCheminCam2.repaint();
+
+                    labDureeTourneeCam2.setText("Durée de la Tournée : " + cptDureeTournee2);
+                }
+
+                String cheminString = "" + chemin1;
 
                 String replaceChemin = cheminString.replace("[", " ");
                 replaceChemin = replaceChemin.replace("]", "");
@@ -640,7 +672,7 @@ public class Fenetre extends JFrame implements MouseListener {
                 List<String> lstSupprOccu = new ArrayList<>();
                 int cptNode = 1, cptDureeTournee = 0;
 
-                for (Edge edge : chemin.getEachEdge()) {
+                for (Edge edge : chemin1.getEachEdge()) {
                     cptDureeTournee = cptDureeTournee + (int) edge.getAttribute("duree");
                 }
 
