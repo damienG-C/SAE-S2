@@ -1058,41 +1058,25 @@ public class Fenetre extends JFrame implements MouseListener {
         }
     }
 
-    /**
-     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
-     *
-     * @param e l'evenement de souris
-     */
+    
     @Override
     public void mousePressed(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    /**
-     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
-     *
-     * @param e l'evenement de souris
-     */
+    
     @Override
     public void mouseReleased(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    /**
-     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
-     *
-     * @param e l'evenement de souris
-     */
+    
     @Override
     public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    /**
-     * Non utilise. Methode imposee par l'interface {@link MouseListener}.
-     *
-     * @param e l'evenement de souris
-     */
+   
     @Override
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
