@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package sae_java_24;
+package Algo;
 
 import java.io.FileNotFoundException;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 import sae_java.IHM.Fenetre;
-import static sae_java_24.MonGraphe.chargerGraphe;
+import static Algo.MonGraphe.chargerGraphe;
 
 /**
  *
