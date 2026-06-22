@@ -800,17 +800,57 @@ public class Fenetre extends JFrame implements MouseListener {
                     ScrollListTourneeCam2.setVisible(false);
                     labTourneeCheminCam2.setVisible(false);
                 }
-                
-                if (selecteurType.getSelectedItem().equals("Xparfait puis glouton")) {
+                ArrayList<Path> chemins;
+                if (selecteurAlgo.getSelectedItem().equals("Xparfait puis glouton")) {
                     String valRetour = JOptionPane.showInputDialog(pan, "Saisir le nombre de sommet parfait", "Sélecteur de Sommet");
-                    int valEnInt = Integer.parseInt(valRetour);
+                    chemins = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), valRetour);
                 }
+                else{
+                    // Calcul de la tournee selon le nombre de camions, le type de dispensaire et l'algorithme choisis.
+                    chemins = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), (String) selecteurAlgo.getSelectedItem());
+                }
+                
+                Path chemin1 = chemins.get(0);
+                Path chemin2 = chemins.get(1);
+                
+                if (chemin2 == null){
+                    colorerChemin(chemin1);
+                }
+                else{
+                    colorerChemin(chemin1, chemin2);
+                    
+                    String cheminString = "" + chemin2;
 
-                // Calcul de la tournee selon le nombre de camions, le type de dispensaire et l'algorithme choisis.
-                Path chemin = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), (String) selecteurAlgo.getSelectedItem()).get(0);
-                colorerChemin(chemin);
+                    // Nettoyage de la chaine du chemin pour extraire la liste des sommets.
+                    String replaceChemin = cheminString.replace("[", " ");
+                    replaceChemin = replaceChemin.replace("]", "");
+                    String[] lstNodeChemin = replaceChemin.split(",");
 
-                String cheminString = "" + chemin;
+                    lstTourneeModelCam2.removeAllElements();
+
+                    List<String> lstSupprOccu = new ArrayList<>();
+                    int cptNode = 1, cptDureeTournee = 0;
+
+                    // Somme des durees de toutes les aretes du chemin.
+                    for (Edge edge : chemin2.getEachEdge()) {
+                        cptDureeTournee = cptDureeTournee + (int) edge.getAttribute("duree");
+                    }
+
+                    // Ajout des sommets dans la liste en evitant les doublons.
+                    for (String node : lstNodeChemin) {
+                        if (!lstSupprOccu.contains(node)) {
+                            lstTourneeModelCam2.addElement(cptNode + ")" + node);
+                            cptNode++;
+                            lstSupprOccu.add(node);
+                        }
+                    }
+                    lstTourneeCheminCam2.repaint();
+
+                    labDureeTourneeCam2.setText("Durée de la Tournée : " + cptDureeTournee);
+                }
+                
+
+                String cheminString = "" + chemin1;
 
                 // Nettoyage de la chaine du chemin pour extraire la liste des sommets.
                 String replaceChemin = cheminString.replace("[", " ");
@@ -823,7 +863,7 @@ public class Fenetre extends JFrame implements MouseListener {
                 int cptNode = 1, cptDureeTournee = 0;
 
                 // Somme des durees de toutes les aretes du chemin.
-                for (Edge edge : chemin.getEachEdge()) {
+                for (Edge edge : chemin1.getEachEdge()) {
                     cptDureeTournee = cptDureeTournee + (int) edge.getAttribute("duree");
                 }
 
