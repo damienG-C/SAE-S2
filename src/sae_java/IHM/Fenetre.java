@@ -919,7 +919,7 @@ public class Fenetre extends JFrame implements MouseListener {
         String input = JOptionPane.showInputDialog(null, "Saisir un nombre de sommets :", "Générer Graphe Aléatoire", JOptionPane.QUESTION_MESSAGE);
 
         // Vérification de la valeur d'entrée.
-        if (input != null && !input.isEmpty()) {
+        if (Integer.parseInt(input) > 0 && !input.isEmpty()) {
             // Conversion du String en int.
             int nb = Integer.parseInt(input);
 
@@ -927,7 +927,7 @@ public class Fenetre extends JFrame implements MouseListener {
 
             // null est le nom du graphe qui signifie "graphe alea".
             afficherGraph(g, null);
-        }
+        } 
     }
 
     /**
