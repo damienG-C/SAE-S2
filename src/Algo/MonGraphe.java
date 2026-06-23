@@ -68,7 +68,7 @@ public class MonGraphe {
 
         for (int i = 0; i < nbSommets; i++) {
 
-            Node n = graphe.addNode("Lieu_" + i);
+            Node n = graphe.addNode("S" + i);
 
             String type = TYPES[rng.nextInt(5)];
             n.setAttribute("type", type);
@@ -97,7 +97,7 @@ public class MonGraphe {
      */
     private static String creerLabelSommet(int id, String type) {
         String abreviation = obtenirAbbreviationType(type);
-        return "Lieu_" + id + " (" + abreviation + ")";
+        return "S" + id + " (" + abreviation + ")";
     }
 
     /**
