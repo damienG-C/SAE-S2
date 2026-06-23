@@ -31,7 +31,7 @@ import org.graphstream.graph.Path;
 import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.swingViewer.DefaultView;
 import org.graphstream.ui.view.Viewer;
-import sae_java_24.MonGraphe;
+import Algo.MonGraphe;
 
 /**
  * Fenetre est la fenetre principale de l'application.
