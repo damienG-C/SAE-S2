@@ -877,9 +877,17 @@ public class MonGraphe {
                 meilleurOrdreCamion1 = new ArrayList<>(res);
             }
             else if(nbExecution == 0){
-                Graph g = courant.getGraph();
+                Graph g = new SingleGraph("graphe temporaire");
+                for (Node node : courant.getGraph()) {
+                    Node tmp = g.addNode(node.getId());
+                    tmp.addAttribute("type", (String) node.getAttribute("type"));
+                }
+                for (Edge edge : courant.getGraph().getEachEdge()) {
+                    Edge tmp = g.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
+                    tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
+                }
                 for (int i = 0; i < res.size() - 1; i++) {
-                    g = supprimerNoeudSauvegardeRoute(g, res.get(i), "duree");
+                    g = supprimerNoeudSauvegardeRoute(g, g.getNode(res.get(i).getId()), "duree");
                 }
                 APSP apsp = new APSP();
                 apsp.init(g);
@@ -955,12 +963,20 @@ public class MonGraphe {
                 }
             }
             else if(x == 0){
-                Graph g = courant1.getGraph();
+                Graph g = new SingleGraph("graphe temporaire");
+                for (Node node : courant1.getGraph()) {
+                    Node tmp = g.addNode(node.getId());
+                    tmp.addAttribute("type", (String) node.getAttribute("type"));
+                }
+                for (Edge edge : courant1.getGraph().getEachEdge()) {
+                    Edge tmp = g.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
+                    tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
+                }
                 for (int i = 0; i < chemin1.size() - 1; i++) {
-                    g = supprimerNoeudSauvegardeRoute(g, chemin1.get(i), "duree");
+                    g = supprimerNoeudSauvegardeRoute(g, g.getNode(chemin1.get(i).getId()), "duree");
                 }
                 for (int i = 0; i < chemin2.size() - 1; i++) {
-                    g = supprimerNoeudSauvegardeRoute(g, chemin2.get(i), "duree");
+                    g = supprimerNoeudSauvegardeRoute(g, g.getNode(chemin2.get(i).getId()), "duree");
                 }
                 APSP apsp = new APSP();
                 apsp.init(g);
