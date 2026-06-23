@@ -103,18 +103,19 @@ public class FenetreDetails extends JFrame {
 
         initLabel();
 
-        labDistanceKm1.setForeground(Color.white);
-        labDistanceKm2.setForeground(Color.white);
-        labDistanceKm3.setForeground(Color.white);
         labDistanceM.setForeground(Color.white);
         labDistanceN.setForeground(Color.white);
         labDistanceO.setForeground(Color.white);
-        labId1.setForeground(Color.white);
-        labId2.setForeground(Color.white);
-        labId3.setForeground(Color.white);
         labDistanceCategorie.setForeground(Color.white);
         labIdCategorie.setForeground(Color.white);
         labDureeCategorie.setForeground(Color.white);
+        
+        labDistanceM.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDistanceN.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDistanceO.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDistanceCategorie.setBorder(BorderFactory.createLineBorder(Color.white));
+        labIdCategorie.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDureeCategorie.setBorder(BorderFactory.createLineBorder(Color.white));
 
         GridBagConstraints gcpan = new GridBagConstraints();
 
@@ -323,15 +324,9 @@ public class FenetreDetails extends JFrame {
      * conversation).
      */
     private void initLabel() {
-        labDistanceKm1 = new JLabel("Distance (km)");
-        labDistanceKm2 = new JLabel("Distance (km)");
-        labDistanceKm3 = new JLabel("Distance (km)");
         labDistanceO = new JLabel("Distance aux blocs opératoires");
         labDistanceM = new JLabel("Distance aux maternités");
         labDistanceN = new JLabel("Distances aux centres de nutrition");
-        labId1 = new JLabel("id ");
-        labId2 = new JLabel("id ");
-        labId3 = new JLabel("id ");
         labIdCategorie = new JLabel("Id");
         labDistanceCategorie = new JLabel("Distances (km)");
         labDureeCategorie = new JLabel("Durées (minutes)");
