@@ -395,7 +395,7 @@ public class MonGraphe {
         Path resMauvaisGraphe2 = null;
         if (nbCamions == 1){
             if(algo.equals("glouton")){
-                resMauvaisGraphe1 = algoGlouton(graphe2, graphe.getNodeIterator().next());
+                resMauvaisGraphe1 = algoGlouton(graphe2, graphe2.getNodeIterator().next());
             }
             else if (algo.equals("parfait")){
                 resMauvaisGraphe1 = algoParfait(graphe2);
@@ -407,7 +407,7 @@ public class MonGraphe {
         else{
             ArrayList<Path> temp;
             if(algo.equals("glouton")){
-                temp = algoGlouton2Camions(graphe2, graphe.getNodeIterator().next(), graphe.getNodeIterator().next());
+                temp = algoGlouton2Camions(graphe2, graphe2.getNodeIterator().next(), graphe2.getNodeIterator().next());
                 resMauvaisGraphe1 = temp.get(0);
                 resMauvaisGraphe2 = temp.get(1);
             }
