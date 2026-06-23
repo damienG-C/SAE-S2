@@ -406,8 +406,11 @@ public class MonGraphe {
             if(algo.equals("glouton")){
                 resMauvaisGraphe1 = algoGlouton(graphe2);
             }
-            else{
+            else if (algo.equals("parfait")){
                 resMauvaisGraphe1 = algoParfait(graphe2);
+            }
+            else{
+                resMauvaisGraphe1 = algoSemiParfait(graphe, Integer.parseInt(algo));
             }
         }
         else{
@@ -417,12 +420,16 @@ public class MonGraphe {
                 resMauvaisGraphe1 = temp.get(0);
                 resMauvaisGraphe2 = temp.get(1);
             }
-            else{
+            else if (algo.equals("parfait")){
                 temp = algoParfait2Camions(graphe2);
                 resMauvaisGraphe1 = temp.get(0);
                 resMauvaisGraphe2 = temp.get(1);
             }
-            
+            else{
+                temp = algoSemiParfait2Camions(graphe2, Integer.parseInt(algo));
+                resMauvaisGraphe1 = temp.get(0);
+                resMauvaisGraphe2 = temp.get(1);
+            }
         }
         ArrayList<Path> res = new ArrayList<>();
         res.add(new Path());
@@ -891,6 +898,82 @@ public class MonGraphe {
                     nonVisites.remove(suivant);
                     semiParfaitRecursif(suivant, res, nonVisites, cout + calculerTotalPath(p, "duree"), nbExecution--);
                     res.remove(res.size()-1);
+                    nonVisites.add(suivant);
+                }
+            }
+        }
+    }
+    
+    /** algorithme trouvant la solution x-optimale pour la tournée pour 2 camions
+     *
+     * @param graphe le graphe
+     * @return ArrayList de Path les chemin optimals de la tournée
+     */
+    public static ArrayList<Path> algoSemiParfait2Camions(Graph graphe, int x) {
+        meilleurCout2Camions = Integer.MAX_VALUE;
+        meilleurOrdreCamion1 = null;
+        meilleurOrdreCamion2 = null;
+        Node depart = graphe.getNodeIterator().next();
+        ArrayList<Node> chemin1 = new ArrayList<>();
+        ArrayList<Node> chemin2 = new ArrayList<>();
+        chemin1.add(depart);
+        chemin2.add(depart);
+        ArrayList<Node> nonVisites = new ArrayList<>();
+        for (Node n : graphe) {
+            if (n != depart) {
+                nonVisites.add(n);
+            }
+        }
+        semiParfaitRecursif2Camions(depart, depart, chemin1, chemin2, nonVisites, 0, 0, x);
+        ArrayList<Path> resultat = new ArrayList<>();
+        resultat.add(listeEnPath(meilleurOrdreCamion1));
+        resultat.add(listeEnPath(meilleurOrdreCamion2));
+        return resultat;
+    }
+    /** partie récursive de l'algorithme x-optimal
+     *
+     * @param courant1 le noeud sur lequel le camion se trouve potentiellement
+     * @param courant2 le noeud sur lequel le camion se trouve potentiellement
+     * @param chemin1 la liste des noeud qu'on teste
+     * @param chemin1 la liste des noeud qu'on teste
+     * @param nonVisites les sommets pas encore visités
+     * @param cout1 le cout de la partie déjà visitée
+     * @param cout2 le cout de la partie déjà visitée
+     */
+    private static void semiParfaitRecursif2Camions(Node courant1, Node courant2, ArrayList<Node> chemin1, ArrayList<Node> chemin2, ArrayList<Node> nonVisites, int cout1, int cout2, int x) {
+        if (Math.max(cout1, cout2) <= meilleurCout2Camions) {
+            if (nonVisites.isEmpty()) {
+                int coutFinal = Math.max(cout1, cout2);
+                if (coutFinal < meilleurCout2Camions) {
+                    meilleurCout2Camions = coutFinal;
+                    meilleurOrdreCamion1 = new ArrayList<>(chemin1);
+                    meilleurOrdreCamion2 = new ArrayList<>(chemin2);
+                }
+            }
+            else if(x == 0){
+                ArrayList<Path> glouton = algoGlouton2Camions(courant1.getGraph());
+                for (Node n : glouton.get(0).getNodePath()) {
+                    chemin1.add(n);
+                }
+                for (Node n : glouton.get(0).getNodePath()) {
+                    chemin2.add(n);
+                }
+                nonVisites.clear();
+                semiParfaitRecursif2Camions(courant1, courant2, chemin1, chemin2, nonVisites, cout1 + calculerTotalPath(glouton.get(0), "duree"), cout1 + calculerTotalPath(glouton.get(0), "duree"), x);
+            }
+            else{
+                APSPInfo info1 = courant1.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                APSPInfo info2 = courant2.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                for (Node suivant : new ArrayList<>(nonVisites)) {
+                    nonVisites.remove(suivant);
+                    Path p1 = info1.getShortestPathTo(suivant.getId());
+                    chemin1.add(suivant);
+                    parfaitRecursif2Camions(suivant, courant2, chemin1, chemin2, nonVisites, cout1 + calculerTotalPath(p1, "duree"), cout2);
+                    chemin1.remove(chemin1.size() - 1);
+                    Path p2 = info2.getShortestPathTo(suivant.getId());
+                    chemin2.add(suivant);
+                    parfaitRecursif2Camions(courant1, suivant, chemin1, chemin2, nonVisites, cout1, cout2 + calculerTotalPath(p2, "duree"));
+                    chemin2.remove(chemin2.size() - 1);
                     nonVisites.add(suivant);
                 }
             }
