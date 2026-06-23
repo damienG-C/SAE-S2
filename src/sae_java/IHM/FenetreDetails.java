@@ -37,7 +37,7 @@ public class FenetreDetails extends JFrame {
     /**
      * Labels d'en-tete et titres de sections (distances et identifiants).
      */
-    JLabel labDistanceM, labDistanceN, labDistanceO, labIdCategorie, labId1, labId2, labId3, labDistanceCategorie, labDistanceKm1, labDistanceKm2, labDistanceKm3;
+    JLabel labDistanceM, labDistanceN, labDistanceO, labIdCategorie, labId1, labId2, labId3, labDistanceCategorie, labDistanceKm1, labDistanceKm2, labDistanceKm3, labDureeCategorie;
     /**
      * Panneau principal de la fenetre.
      */
@@ -98,7 +98,7 @@ public class FenetreDetails extends JFrame {
         scrollPanePanneau = new JScrollPane(panneau);
         panneau.setLayout(new GridBagLayout());
         panneau.setBackground(Color.decode("#122438"));
-        scrollPanePanneau.setPreferredSize(new Dimension(400, 500));
+        scrollPanePanneau.setPreferredSize(new Dimension(500, 450));
 
         initLabel();
 
@@ -113,6 +113,7 @@ public class FenetreDetails extends JFrame {
         labId3.setForeground(Color.white);
         labDistanceCategorie.setForeground(Color.white);
         labIdCategorie.setForeground(Color.white);
+        labDureeCategorie.setForeground(Color.white);
 
         GridBagConstraints gcpan = new GridBagConstraints();
 
@@ -132,7 +133,10 @@ public class FenetreDetails extends JFrame {
         gcpan.gridx = 2;
         panneau.add(labDistanceCategorie, gcpan);
 
-        // Recuperation des labels (id + distance) pour chaque categorie de dispensaire.
+        gcpan.gridx = 3;
+        panneau.add(labDureeCategorie, gcpan);
+
+        // Recuperation des labels (id + distance + durée) pour chaque categorie de dispensaire.
         List<JLabel> lstMaternite = creerLabelMaternite(graphActuel);
         List<JLabel> lstNutrition = creerLabelNutrition(graphActuel);
         List<JLabel> lstOperatoire = creerLabelOperatoire(graphActuel);
@@ -142,9 +146,10 @@ public class FenetreDetails extends JFrame {
         gcpan.insets = new Insets(0, 5, 0, 0);
 
         // Affichage des maternites : la liste alterne label id puis label distance (pas de 2).
-        for (int i = 0; i < lstMaternite.size(); i = i + 2) {
+        for (int i = 0; i < lstMaternite.size(); i = i + 3) {
             JLabel jLabel = lstMaternite.get(i);
-            JLabel jLabelsuiv = lstMaternite.get(i + 1);
+            JLabel jLabelDist = lstMaternite.get(i + 1);
+            JLabel jLabelDuree = lstMaternite.get(i + 2);
             panneau.add(jLabel, gcpan);
             jLabel.setForeground(Color.white);
             gcpan.gridx++;
@@ -155,6 +160,7 @@ public class FenetreDetails extends JFrame {
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
             Path chemin = (Path) lstReturnPC.get(0);
+            double Duree = (double) lstReturnPC.get(1);
 
             // calcule de la Distance
             for (Edge edge : chemin.getEachEdge()) {
@@ -162,12 +168,20 @@ public class FenetreDetails extends JFrame {
             }
 
             // préparation du label qui affiche la distance
-            jLabelsuiv.setText("" + distanceNode);
-            jLabelsuiv.setForeground(Color.white);
+            jLabelDist.setText("" + distanceNode);
+            jLabelDist.setForeground(Color.white);
 
-            panneau.add(jLabelsuiv, gcpan);
+            panneau.add(jLabelDist, gcpan);
+
+            // préparation du label qui affiche la durée
+            jLabelDuree.setText("" + Duree);
+            jLabelDuree.setForeground(Color.white);
+
+            gcpan.gridx++;
+            panneau.add(jLabelDuree, gcpan);
 
             // Incrémentation de la position des labels
+            gcpan.gridx--;
             gcpan.gridx--;
             gcpan.gridy++;
         }
@@ -180,7 +194,7 @@ public class FenetreDetails extends JFrame {
         gcpan.gridx = 1;
         int cptTempPositionnement = 0;
         // Affichage des centres de nutrition (meme principe d'alternance id/distance).
-        for (int i = 0; i < lstNutrition.size(); i = i + 2) {
+        for (int i = 0; i < lstNutrition.size(); i = i + 3) {
             // Marge superieure plus grande sur la premiere ligne de la categorie.
             if (cptTempPositionnement == 0) {
                 gcpan.insets = new Insets(10, 5, 0, 0);
@@ -190,7 +204,8 @@ public class FenetreDetails extends JFrame {
             cptTempPositionnement++;
 
             JLabel jLabel = lstNutrition.get(i);
-            JLabel jLabelsuiv = lstNutrition.get(i + 1);
+            JLabel jLabelDist = lstNutrition.get(i + 1);
+            JLabel jLabelDuree = lstNutrition.get(i + 2);
             panneau.add(jLabel, gcpan);
             jLabel.setForeground(Color.white);
             gcpan.gridx++;
@@ -201,6 +216,7 @@ public class FenetreDetails extends JFrame {
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
             Path chemin = (Path) lstReturnPC.get(0);
+            double Duree = (double) lstReturnPC.get(1);
 
             // calcule de la Distance
             for (Edge edge : chemin.getEachEdge()) {
@@ -208,12 +224,20 @@ public class FenetreDetails extends JFrame {
             }
 
             // préparation du label qui affiche la distance
-            jLabelsuiv.setText("" + distanceNode);
-            jLabelsuiv.setForeground(Color.white);
+            jLabelDist.setText("" + distanceNode);
+            jLabelDist.setForeground(Color.white);
 
-            panneau.add(jLabelsuiv, gcpan);
+            panneau.add(jLabelDist, gcpan);
+
+            // préparation du label qui affiche la durée
+            jLabelDuree.setText("" + Duree);
+            jLabelDuree.setForeground(Color.white);
+
+            gcpan.gridx++;
+            panneau.add(jLabelDuree, gcpan);
 
             // Incrémentation de la position des labels
+            gcpan.gridx--;
             gcpan.gridx--;
             gcpan.gridy++;
         }
@@ -226,7 +250,7 @@ public class FenetreDetails extends JFrame {
 
         gcpan.gridx = 1;
         // Affichage des blocs operatoires (meme principe d'alternance id/distance).
-        for (int i = 0; i < lstOperatoire.size(); i = i + 2) {
+        for (int i = 0; i < lstOperatoire.size(); i = i + 3) {
             // Marge superieure plus grande sur la premiere ligne de la categorie.
             if (cptTempPositionnement == 0) {
                 gcpan.insets = new Insets(10, 5, 0, 0);
@@ -236,7 +260,8 @@ public class FenetreDetails extends JFrame {
             cptTempPositionnement++;
 
             JLabel jLabel = lstOperatoire.get(i);
-            JLabel jLabelsuiv = lstOperatoire.get(i + 1);
+            JLabel jLabelDist = lstOperatoire.get(i + 1);
+            JLabel jLabelDuree = lstOperatoire.get(i + 2);
             panneau.add(jLabel, gcpan);
             jLabel.setForeground(Color.white);
             gcpan.gridx++;
@@ -247,6 +272,7 @@ public class FenetreDetails extends JFrame {
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
             Path chemin = (Path) lstReturnPC.get(0);
+            double Duree = (double) lstReturnPC.get(1);
 
             // calcule de la Distance
             for (Edge edge : chemin.getEachEdge()) {
@@ -254,12 +280,20 @@ public class FenetreDetails extends JFrame {
             }
 
             // préparation du label qui affiche la distance
-            jLabelsuiv.setText("" + distanceNode);
-            jLabelsuiv.setForeground(Color.white);
+            jLabelDist.setText("" + distanceNode);
+            jLabelDist.setForeground(Color.white);
 
-            panneau.add(jLabelsuiv, gcpan);
+            panneau.add(jLabelDist, gcpan);
+
+            // préparation du label qui affiche la durée
+            jLabelDuree.setText("" + Duree);
+            jLabelDuree.setForeground(Color.white);
+
+            gcpan.gridx++;
+            panneau.add(jLabelDuree, gcpan);
 
             // Incrémentation de la position des labels
+            gcpan.gridx--;
             gcpan.gridx--;
             gcpan.gridy++;
         }
@@ -283,7 +317,8 @@ public class FenetreDetails extends JFrame {
         labId2 = new JLabel("id ");
         labId3 = new JLabel("id ");
         labIdCategorie = new JLabel("Id");
-        labDistanceCategorie = new JLabel("Distances");
+        labDistanceCategorie = new JLabel("Distances (km)");
+        labDureeCategorie = new JLabel("Durées (minutes)");
     }
 
     /**
@@ -302,8 +337,10 @@ public class FenetreDetails extends JFrame {
             if (type.equals("Maternite") && node != n) {
                 JLabel tempId = new JLabel("" + node);
                 JLabel tempDistance = new JLabel("" + node);
+                JLabel tempDuree = new JLabel("" + node);
                 lstLab.add(tempId);
                 lstLab.add(tempDistance);
+                lstLab.add(tempDuree);
             }
 
         }
@@ -329,8 +366,10 @@ public class FenetreDetails extends JFrame {
             if (type.equals("Centre nutrition") && node != n) {
                 JLabel tempId = new JLabel("" + node);
                 JLabel tempDistance = new JLabel("" + node);
+                JLabel tempDuree = new JLabel("" + node);
                 lstLab.add(tempId);
                 lstLab.add(tempDistance);
+                lstLab.add(tempDuree);
             }
 
         }
@@ -355,8 +394,10 @@ public class FenetreDetails extends JFrame {
             if (type.equals("Bloc operatoire") && node != n) {
                 JLabel tempId = new JLabel("" + node);
                 JLabel tempDistance = new JLabel("" + node);
+                JLabel tempDuree = new JLabel("" + node);
                 lstLab.add(tempId);
                 lstLab.add(tempDistance);
+                lstLab.add(tempDuree);
             }
 
         }
