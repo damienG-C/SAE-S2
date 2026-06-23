@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.graphstream.graph.*;
 import Algo.MonGraphe;
+import static java.awt.Color.white;
 import java.awt.Dimension;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -155,7 +156,10 @@ public class FenetreDetails extends JFrame {
             gcpan.gridx++;
 
             int distanceNode = 0;
-
+            
+            // Style du label ID
+            jLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            
             // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
@@ -170,12 +174,14 @@ public class FenetreDetails extends JFrame {
             // préparation du label qui affiche la distance
             jLabelDist.setText("" + distanceNode);
             jLabelDist.setForeground(Color.white);
+            jLabelDist.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             panneau.add(jLabelDist, gcpan);
 
             // préparation du label qui affiche la durée
             jLabelDuree.setText("" + Duree);
             jLabelDuree.setForeground(Color.white);
+            jLabelDuree.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             gcpan.gridx++;
             panneau.add(jLabelDuree, gcpan);
@@ -211,6 +217,9 @@ public class FenetreDetails extends JFrame {
             gcpan.gridx++;
 
             int distanceNode = 0;
+            
+            // Style du label ID
+            jLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
@@ -226,12 +235,14 @@ public class FenetreDetails extends JFrame {
             // préparation du label qui affiche la distance
             jLabelDist.setText("" + distanceNode);
             jLabelDist.setForeground(Color.white);
+            jLabelDist.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             panneau.add(jLabelDist, gcpan);
 
             // préparation du label qui affiche la durée
             jLabelDuree.setText("" + Duree);
             jLabelDuree.setForeground(Color.white);
+            jLabelDuree.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             gcpan.gridx++;
             panneau.add(jLabelDuree, gcpan);
@@ -268,6 +279,9 @@ public class FenetreDetails extends JFrame {
 
             int distanceNode = 0;
 
+            // Style du label ID
+            jLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            
             // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
@@ -282,12 +296,14 @@ public class FenetreDetails extends JFrame {
             // préparation du label qui affiche la distance
             jLabelDist.setText("" + distanceNode);
             jLabelDist.setForeground(Color.white);
+            jLabelDist.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             panneau.add(jLabelDist, gcpan);
 
             // préparation du label qui affiche la durée
             jLabelDuree.setText("" + Duree);
             jLabelDuree.setForeground(Color.white);
+            jLabelDuree.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             gcpan.gridx++;
             panneau.add(jLabelDuree, gcpan);
