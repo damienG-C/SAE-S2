@@ -879,8 +879,13 @@ public class MonGraphe {
             else if(nbExecution == 0){
                 Graph g = courant.getGraph();
                 for (int i = 0; i < res.size() - 1; i++) {
-                    g.removeNode(res.get(i));
+                    g = supprimerNoeudSauvegardeRoute(g, res.get(i), "duree");
                 }
+                APSP apsp = new APSP();
+                apsp.init(g);
+                apsp.setDirected(false);
+                apsp.setWeightAttributeName("duree");
+                apsp.compute();
                 for (Node n : algoGlouton(g, courant).getNodePath()) {
                     res.add(n);
                 }
@@ -952,11 +957,16 @@ public class MonGraphe {
             else if(x == 0){
                 Graph g = courant1.getGraph();
                 for (int i = 0; i < chemin1.size() - 1; i++) {
-                    g.removeNode(chemin1.get(i));
+                    g = supprimerNoeudSauvegardeRoute(g, chemin1.get(i), "duree");
                 }
                 for (int i = 0; i < chemin2.size() - 1; i++) {
-                    g.removeNode(chemin2.get(i));
+                    g = supprimerNoeudSauvegardeRoute(g, chemin2.get(i), "duree");
                 }
+                APSP apsp = new APSP();
+                apsp.init(g);
+                apsp.setDirected(false);
+                apsp.setWeightAttributeName("duree");
+                apsp.compute();
                 ArrayList<Path> glouton = algoGlouton2Camions(courant1.getGraph(), courant1, courant2);
                 for (Node n : glouton.get(0).getNodePath()) {
                     chemin1.add(n);
