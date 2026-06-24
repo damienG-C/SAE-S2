@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.graphstream.graph.*;
 import Algo.MonGraphe;
+import static java.awt.Color.white;
 import java.awt.Dimension;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -102,18 +103,19 @@ public class FenetreDetails extends JFrame {
 
         initLabel();
 
-        labDistanceKm1.setForeground(Color.white);
-        labDistanceKm2.setForeground(Color.white);
-        labDistanceKm3.setForeground(Color.white);
         labDistanceM.setForeground(Color.white);
         labDistanceN.setForeground(Color.white);
         labDistanceO.setForeground(Color.white);
-        labId1.setForeground(Color.white);
-        labId2.setForeground(Color.white);
-        labId3.setForeground(Color.white);
         labDistanceCategorie.setForeground(Color.white);
         labIdCategorie.setForeground(Color.white);
         labDureeCategorie.setForeground(Color.white);
+        
+        labDistanceM.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDistanceN.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDistanceO.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDistanceCategorie.setBorder(BorderFactory.createLineBorder(Color.white));
+        labIdCategorie.setBorder(BorderFactory.createLineBorder(Color.white));
+        labDureeCategorie.setBorder(BorderFactory.createLineBorder(Color.white));
 
         GridBagConstraints gcpan = new GridBagConstraints();
 
@@ -155,7 +157,10 @@ public class FenetreDetails extends JFrame {
             gcpan.gridx++;
 
             int distanceNode = 0;
-
+            
+            // Style du label ID
+            jLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            
             // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
@@ -170,12 +175,14 @@ public class FenetreDetails extends JFrame {
             // préparation du label qui affiche la distance
             jLabelDist.setText("" + distanceNode);
             jLabelDist.setForeground(Color.white);
+            jLabelDist.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             panneau.add(jLabelDist, gcpan);
 
             // préparation du label qui affiche la durée
             jLabelDuree.setText("" + Duree);
             jLabelDuree.setForeground(Color.white);
+            jLabelDuree.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             gcpan.gridx++;
             panneau.add(jLabelDuree, gcpan);
@@ -211,6 +218,9 @@ public class FenetreDetails extends JFrame {
             gcpan.gridx++;
 
             int distanceNode = 0;
+            
+            // Style du label ID
+            jLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
@@ -226,12 +236,14 @@ public class FenetreDetails extends JFrame {
             // préparation du label qui affiche la distance
             jLabelDist.setText("" + distanceNode);
             jLabelDist.setForeground(Color.white);
+            jLabelDist.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             panneau.add(jLabelDist, gcpan);
 
             // préparation du label qui affiche la durée
             jLabelDuree.setText("" + Duree);
             jLabelDuree.setForeground(Color.white);
+            jLabelDuree.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             gcpan.gridx++;
             panneau.add(jLabelDuree, gcpan);
@@ -268,6 +280,9 @@ public class FenetreDetails extends JFrame {
 
             int distanceNode = 0;
 
+            // Style du label ID
+            jLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            
             // Calcul du plus court chemin entre le sommet de reference et le sommet courant.
             Node nodeChercher = graphActuel.getNode(jLabel.getText());
             List lstReturnPC = MonGraphe.calculerItinerairePlusCourt(graphActuel, "" + n, "" + nodeChercher);
@@ -282,12 +297,14 @@ public class FenetreDetails extends JFrame {
             // préparation du label qui affiche la distance
             jLabelDist.setText("" + distanceNode);
             jLabelDist.setForeground(Color.white);
+            jLabelDist.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             panneau.add(jLabelDist, gcpan);
 
             // préparation du label qui affiche la durée
             jLabelDuree.setText("" + Duree);
             jLabelDuree.setForeground(Color.white);
+            jLabelDuree.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
             gcpan.gridx++;
             panneau.add(jLabelDuree, gcpan);
@@ -307,15 +324,9 @@ public class FenetreDetails extends JFrame {
      * conversation).
      */
     private void initLabel() {
-        labDistanceKm1 = new JLabel("Distance (km)");
-        labDistanceKm2 = new JLabel("Distance (km)");
-        labDistanceKm3 = new JLabel("Distance (km)");
         labDistanceO = new JLabel("Distance aux blocs opératoires");
         labDistanceM = new JLabel("Distance aux maternités");
         labDistanceN = new JLabel("Distances aux centres de nutrition");
-        labId1 = new JLabel("id ");
-        labId2 = new JLabel("id ");
-        labId3 = new JLabel("id ");
         labIdCategorie = new JLabel("Id");
         labDistanceCategorie = new JLabel("Distances (km)");
         labDureeCategorie = new JLabel("Durées (minutes)");
