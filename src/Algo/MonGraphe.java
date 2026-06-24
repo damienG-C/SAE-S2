@@ -879,109 +879,51 @@ public class MonGraphe {
      * @param nbExecution le nombre de sommet calculé parfaitement
      */
     private static void semiParfaitRecursif(Node courant, ArrayList<Node> res, ArrayList<Node> nonVisites, int cout, int nbExecution){
-
         if(cout <= meilleurCout){
-
             if(nonVisites.isEmpty()){
-
                 meilleurCout = cout;
                 meilleurOrdreCamion1 = new ArrayList<>(res);
             }
-
             else if(nbExecution == 0){
-
                 Graph g = new SingleGraph("graphe temporaire");
-
                 for(Node node : courant.getGraph()){
-
                     Node tmp = g.addNode(node.getId());
-
-                    tmp.addAttribute(
-                            "type",
-                            (String) node.getAttribute("type")
-                    );
+                    tmp.addAttribute("type", (String) node.getAttribute("type"));
                 }
-
                 for(Edge edge : courant.getGraph().getEachEdge()){
-
-                    Edge tmp = g.addEdge(
-                            edge.getId(),
-                            edge.getNode0().getId(),
-                            edge.getNode1().getId()
-                    );
-
-                    tmp.setAttribute(
-                            "duree",
-                            (int) edge.getAttribute("duree")
-                    );
+                    Edge tmp = g.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
+                    tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
                 }
-
                 for(int i = 0 ; i < res.size() - 1 ; i++){
-
-                    g = supprimerNoeudSauvegardeRoute(
-                            g,
-                            g.getNode(res.get(i).getId()),
-                            "duree"
-                    );
+                    g = supprimerNoeudSauvegardeRoute(g, g.getNode(res.get(i).getId()), "duree");
                 }
-
                 APSP apsp = new APSP();
-
                 apsp.init(g);
                 apsp.setDirected(false);
                 apsp.setWeightAttributeName("duree");
                 apsp.compute();
-
                 Path finGloutonne = algoGlouton(g, g.getNode(courant.getId()));
-
-                int coutFinal =
-                        cout
-                        + calculerTotalPath(finGloutonne, "duree");
-
+                int coutFinal = cout + calculerTotalPath(finGloutonne, "duree");
                 if(coutFinal < meilleurCout){
-
                     meilleurCout = coutFinal;
-
-                    ArrayList<Node> ordre =
-                            new ArrayList<>(res);
-
+                    ArrayList<Node> ordre = new ArrayList<>(res);
                     ArrayList<Node> suite = new ArrayList<>();
-
                     for(Node n : finGloutonne.getNodePath()){
-
-                    if(!n.getId().equals(courant.getId())){
-                        suite.add(courant.getGraph().getNode(n.getId()));
+                        if(!n.getId().equals(courant.getId())){
+                            suite.add(courant.getGraph().getNode(n.getId()));
+                        }
                     }
-    }
-
-
                     ordre.addAll(suite);
-
                     meilleurOrdreCamion1 = ordre;
                 }
             }
-
             else{
-
-                APSPInfo info =
-                        courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
-
+                APSPInfo info = courant.getAttribute(APSPInfo.ATTRIBUTE_NAME);
                 for(Node suivant : new ArrayList<>(nonVisites)){
-
-                    Path p =
-                            info.getShortestPathTo(suivant.getId());
-
+                    Path p = info.getShortestPathTo(suivant.getId());
                     res.add(suivant);
                     nonVisites.remove(suivant);
-
-                    semiParfaitRecursif(
-                            suivant,
-                            res,
-                            nonVisites,
-                            cout + calculerTotalPath(p, "duree"),
-                            nbExecution - 1
-                    );
-
+                    semiParfaitRecursif(suivant, res, nonVisites, cout + calculerTotalPath(p, "duree"), nbExecution - 1);
                     res.remove(res.size() - 1);
                     nonVisites.add(suivant);
                 }
@@ -1037,255 +979,84 @@ public class MonGraphe {
         int cout1,
         int cout2,
         int x) {
-
-    if (Math.max(cout1, cout2) <= meilleurCout2Camions) {
-
-        if (nonVisites.isEmpty()) {
-
-            int coutFinal = Math.max(cout1, cout2);
-
-            if (coutFinal < meilleurCout2Camions) {
-
-                meilleurCout2Camions = coutFinal;
-
-                meilleurOrdreCamion1 =
-                        new ArrayList<>(chemin1);
-
-                meilleurOrdreCamion2 =
-                        new ArrayList<>(chemin2);
-            }
-        }
-
-        else if (x == 0) {
-
-            Graph g = new SingleGraph("graphe temporaire");
-
-            for (Node node : courant1.getGraph()) {
-
-                Node tmp = g.addNode(node.getId());
-
-                tmp.setAttribute(
-                        "type",
-                        (String) node.getAttribute("type")
-                );
-            }
-
-            for (Edge edge : courant1.getGraph().getEachEdge()) {
-
-                Edge tmp = g.addEdge(
-                        edge.getId(),
-                        edge.getNode0().getId(),
-                        edge.getNode1().getId()
-                );
-
-                tmp.setAttribute(
-                        "duree",
-                        (int) edge.getAttribute("duree")
-                );
-            }
-
-            for (int i = 0; i < chemin1.size() - 1; i++) {
-
-                Node n =
-                        g.getNode(
-                                chemin1.get(i).getId()
-                        );
-
-                if (n != null) {
-
-                    g = supprimerNoeudSauvegardeRoute(
-                            g,
-                            n,
-                            "duree"
-                    );
-                }
-            }
-
-            for (int i = 0; i < chemin2.size() - 1; i++) {
-
-                Node n =
-                        g.getNode(
-                                chemin2.get(i).getId()
-                        );
-
-                if (n != null) {
-
-                    g = supprimerNoeudSauvegardeRoute(
-                            g,
-                            n,
-                            "duree"
-                    );
-                }
-            }
-
-            APSP apsp = new APSP();
-
-            apsp.init(g);
-            apsp.setDirected(false);
-            apsp.setWeightAttributeName("duree");
-            apsp.compute();
-
-            Node depart1 =
-                    g.getNode(courant1.getId());
-
-            Node depart2 =
-                    g.getNode(courant2.getId());
-
-            if (depart1 != null && depart2 != null) {
-
-                ArrayList<Path> finGloutonne =
-                        algoGlouton2Camions(
-                                g,
-                                depart1,
-                                depart2
-                        );
-
-                int coutFinal1 =
-                        cout1
-                        + calculerTotalPath(
-                                finGloutonne.get(0),
-                                "duree"
-                        );
-
-                int coutFinal2 =
-                        cout2
-                        + calculerTotalPath(
-                                finGloutonne.get(1),
-                                "duree"
-                        );
-
-                int coutFinal =
-                        Math.max(
-                                coutFinal1,
-                                coutFinal2
-                        );
-
+        if (Math.max(cout1, cout2) <= meilleurCout2Camions) {
+            if (nonVisites.isEmpty()) {
+                int coutFinal = Math.max(cout1, cout2);
                 if (coutFinal < meilleurCout2Camions) {
-
-                    meilleurCout2Camions =
-                            coutFinal;
-
-                    ArrayList<Node> ordre1 =
-                            new ArrayList<>(chemin1);
-
-                    ArrayList<Node> ordre2 =
-                            new ArrayList<>(chemin2);
-
-                    for (Node n :
-                            finGloutonne.get(0).getNodePath()) {
-
-                        if (n != null
-                                && !n.getId().equals(
-                                        courant1.getId())) {
-
-                            ordre1.add(
-                                    courant1
-                                            .getGraph()
-                                            .getNode(
-                                                    n.getId()
-                                            )
-                            );
-                        }
-                    }
-
-                    for (Node n :
-                            finGloutonne.get(1).getNodePath()) {
-
-                        if (n != null
-                                && !n.getId().equals(
-                                        courant2.getId())) {
-
-                            ordre2.add(
-                                    courant2
-                                            .getGraph()
-                                            .getNode(
-                                                    n.getId()
-                                            )
-                            );
-                        }
-                    }
-
-                    meilleurOrdreCamion1 =
-                            ordre1;
-
-                    meilleurOrdreCamion2 =
-                            ordre2;
+                    meilleurCout2Camions = coutFinal;
+                    meilleurOrdreCamion1 = new ArrayList<>(chemin1);
+                    meilleurOrdreCamion2 = new ArrayList<>(chemin2);
                 }
             }
-        }
-
-        else {
-
-            APSPInfo info1 =
-                    courant1.getAttribute(
-                            APSPInfo.ATTRIBUTE_NAME
-                    );
-
-            APSPInfo info2 =
-                    courant2.getAttribute(
-                            APSPInfo.ATTRIBUTE_NAME
-                    );
-
-            for (Node suivant :
-                    new ArrayList<>(nonVisites)) {
-
-                nonVisites.remove(suivant);
-
-                Path p1 =
-                        info1.getShortestPathTo(
-                                suivant.getId()
-                        );
-
-                chemin1.add(suivant);
-
-                semiParfaitRecursif2Camions(
-                        suivant,
-                        courant2,
-                        chemin1,
-                        chemin2,
-                        nonVisites,
-                        cout1
-                                + calculerTotalPath(
-                                        p1,
-                                        "duree"
-                                ),
-                        cout2,
-                        x - 1
-                );
-
-                chemin1.remove(
-                        chemin1.size() - 1
-                );
-
-                Path p2 =
-                        info2.getShortestPathTo(
-                                suivant.getId()
-                        );
-
-                chemin2.add(suivant);
-
-                semiParfaitRecursif2Camions(
-                        courant1,
-                        suivant,
-                        chemin1,
-                        chemin2,
-                        nonVisites,
-                        cout1,
-                        cout2
-                                + calculerTotalPath(
-                                        p2,
-                                        "duree"
-                                ),
-                        x - 1
-                );
-
-                chemin2.remove(
-                        chemin2.size() - 1
-                );
-
-                nonVisites.add(suivant);
+            else if (x == 0) {
+                Graph g = new SingleGraph("graphe temporaire");
+                for (Node node : courant1.getGraph()) {
+                    Node tmp = g.addNode(node.getId());
+                    tmp.setAttribute("type", (String) node.getAttribute("type"));
+                }
+                for (Edge edge : courant1.getGraph().getEachEdge()) {
+                    Edge tmp = g.addEdge(edge.getId(), edge.getNode0().getId(), edge.getNode1().getId());
+                    tmp.setAttribute("duree", (int) edge.getAttribute("duree"));
+                }
+                for (int i = 0; i < chemin1.size() - 1; i++) {
+                    Node n = g.getNode(chemin1.get(i).getId());
+                    if (n != null) {
+                        g = supprimerNoeudSauvegardeRoute(g, n, "duree");
+                    }
+                }
+                for (int i = 0; i < chemin2.size() - 1; i++) {
+                    Node n = g.getNode(chemin2.get(i).getId());
+                    if (n != null) {
+                        g = supprimerNoeudSauvegardeRoute(g, n, "duree");
+                    }
+                }
+                APSP apsp = new APSP();
+                apsp.init(g);
+                apsp.setDirected(false);
+                apsp.setWeightAttributeName("duree");
+                apsp.compute();
+                Node depart1 = g.getNode(courant1.getId());
+                Node depart2 = g.getNode(courant2.getId());
+                if (depart1 != null && depart2 != null) {
+                    ArrayList<Path> finGloutonne = algoGlouton2Camions(g, depart1, depart2);
+                    int coutFinal1 = cout1 + calculerTotalPath(finGloutonne.get(0), "duree");
+                    int coutFinal2 = cout2 + calculerTotalPath(finGloutonne.get(1), "duree");
+                    int coutFinal = Math.max(coutFinal1, coutFinal2);
+                    if (coutFinal < meilleurCout2Camions) {
+                        meilleurCout2Camions = coutFinal;
+                        ArrayList<Node> ordre1 = new ArrayList<>(chemin1);
+                        ArrayList<Node> ordre2 = new ArrayList<>(chemin2);
+                        for (Node n : finGloutonne.get(0).getNodePath()) {
+                            if (n != null && !n.getId().equals(courant1.getId())) {
+                                ordre1.add(courant1.getGraph().getNode(n.getId()));
+                            }
+                        }
+                        for (Node n : finGloutonne.get(1).getNodePath()) {
+                            if (n != null && !n.getId().equals(courant2.getId())) {
+                                ordre2.add(courant2.getGraph().getNode(n.getId()));
+                            }
+                        }
+                        meilleurOrdreCamion1 = ordre1;
+                        meilleurOrdreCamion2 = ordre2;
+                    }
+                }
+            }
+            else {
+                APSPInfo info1 = courant1.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                APSPInfo info2 = courant2.getAttribute(APSPInfo.ATTRIBUTE_NAME);
+                for (Node suivant : new ArrayList<>(nonVisites)) {
+                    nonVisites.remove(suivant);
+                    Path p1 = info1.getShortestPathTo(suivant.getId());
+                    chemin1.add(suivant);
+                    semiParfaitRecursif2Camions(suivant, courant2, chemin1, chemin2, nonVisites, cout1 + calculerTotalPath(p1,"duree"), cout2, x - 1);
+                    chemin1.remove(chemin1.size() - 1);
+                    Path p2 = info2.getShortestPathTo(suivant.getId());
+                    chemin2.add(suivant);
+                    semiParfaitRecursif2Camions(courant1, suivant, chemin1, chemin2, nonVisites, cout1, cout2 + calculerTotalPath(p2, "duree"), x - 1);
+                    chemin2.remove(chemin2.size() - 1);
+                    nonVisites.add(suivant);
+                }
             }
         }
     }
-}
 }
