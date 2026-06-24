@@ -112,8 +112,8 @@ public class Fenetre extends JFrame implements MouseListener {
      */
     DefaultView view;
 
-    String enregistrement1 = "nomFichier, algo, duree, chemin";
-    String enregistrement2 = "nomFichier, algo, duree1, duree2, chemins";
+    String enregistrement1 = "nomFichier;algo;duree;chemin";
+    String enregistrement2 = "nomFichier;algo;duree1;duree2;chemins";
 
     
     /**
@@ -839,7 +839,7 @@ public class Fenetre extends JFrame implements MouseListener {
                 if (selecteurNb.getSelectedItem().equals(1)) {
                     try {
                         FileWriter fichier = new FileWriter("resultat.csv", true);
-                        enregistrement1 = "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "");
+                        enregistrement1 = "\n" + graphActuel.getId() + ";" + MonGraphe.calculerTotalPath(MonGraphe.algoGlouton(graphActuel, graphActuel.iterator().next()), "duree") + ";" + MonGraphe.calculerTotalPath(chemin1, "duree") + ";" + chemin1.toString().replace("[", "").replace("]", "");
                         fichier.write(enregistrement1);
                         fichier.close();
                     } catch (IOException ex) {
@@ -848,7 +848,7 @@ public class Fenetre extends JFrame implements MouseListener {
                 } else {
                     try {
                         FileWriter fichier = new FileWriter("resultat2.csv", true);
-                        enregistrement2 = "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + MonGraphe.calculerTotalPath(chemin2, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "") + "," + chemin2.toString().replace("[", "").replace("]", "");
+                        enregistrement2 = "\n" + graphActuel.getId() +  ";" + MonGraphe.calculerTotalPath(chemin1, "duree") + ";" + MonGraphe.calculerTotalPath(chemin2, "duree") + ";" + chemin1.toString().replace("[", "").replace("]", "") + ";" + chemin2.toString().replace("[", "").replace("]", "");
                         fichier.write(enregistrement2);
                         fichier.close();
                     } catch (IOException ex) {
