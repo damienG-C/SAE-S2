@@ -35,6 +35,7 @@ import Algo.MonGraphe;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.graphstream.algorithm.APSP;
 
 /**
  * Fenetre est la fenetre principale de l'application.
@@ -112,8 +113,8 @@ public class Fenetre extends JFrame implements MouseListener {
      */
     DefaultView view;
 
-    String enregistrement1 = "nomFichier;algo;duree;chemin";
-    String enregistrement2 = "nomFichier;algo;duree1;duree2;chemins";
+    String enregistrement1 = "";
+    String enregistrement2 = "";
 
     
     /**
@@ -131,23 +132,6 @@ public class Fenetre extends JFrame implements MouseListener {
         // Création de tout les composants de la fenêtre (Panneaux + Labels + Buttons etc).
         initComponent();
 
-        try{
-            FileWriter fichier = new FileWriter("resultat.csv", true);
-            fichier.write(enregistrement1);
-            fichier.close();
-        }
-        catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    
-        try{
-            FileWriter fichier = new FileWriter("resultat2.csv", true);
-            fichier.write(enregistrement2);
-            fichier.close();
-        }
-    catch (IOException ex) {
-        ex.printStackTrace();
-    }
         // Remplacement du contentPane par pan (panneau principal).
         this.setContentPane(pan);
 
@@ -836,6 +820,11 @@ public class Fenetre extends JFrame implements MouseListener {
                 Path chemin1 = chemins.get(0);
                 Path chemin2 = chemins.get(1);
 
+                APSP apsp = new APSP();
+                apsp.init(graphActuel);
+                apsp.setDirected(false);
+                apsp.setWeightAttributeName("duree");
+                apsp.compute();
                 if (selecteurNb.getSelectedItem().equals(1)) {
                     try {
                         FileWriter fichier = new FileWriter("resultat.csv", true);

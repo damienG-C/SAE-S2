@@ -1,5 +1,0 @@
-
-map,glouton,481,0,S1, S10, S4, S2, S3, S6, S3, S9, S5, S7, S1, S8,nomFichier, algo, duree1, duree2, cheminsnomFichier, algo, duree1, duree2, chemins
-map,parfait,179,197,S1, S2, S3, S6, S3, S9,S1, S8, S10, S4, S5, S7
-map,Xparfait puis glouton,214,221,S1, S7, S5, S4, S10, S8,S1, S3, S6, S3, S9, S3, S2
-map,Xparfait puis glouton,197,179,S1, S8, S10, S4, S5, S7,S1, S2, S3, S6, S3, S9
