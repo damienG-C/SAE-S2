@@ -111,9 +111,10 @@ public class Fenetre extends JFrame implements MouseListener {
      * Vue GraphStream du graphe, integree dans le panneau {@code panGraph}.
      */
     DefaultView view;
-    
+
     String enregistrement1 = "nomFichier, algo, duree, chemin";
     String enregistrement2 = "nomFichier, algo, duree1, duree2, chemins";
+
     
     /**
      * Construit la fenetre principale : initialise tous les composants,
@@ -130,6 +131,23 @@ public class Fenetre extends JFrame implements MouseListener {
         // Création de tout les composants de la fenêtre (Panneaux + Labels + Buttons etc).
         initComponent();
 
+        try{
+            FileWriter fichier = new FileWriter("resultat.csv", true);
+            fichier.write(enregistrement1);
+            fichier.close();
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    
+        try{
+            FileWriter fichier = new FileWriter("resultat2.csv", true);
+            fichier.write(enregistrement2);
+            fichier.close();
+        }
+    catch (IOException ex) {
+        ex.printStackTrace();
+    }
         // Remplacement du contentPane par pan (panneau principal).
         this.setContentPane(pan);
 
@@ -810,60 +828,39 @@ public class Fenetre extends JFrame implements MouseListener {
                 if (selecteurAlgo.getSelectedItem().equals("Xparfait puis glouton")) {
                     String valRetour = JOptionPane.showInputDialog(pan, "Saisir le nombre de sommet parfait", "Sélecteur de Sommet");
                     chemins = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), valRetour);
-                }
-                else{
+                } else {
                     // Calcul de la tournee selon le nombre de camions, le type de dispensaire et l'algorithme choisis.
                     chemins = MonGraphe.plusCourteTournee(graphActuel, (int) selecteurNb.getSelectedItem(), (String) selecteurType.getSelectedItem(), (String) selecteurAlgo.getSelectedItem());
                 }
-                
-                
+
                 Path chemin1 = chemins.get(0);
                 Path chemin2 = chemins.get(1);
-                
-                if (chemin2 == null){
-                    try{
-                        FileWriter fichier = new FileWriter("resultat.csv");
-                        enregistrement1 += "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "");
+
+                if (selecteurNb.getSelectedItem().equals(1)) {
+                    try {
+                        FileWriter fichier = new FileWriter("resultat.csv", true);
+                        enregistrement1 = "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "");
                         fichier.write(enregistrement1);
+                        fichier.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
-                    catch(IOException ex){
-                        File f = new File("resultat.csv");
-                        f.delete();
-                        try {
-                            FileWriter fichier = new FileWriter("resultat.csv");
-                            enregistrement1 += "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "");
-                            fichier.write(enregistrement1);
-                        } catch (IOException ex2) {
-                            System.out.println("euh.....");
-                        }
+                } else {
+                    try {
+                        FileWriter fichier = new FileWriter("resultat2.csv", true);
+                        enregistrement2 = "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + MonGraphe.calculerTotalPath(chemin2, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "") + "," + chemin2.toString().replace("[", "").replace("]", "");
+                        fichier.write(enregistrement2);
+                        fichier.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                 }
-                else{
-                    try{
-                        FileWriter fichier = new FileWriter("resultat2.csv");
-                        enregistrement2 += "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + MonGraphe.calculerTotalPath(chemin2, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "") + "," + chemin2.toString().replace("[", "").replace("]", "");
-                        fichier.write(enregistrement1);
-                    }
-                    catch(IOException ex){
-                        File f = new File("resultat2.csv");
-                        f.delete();
-                        try {
-                            FileWriter fichier = new FileWriter("resultat2.csv");
-                            enregistrement2 += "\n" + graphActuel.getId() + "," + selecteurAlgo.getSelectedItem() + "," + MonGraphe.calculerTotalPath(chemin1, "duree") + "," + MonGraphe.calculerTotalPath(chemin2, "duree") + "," + chemin1.toString().replace("[", "").replace("]", "") + "," + chemin2.toString().replace("[", "").replace("]", "");
-                            fichier.write(enregistrement1);
-                        } catch (IOException ex2) {
-                            System.out.println("euh.....");
-                        }
-                    }
-                }
-                
-                
-                if (chemin2 == null){
+
+                if (selecteurNb.getSelectedItem().equals(1)) {
                     colorerChemin(chemin1);
-                }
-                else{
+                } else {
                     colorerChemin(chemin1, chemin2);
-                    
+
                     String cheminString = "" + chemin2;
 
                     // Nettoyage de la chaine du chemin pour extraire la liste des sommets.
@@ -893,7 +890,6 @@ public class Fenetre extends JFrame implements MouseListener {
 
                     labDureeTourneeCam2.setText("Durée de la Tournée : " + cptDureeTournee);
                 }
-                
 
                 String cheminString = "" + chemin1;
 
@@ -972,7 +968,7 @@ public class Fenetre extends JFrame implements MouseListener {
 
             // null est le nom du graphe qui signifie "graphe alea".
             afficherGraph(g, null);
-        } 
+        }
     }
 
     /**
