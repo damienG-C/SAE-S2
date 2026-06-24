@@ -145,9 +145,9 @@ public class MonGraphe {
         e.setAttribute("duree", duree);
     }
 
-    /* =========================
-   Q2 - CSV
-   ========================= */
+    /*
+   lireCSV
+   */
     /**
      * Charge un graphe depuis un fichier CSV.
      *

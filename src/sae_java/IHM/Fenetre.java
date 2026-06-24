@@ -1159,7 +1159,7 @@ public class Fenetre extends JFrame implements MouseListener {
             return;
         }
 
-        // Recupere la configuration graphique pour gérer les écrans 
+        // Recupere la configuration graphique pour gérer les écrans (mac par exemple)
         GraphicsConfiguration gc = view.getGraphicsConfiguration();
         AffineTransform tx = gc.getDefaultTransform();
 
@@ -1174,8 +1174,6 @@ public class Fenetre extends JFrame implements MouseListener {
             Node n = graphActuel.getNode(element.getId());
 
             if (n != null) {
-                // ENVOI DU NŒUD : On passe le nœud 'n' à la fenêtre de détails
-                // On peut aussi lui passer les coordonnées pour la positionner (e.getXOnScreen(), e.getYOnScreen())
                 FenetreDetails fenetre = new FenetreDetails(n, graphActuel);
             }
         }
